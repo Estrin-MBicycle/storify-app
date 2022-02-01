@@ -1,0 +1,11 @@
+spring:
+  liquibase:
+    enabled: true
+    change-log: db/changelog/db.changelog-master.xml
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    url: jdbc:postgresql://localhost:5432/storify_db
+    username: storify_user
+    password: storify_pass

@@ -1,0 +1,12 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_DB: "storify_db"
+      POSTGRES_USER: "storify_user"
+      POSTGRES_PASSWORD: "storify_pass"
+    volumes:
+      - .:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
