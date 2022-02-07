@@ -1,12 +1,15 @@
-version: "3.9"
+version: "3.7"
 services:
-  postgres:
-    image: postgres
+  storify-mdb:
+    image: mariadb
+    restart: always
     environment:
-      POSTGRES_DB: "storify_db"
-      POSTGRES_USER: "storify_user"
-      POSTGRES_PASSWORD: "storify_pass"
-    volumes:
-      - .:/docker-entrypoint-initdb.d
+      MYSQL_ROOT_PASSWORD: storify_root
+      MYSQL_DATABASE: storify_db_local
+      MYSQL_USER: storify_user
+      MYSQL_PASSWORD: storify_pass
     ports:
-      - "5432:5432"
+      - '3307:3306'
+
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d

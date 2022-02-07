@@ -1,11 +1,23 @@
 spring:
+  application:
+    name: storify
   liquibase:
     enabled: true
     change-log: db/changelog/db.changelog-master.xml
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: validate #do not change this value
   datasource:
-    url: jdbc:postgresql://localhost:5432/storify_db
+    url: jdbc:mariadb://localhost:3307/storify_db_local
     username: storify_user
     password: storify_pass
+    driver-class-name: org.mariadb.jdbc.Driver
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:mariadb://storify.cd1b0g4crtcb.us-east-1.rds.amazonaws.com:3306/storify_db
