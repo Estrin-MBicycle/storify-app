@@ -4,6 +4,25 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
 
     <!--migrations here-->
+
+    <changeSet id="create_table_profile" author="zaiceva">
+        <createTable tableName="profile">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="name" type="varchar(30)" />
+            <column name="surname" type="varchar(30)" />
+            <column name="town" type="varchar(30)" />
+            <column name="adress" type="varchar(30)" />
+            <column name="phone" type="varchar(20)">
+                <constraints nullable="false" unique="true" />
+            </column>
+          <column name="basket_id" type="int">
+<!--                <constraints foreignKeyName="fk_profile_basket" references="basket(id)" nullable="false"/>-->
+            </column>
+        </createTable>
+    </changeSet>
+
     <changeSet author="grigorovich_v" id="createTable-store">
         <createTable tableName="store">
             <column
@@ -58,4 +77,6 @@
     </changeSet>
 
 
+
+            
 </databaseChangeLog>
