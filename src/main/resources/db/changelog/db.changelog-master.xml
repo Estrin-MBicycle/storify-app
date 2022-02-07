@@ -5,6 +5,28 @@
 
     <!--migrations here-->
 
+    <changeSet id="create_table_basket" author="harbachou">
+        <createTable tableName="basket">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+<!--            <column name="id_product" type="int">-->
+<!--                <constraints nullable="false"/>-->
+<!--            </column>-->
+<!--            <column name="products_list" type="int">-->
+<!--                <constraints nullable="false"/>-->
+<!--            </column>-->
+        </createTable>
+    </changeSet>
+  
+    <changeSet id="create_table_favorite" author="harbachou">
+        <createTable tableName="favorite">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+              </createTable>
+    </changeSet>
+
     <changeSet id="create_table_profile" author="zaiceva">
         <createTable tableName="profile">
             <column name="id" type="bigint" autoIncrement="true">
@@ -75,8 +97,4 @@
             </column>
         </createTable>
     </changeSet>
-
-
-
-            
 </databaseChangeLog>
