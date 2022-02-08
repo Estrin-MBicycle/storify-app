@@ -21,6 +21,10 @@ spring:
     password: Mbicycle.com
     port: 465
     protocol: smtps
+
+security:
+  secret-word: storify
+
 ---
 
 spring:

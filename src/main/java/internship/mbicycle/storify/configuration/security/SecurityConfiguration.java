@@ -1,5 +1,6 @@
 package internship.mbicycle.storify.configuration.security;
 
+import internship.mbicycle.storify.configuration.properties.SecurityProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +20,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
+    private final SecurityProperties securityProperties;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -31,8 +33,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/swagger-resources/**", "/swagger-ui/**", "/v2/api-docs").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilter(new CustomAuthenticationFilter(authenticationManagerBean()))
-                .addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+                .addFilter(new CustomAuthenticationFilter(authenticationManagerBean(), securityProperties))
+                .addFilterBefore(new CustomAuthorizationFilter(securityProperties), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean
