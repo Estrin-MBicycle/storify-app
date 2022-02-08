@@ -43,7 +43,7 @@
             <column name="name" value="Petr" />
             <column name="surname" value="Svetoshina" />
             <column name="town" value="Minsk" />
-            <column name="address" value="st. Grodnogo 13" />
+            <column name="address" value="st. Rudenko 13" />
             <column name="phone" value="+375 (11) 222-33-44" />
             <column name="basket_id" value="1" />
         </insert>
@@ -51,12 +51,12 @@
     <changeSet  author="zaiceva"  id="insert_data4">
         <insert  tableName="profile">
             <column name="id" value="5" />
-            <column name="name" value="Nusha" />
-            <column name="surname" value="Svetoshina" />
+            <column name="name" value="Ksusha" />
+            <column name="surname" value="Kasanova" />
             <column name="town" value="Minsk" />
-            <column name="address" value="st. Grodnogo 13" />
+            <column name="address" value="st. Lejachaya 13" />
             <column name="phone" value="+375 (11) 222-33-44" />
-            <column name="basket_id" value="1" />
+            <column name="basket_id" value="5" />
         </insert>
     </changeSet>
 </databaseChangeLog>

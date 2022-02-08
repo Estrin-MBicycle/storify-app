@@ -21,7 +21,6 @@
                 <constraints nullable="false" unique="true"/>
             </column>
             <column name="basket_id" type="int">
-                <!--                <constraints foreignKeyName="fk_profile_basket" references="basket(id)" nullable="false"/>-->
             </column>
         </createTable>
     </changeSet>

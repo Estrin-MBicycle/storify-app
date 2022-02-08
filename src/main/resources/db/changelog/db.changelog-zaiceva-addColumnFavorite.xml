@@ -1,0 +1,17 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+    <!--migrations here-->
+    <changeSet author="zaiceva" id="add_column_favorite">
+        <addColumn tableName="favorite" >
+            <column name="profile_id" afterColumn="id" type="bigint">
+                <constraints foreignKeyName="FK_favorite_profile" references="profile(id)"/>
+            </column>
+            <column name="product_id" afterColumn="profile_id" type="bigint" >
+                <constraints foreignKeyName="FK_favorite_product" references="product(id)"/>
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

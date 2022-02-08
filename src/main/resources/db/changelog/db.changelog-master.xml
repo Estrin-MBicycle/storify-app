@@ -11,5 +11,6 @@
     <include file="db/changelog/db.changelog-zaiceva-createTableProfile.xml"/>
     <include file="db/changelog/db.changelog-harbachou-createTableFavorite.xml"/>
     <include file="db/changelog/db.changelog-harbachou-createTableBasket.xml"/>
+    <include file="db/changelog/db.changelog-zaiceva-addColumnFavorite.xml"/>
 
 </databaseChangeLog>
