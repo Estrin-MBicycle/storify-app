@@ -1,0 +1,24 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+    <!--migrations here-->
+    <changeSet  author="zaiceva" id="createTrigger">
+        <sql>
+            DROP TRIGGER IF EXISTS check_enabled_on_product ON product;
+            CREATE TRIGGER add_current_date_to_my_table
+                BEFORE INSERT UPDATE ON product FOR EACH ROW
+            BEGIN
+                IF old.count > 0 THEN
+                    UPDATE new SET new.enable = true;
+                ELSE
+                    UPDATE new SET new.enable = false;
+                END IF;
+            END;
+        </sql>
+        <rollback>
+            DROP TRIGGER check_enabled_on_product ON product;
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

@@ -18,7 +18,7 @@ public class Profile {
     private String name;
     private String surname;
     private String town;
-    private String adress;
+    private String address;
     private String phone;
 
     /*@OneToMany

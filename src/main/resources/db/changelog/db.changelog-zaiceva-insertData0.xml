@@ -1,0 +1,62 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+    <!--migrations here-->
+    <changeSet  author="zaiceva"  id="insert_data0">
+        <insert  tableName="profile">
+            <column name="id" value="1" />
+            <column name="name" value="Nusha" />
+            <column name="surname" value="Svetoshina" />
+            <column name="town" value="Minsk" />
+            <column name="address" value="st. Grodnogo 13" />
+            <column name="phone" value="+375 (11) 222-33-44" />
+            <column name="basket_id" value="1" />
+        </insert>
+    </changeSet>
+    <changeSet  author="zaiceva"  id="insert_data1">
+        <insert  tableName="profile">
+            <column name="id" value="2" />
+            <column name="name" value="Vadim" />
+            <column name="surname" value="Portov" />
+            <column name="town" value="Minsk" />
+            <column name="address" value="st. Zagiba 103" />
+            <column name="phone" value="+375 (22) 333-44-55" />
+            <column name="basket_id" value="2" />
+        </insert>
+    </changeSet>
+    <changeSet  author="zaiceva"  id="insert_data2">
+        <insert  tableName="profile">
+            <column name="id" value="3" />
+            <column name="name" value="Pavel" />
+            <column name="surname" value="Nordishev" />
+            <column name="town" value="Minsk" />
+            <column name="address" value="st. Bolshakova 83" />
+            <column name="phone" value="+375 (33) 444-55-66" />
+            <column name="basket_id" value="3" />
+        </insert>
+    </changeSet>
+    <changeSet  author="zaiceva"  id="insert_data3">
+        <insert  tableName="profile">
+            <column name="id" value="4" />
+            <column name="name" value="Petr" />
+            <column name="surname" value="Svetoshina" />
+            <column name="town" value="Minsk" />
+            <column name="address" value="st. Grodnogo 13" />
+            <column name="phone" value="+375 (11) 222-33-44" />
+            <column name="basket_id" value="1" />
+        </insert>
+    </changeSet>
+    <changeSet  author="zaiceva"  id="insert_data4">
+        <insert  tableName="profile">
+            <column name="id" value="5" />
+            <column name="name" value="Nusha" />
+            <column name="surname" value="Svetoshina" />
+            <column name="town" value="Minsk" />
+            <column name="address" value="st. Grodnogo 13" />
+            <column name="phone" value="+375 (11) 222-33-44" />
+            <column name="basket_id" value="1" />
+        </insert>
+    </changeSet>
+</databaseChangeLog>

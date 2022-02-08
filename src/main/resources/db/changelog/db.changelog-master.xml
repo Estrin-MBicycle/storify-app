@@ -4,6 +4,7 @@
 
     <!--migrations here-->
 
+    <include file="db/changelog/db.changelog-zaiceva-addConstrains0.xml"/>
     <include file="db/changelog/db.changelog-grigorovich-createTableProduct.xml"/>
     <include file="db/changelog/db.changelog-grigorovich-addNotNullableProfileIdStore.xml"/>
     <include file="db/changelog/db.changelog-grigorovich-createTableStore.xml"/>
