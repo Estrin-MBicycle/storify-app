@@ -12,6 +12,8 @@
     <include file="db/changelog/db.changelog-harbachou-createTableBasket.xml"/>
     <include file="db/changelog/db.changelog-grigorovich-addColumnCountTableProduct.xml"/>
     <include file="db/changelog/db.changelog-grigorovich-createTableProductBasket.xml"/>
+    <include file="db/changelog/db.changelog-grigorovich-createTableOrder.xml"/>
+    <include file="db/changelog/db.changelog-grigorovich-createTableProductOrder.xml"/>
 
 
 </databaseChangeLog>

@@ -1,0 +1,23 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+
+    <changeSet id="createTableProductOrder" author="grigorovich_v">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="products_orders"/>
+            </not>
+        </preConditions>
+        <createTable tableName="products_orders">
+            <column
+                    name="product_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_product_order" references="product(id)" primaryKey="true" primaryKeyName="pk_pr_order_table"/>
+            </column>
+            <column name="order_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_order_product" references="order(id)"  primaryKey="true" primaryKeyName="pk_pr_order_table"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
