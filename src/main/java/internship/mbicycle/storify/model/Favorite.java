@@ -2,27 +2,29 @@ package internship.mbicycle.storify.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Generated;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
-//@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class Favorite {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    @Column(name = "idUser")
     private long idUser;
 
-//    private List<Product> productList;
+    private List<Product> productFavoriteList;
 
-
+    public void addProductToProductFavoriteList(Product product) {
+        if (productFavoriteList == null) {
+            productFavoriteList = new ArrayList<>();
+        }
+        productFavoriteList.add(product);
+    }
 }
