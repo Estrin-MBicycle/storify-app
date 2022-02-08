@@ -5,10 +5,13 @@
     <!--migrations here-->
 
     <include file="db/changelog/db.changelog-grigorovich-createTableProduct.xml"/>
-    <include file="db/changelog/db.changelog-grigorovich-addNotNullableProfileIdStore.xml"/>
-    <include file="db/changelog/db.changelog-grigorovich-createTableStore.xml"/>
     <include file="db/changelog/db.changelog-zaiceva-createTableProfile.xml"/>
+    <include file="db/changelog/db.changelog-grigorovich-createTableStore.xml"/>
+    <include file="db/changelog/db.changelog-grigorovich-addNotNullableProfileIdStore.xml"/>
     <include file="db/changelog/db.changelog-harbachou-createTableFavorite.xml"/>
     <include file="db/changelog/db.changelog-harbachou-createTableBasket.xml"/>
+    <include file="db/changelog/db.changelog-grigorovich-addColumnCountTableProduct.xml"/>
+    <include file="db/changelog/db.changelog-grigorovich-createTableProductBasket.xml"/>
+
 
 </databaseChangeLog>
