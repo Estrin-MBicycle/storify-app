@@ -5,11 +5,6 @@
 
     <changeSet id="create_table_basket"
                author="harbachou">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="basket"/>
-            </not>
-        </preConditions>
         <createTable tableName="basket">
             <column name="id"
                     type="bigint"
@@ -19,7 +14,5 @@
             </column>
         </createTable>
     </changeSet>
-
-
 
 </databaseChangeLog>
