@@ -2,19 +2,16 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
 
-    <changeSet id="create_table_basket"
-               author="harbachou">
+
+    <changeSet id="create_table_basket" author="harbachou">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="basket"/>
             </not>
         </preConditions>
         <createTable tableName="basket">
-            <column name="id"
-                    type="bigint"
-                    autoIncrement="true">
-                <constraints primaryKey="true"
-                             nullable="false"/>
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
             </column>
         </createTable>
     </changeSet>

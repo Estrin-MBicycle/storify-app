@@ -12,19 +12,19 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class Favorite {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.AUTO)
-//    private long id;
-//
-//    @Column(name = "idUser")
-//    private long idUser;
-//
-//    private List<Product> productFavoriteList;
-//
-//    public void addProductToProductFavoriteList(Product product) {
-//        if (productFavoriteList == null) {
-//            productFavoriteList = new ArrayList<>();
-//        }
-//        productFavoriteList.add(product);
-//    }
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+
+    @Column(name = "idUser")
+    private long idUser;
+
+    private List<Product> productFavoriteList;
+
+    public void addProductToProductFavoriteList(Product product) {
+        if (productFavoriteList == null) {
+            productFavoriteList = new ArrayList<>();
+        }
+        productFavoriteList.add(product);
+    }
 }
