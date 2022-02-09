@@ -12,6 +12,15 @@ spring:
     username: storify_user
     password: storify_pass
     driver-class-name: org.mariadb.jdbc.Driver
+  mail:
+    host: smtp.yandex.ru
+    username: storify@yandex.ru
+    password: Mbicycle.com
+    port: 465
+    protocol: smtps
+
+security:
+  jwt-secret: storify
 
 ---
 
