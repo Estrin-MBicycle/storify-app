@@ -4,11 +4,6 @@
 
 
     <changeSet author="grigorovich_v" id="createTable-store">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="store"/>
-            </not>
-        </preConditions>
         <createTable tableName="store">
             <column name="id"
                     type="bigint"
@@ -34,7 +29,7 @@
             </column>
             <column
                     name="profile_id"
-                    type="int">
+                    type="bigint">
                 <constraints nullable="false"/>
             </column>
         </createTable>
