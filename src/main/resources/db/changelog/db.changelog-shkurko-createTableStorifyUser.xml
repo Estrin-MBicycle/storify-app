@@ -4,11 +4,6 @@
 
 
     <changeSet id="create_table_storify_user" author="shkurko">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="storify_user"/>
-            </not>
-        </preConditions>
         <createTable tableName="storify_user">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
