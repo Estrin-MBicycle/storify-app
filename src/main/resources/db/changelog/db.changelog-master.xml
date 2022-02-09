@@ -7,5 +7,5 @@
     <include file="db/changelog/db.changelog-shkurko-createTableStorifyUser.xml"/>
     <include file="db/changelog/db.changelog-grigorovich-createTableOrder.xml.xml"/>
     <include file="db/changelog/db.changelog-grigorovich-createTableProduct.xml"/>
-    <include file="db/changelog/db.changelog-grigorovich-createTableProductOrder.xml"/>
+    <include file="db/changelog/db.changelog-grigorovich-createTableProductOrder.xml"/>qwe
 </databaseChangeLog>
