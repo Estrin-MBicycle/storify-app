@@ -11,8 +11,9 @@
         <createTable tableName="favorite">
             <column name="profile_id"
                     type="bigint">
-                <constraints primaryKey="true"
-                             nullable="false"/>
+            </column>
+            <column name="product_id"
+                    type="bigint">
             </column>
         </createTable>
     </changeSet>
