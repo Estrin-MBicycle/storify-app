@@ -5,7 +5,7 @@
 
 
     <changeSet id="createTableProductOrder" author="grigorovich_v">
-        <createTable tableName="products_orders">
+        <createTable tableName="product_order">
             <column name="product_id"
                     type="bigint">
                 <constraints
