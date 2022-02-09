@@ -5,11 +5,6 @@
 
 
     <changeSet author="grigorovich_v" id="createTableOrder">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="order"/>
-            </not>
-        </preConditions>
         <createTable tableName="order">
             <column name="id"
                     type="bigint"
