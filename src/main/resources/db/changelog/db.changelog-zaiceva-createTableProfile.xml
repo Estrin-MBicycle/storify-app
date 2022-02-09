@@ -5,11 +5,6 @@
 
     <changeSet id="create_table_profile"
                author="zaiceva">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="profile"/>
-            </not>
-        </preConditions>
         <createTable tableName="profile">
             <column name="id"
                     type="bigint"
