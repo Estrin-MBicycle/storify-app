@@ -1,0 +1,24 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+
+    <changeSet id="createTableProductBasket" author="grigorovich_v">
+        <createTable tableName="product_basket">
+            <column name="product_id"
+                    type="bigint">
+                <constraints
+                        nullable="false"
+                        foreignKeyName="fk_product_basket" references="product(id)" primaryKey="true" primaryKeyName="pk_pr_basket_table"/>
+            </column>
+            <column
+                    name="basket_id"
+                    type="bigint">
+                <constraints
+                        nullable="false"
+                        foreignKeyName="fk_basket_product" references="basket(id)"  primaryKey="true" primaryKeyName="pk_pr_basket_table"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
