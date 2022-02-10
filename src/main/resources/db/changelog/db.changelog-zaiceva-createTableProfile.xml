@@ -31,4 +31,11 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="modify_data_type_basket_id_profile"
+               author="zaiceva" >
+        <modifyDataType columnName="basket_id"
+                         newDataType="bigint"
+                         tableName="profile" />
+    </changeSet>
+
 </databaseChangeLog>

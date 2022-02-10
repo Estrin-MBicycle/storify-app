@@ -10,15 +10,16 @@
                     type="bigint">
                 <constraints
                         nullable="false"
-                        foreignKeyName="fk_product_order" references="product(id)" primaryKey="true" primaryKeyName="pk_pr_order_table"/>
+                        foreignKeyName="fk_product_order" references="product(id)" />
             </column>
             <column
                     name="order_id"
                     type="bigint">
                 <constraints
                         nullable="false"
-                        foreignKeyName="fk_order_product" references="order(id)"  primaryKey="true" primaryKeyName="pk_pr_order_table"/>
+                        foreignKeyName="fk_order_product" references="order(id)" />
             </column>
         </createTable>
     </changeSet>
+
 </databaseChangeLog>

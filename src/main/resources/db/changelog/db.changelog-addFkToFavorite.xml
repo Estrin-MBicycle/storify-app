@@ -1,0 +1,29 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+    <changeSet id="add_favorite_constraint"
+               author="zaiceva">
+        <addForeignKeyConstraint  baseColumnNames="profile_id"
+                                  baseTableName="favorite"
+                                  constraintName="fk_favorite_profile"
+                                  onDelete="CASCADE"
+                                  onUpdate="RESTRICT"
+                                  referencedColumnNames="id"
+                                  referencedTableName="profile" />
+        <addForeignKeyConstraint  baseColumnNames="product_id"
+                                  baseTableName="favorite"
+                                  constraintName="fk_favorite_product"
+                                  onDelete="CASCADE"
+                                  onUpdate="RESTRICT"
+                                  referencedColumnNames="id"
+                                  referencedTableName="product" />
+        <addNotNullConstraint columnDataType="bigint"
+                              columnName="profile_id"
+                              tableName="favorite" />
+        <addNotNullConstraint columnDataType="bigint"
+                              columnName="product_id"
+                              tableName="favorite" />
+    </changeSet>
+
+</databaseChangeLog>

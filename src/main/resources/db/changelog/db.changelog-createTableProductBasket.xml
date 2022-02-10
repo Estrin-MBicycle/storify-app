@@ -10,14 +10,14 @@
                     type="bigint">
                 <constraints
                         nullable="false"
-                        foreignKeyName="fk_product_basket" references="product(id)" primaryKey="true" primaryKeyName="pk_pr_basket_table"/>
+                        foreignKeyName="fk_product_basket" references="product(id)" />
             </column>
             <column
                     name="basket_id"
                     type="bigint">
                 <constraints
                         nullable="false"
-                        foreignKeyName="fk_basket_product" references="basket(id)"  primaryKey="true" primaryKeyName="pk_pr_basket_table"/>
+                        foreignKeyName="fk_basket_product" references="basket(id)" />
             </column>
         </createTable>
     </changeSet>
