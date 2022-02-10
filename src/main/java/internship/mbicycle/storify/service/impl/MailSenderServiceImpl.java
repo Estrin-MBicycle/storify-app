@@ -24,7 +24,6 @@ public class MailSenderServiceImpl implements MailSenderService {
         mailMessage.setTo(emailTo);
         mailMessage.setSubject(subject);
         mailMessage.setText(message);
-
         mailSender.send(mailMessage);
     }
 }

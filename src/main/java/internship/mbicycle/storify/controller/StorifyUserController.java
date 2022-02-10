@@ -18,23 +18,23 @@ public class StorifyUserController {
     private final StorifyUserService userService;
 
     @GetMapping("/users")
-    public ResponseEntity<List<StorifyUser>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+    public List<StorifyUser> getAllUsers() {
+        return userService.getAllUsers();
     }
 
-    @PostMapping("/registration")
-    public ResponseEntity<StorifyUser> addNewUser(StorifyUser storifyUser) {
+    @PostMapping("/signUp")
+    public StorifyUser addNewUser(StorifyUser storifyUser) {
         userService.saveUser(storifyUser);
-        return ResponseEntity.ok(userService.getUserById(storifyUser.getId()));
+        return userService.getUserById(storifyUser.getId());
     }
 
     @GetMapping("/activate/{code}")
-    public ResponseEntity<String> activateEmail(@PathVariable String code) {
+    public String activateEmail(@PathVariable String code) {
         boolean isActivated = userService.activateEmail(code);
         if (isActivated) {
-            return ResponseEntity.ok().body("Thank you for registration!");
+            return "Thank you for registration!";
         } else {
-            return ResponseEntity.badRequest().body("Activate was not successful");
+            return "Activate was not successful";
         }
 
     }

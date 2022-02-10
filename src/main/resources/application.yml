@@ -22,8 +22,9 @@ spring:
     port: 465
     protocol: smtps
 
-security:
-  jwt-secret: storify
+jwt:
+  token:
+    jwt-secret: storify
 
 ---
 

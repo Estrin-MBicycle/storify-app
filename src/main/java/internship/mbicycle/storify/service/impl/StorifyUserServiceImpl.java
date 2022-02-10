@@ -14,10 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -30,14 +27,19 @@ public class StorifyUserServiceImpl implements StorifyUserService, UserDetailsSe
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        StorifyUser storifyUser = userRepository.findByEmail(email);
-        if (storifyUser == null) {
+
+        Optional<StorifyUser> optionalStorifyUser = userRepository.findByEmail(email);
+        if (optionalStorifyUser.isEmpty()) {
             throw new UsernameNotFoundException("User not found in database");
         }
+        StorifyUser storifyUser = optionalStorifyUser.get();
+        return convertStorifyUserIntoUserDetails(storifyUser);
+    }
+
+    public User convertStorifyUserIntoUserDetails(StorifyUser storifyUser) {
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(storifyUser.getRole()));
         return new User(storifyUser.getEmail(), storifyUser.getPassword(), authorities);
-
     }
 
     @Override
@@ -56,7 +58,11 @@ public class StorifyUserServiceImpl implements StorifyUserService, UserDetailsSe
 
     @Override
     public StorifyUser getUserById(long id) {
-        return userRepository.findById(id);
+        Optional<StorifyUser> optionalStorifyUser = userRepository.findById(id);
+        if (optionalStorifyUser.isEmpty()) {
+            throw new UsernameNotFoundException("User not found in database");
+        }
+        return optionalStorifyUser.get();
     }
 
     @Override
@@ -66,13 +72,23 @@ public class StorifyUserServiceImpl implements StorifyUserService, UserDetailsSe
 
     @Override
     public boolean activateEmail(String code) {
-        StorifyUser storifyUser = userRepository.findByActivationCode(code);
-        if (storifyUser == null) {
-            return false;
+        Optional<StorifyUser> optionalStorifyUser = userRepository.findByActivationCode(code);
+        if (optionalStorifyUser.isEmpty()) {
+            throw new UsernameNotFoundException("User not found in database");
         }
+        StorifyUser storifyUser = optionalStorifyUser.get();
         storifyUser.setActivationCode(null);
         storifyUser.setRole("ROLE_USER");
         userRepository.save(storifyUser);
         return true;
+    }
+
+    @Override
+    public StorifyUser getUserByEmail(String email) {
+        Optional<StorifyUser> optionalStorifyUser = userRepository.findByEmail(email);
+        if (optionalStorifyUser.isEmpty()) {
+            throw new UsernameNotFoundException("User not found in database");
+        }
+        return optionalStorifyUser.get();
     }
 }

@@ -4,12 +4,14 @@ import internship.mbicycle.storify.model.StorifyUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface StorifyUserRepository extends JpaRepository<StorifyUser, Long> {
 
-    StorifyUser findByEmail(String email);
+    Optional<StorifyUser> findByEmail(String email);
 
-    StorifyUser findById(long id);
+    Optional<StorifyUser> findById(long id);
 
-    StorifyUser findByActivationCode(String code);
+    Optional<StorifyUser> findByActivationCode(String code);
 }

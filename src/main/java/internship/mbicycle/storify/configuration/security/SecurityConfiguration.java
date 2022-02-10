@@ -1,6 +1,6 @@
 package internship.mbicycle.storify.configuration.security;
 
-import internship.mbicycle.storify.configuration.properties.SecurityProperties;
+import internship.mbicycle.storify.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,7 +20,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
-    private final SecurityProperties securityProperties;
+    private final TokenService tokenService;
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -31,10 +32,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/login", "/registration", "/activate/*").permitAll()
                 .antMatchers("/swagger-resources/**", "/swagger-ui/**", "/v2/api-docs").permitAll()
+                .antMatchers("/token/refresh/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilter(new CustomAuthenticationFilter(authenticationManagerBean(), securityProperties))
-                .addFilterBefore(new CustomAuthorizationFilter(securityProperties), UsernamePasswordAuthenticationFilter.class);
+                .addFilter(new CustomAuthenticationFilter(authenticationManagerBean(), tokenService))
+                .addFilterBefore(new CustomAuthorizationFilter(tokenService), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean
