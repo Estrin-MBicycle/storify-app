@@ -10,6 +10,7 @@
     <include file="db/changelog/db.changelog-grigorovich-createTableProductOrder.xml"/>
     <include file="db/changelog/db.changelog-harbachou-createTableFavorite.xml"/>
     <include file="db/changelog/db.changelog-harbachou-createTableBasket.xml"/>
+    <include file="db/changelog/db.changelog-createTableProductBasket.xml"/>
     <include file="db/changelog/db.changelog-addFkToOrder.xml"/>
     <include file="db/changelog/db.changelog-addFkToStore.xml"/>
 
