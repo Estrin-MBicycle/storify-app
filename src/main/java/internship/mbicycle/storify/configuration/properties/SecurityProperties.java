@@ -12,5 +12,6 @@ import org.springframework.stereotype.Component;
 public class SecurityProperties {
 
     private String jwtSecret;
+    private boolean checkAccess;
 
 }

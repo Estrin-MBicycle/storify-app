@@ -15,9 +15,11 @@ public interface StorifyUserService {
 
     List<StorifyUser> getAllUsers();
 
-    boolean activateEmail(String code);
+    StorifyUser activateEmail(String code);
 
     StorifyUser getUserByEmail(String email);
 
     User convertStorifyUserIntoUserDetails(StorifyUser storifyUser);
+
+    void updateStorifyUser(StorifyUser storifyUser);
 }

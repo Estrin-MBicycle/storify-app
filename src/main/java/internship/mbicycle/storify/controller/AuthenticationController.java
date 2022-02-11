@@ -19,6 +19,7 @@ public class AuthenticationController {
 
     private final TokenService tokenService;
 
+    // This controller doesn't work
     @GetMapping("/refresh")
     public void getNewAccessToken(HttpServletRequest request, HttpServletResponse response) {
         Optional<String> authorizationHeader = Optional.ofNullable(request.getHeader(AUTHORIZATION));

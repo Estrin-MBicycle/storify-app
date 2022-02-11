@@ -1,6 +1,7 @@
 package internship.mbicycle.storify.service.impl;
 
-import internship.mbicycle.storify.jpa.StorifyUserRepository;
+import internship.mbicycle.storify.model.Token;
+import internship.mbicycle.storify.repository.StorifyUserRepository;
 import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.service.MailSenderService;
 import internship.mbicycle.storify.service.StorifyUserService;
@@ -27,7 +28,6 @@ public class StorifyUserServiceImpl implements StorifyUserService, UserDetailsSe
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-
         Optional<StorifyUser> optionalStorifyUser = userRepository.findByEmail(email);
         if (optionalStorifyUser.isEmpty()) {
             throw new UsernameNotFoundException("User not found in database");
@@ -43,10 +43,16 @@ public class StorifyUserServiceImpl implements StorifyUserService, UserDetailsSe
     }
 
     @Override
+    public void updateStorifyUser(StorifyUser storifyUser) {
+        userRepository.save(storifyUser);
+    }
+
+    @Override
     public StorifyUser saveUser(StorifyUser storifyUser) {
         storifyUser.setRole("ROLE_GUEST");
         storifyUser.setPassword(passwordEncoder.encode(storifyUser.getPassword()));
         storifyUser.setActivationCode(UUID.randomUUID().toString());
+        storifyUser.setToken(new Token());
         String message = String.format(
                 "Hello, %s! \n " +
                         "Welcome to Storify. Please, visit next link: http://localhost:8080/activate/%s",
@@ -71,7 +77,7 @@ public class StorifyUserServiceImpl implements StorifyUserService, UserDetailsSe
     }
 
     @Override
-    public boolean activateEmail(String code) {
+    public StorifyUser activateEmail(String code) {
         Optional<StorifyUser> optionalStorifyUser = userRepository.findByActivationCode(code);
         if (optionalStorifyUser.isEmpty()) {
             throw new UsernameNotFoundException("User not found in database");
@@ -79,8 +85,7 @@ public class StorifyUserServiceImpl implements StorifyUserService, UserDetailsSe
         StorifyUser storifyUser = optionalStorifyUser.get();
         storifyUser.setActivationCode(null);
         storifyUser.setRole("ROLE_USER");
-        userRepository.save(storifyUser);
-        return true;
+        return userRepository.save(storifyUser);
     }
 
     @Override

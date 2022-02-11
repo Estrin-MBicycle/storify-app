@@ -1,4 +1,4 @@
-package internship.mbicycle.storify.jpa;
+package internship.mbicycle.storify.repository;
 
 import internship.mbicycle.storify.model.StorifyUser;
 import org.springframework.data.jpa.repository.JpaRepository;
