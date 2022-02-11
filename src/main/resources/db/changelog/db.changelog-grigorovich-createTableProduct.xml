@@ -30,6 +30,10 @@
             <column name="count"
                     type="int">
             </column>
+            <column name="store_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="product_store_fk" references="store(id)"/>
+            </column>
         </createTable>
     </changeSet>
 </databaseChangeLog>
