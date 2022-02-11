@@ -29,18 +29,19 @@ public class TokenServiceImpl implements TokenService {
     private final StorifyUserService userService;
 
     @Override
-    public String createAccessToken(User user) {
+    public String createAccessToken(StorifyUser storifyUser) {
+        StorifyUser userFromDb = userService.getUserByEmail(storifyUser.getEmail());
         return JWT.create()
-                .withSubject(user.getUsername())
+                .withSubject(userFromDb.getEmail())
                 .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 5)) // 5 minutes
-                .withClaim("role", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
+                .withClaim("role", userFromDb.getRole())
                 .sign(getEncryptionAlgorithm());
     }
 
     @Override
-    public String createRefreshToken(User user) {
+    public String createRefreshToken(StorifyUser storifyUser) {
         return JWT.create()
-                .withSubject(user.getUsername())
+                .withSubject(storifyUser.getEmail())
                 .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 10)) // 10 days
                 .sign(getEncryptionAlgorithm());
     }
@@ -48,50 +49,59 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public UsernamePasswordAuthenticationToken getAuthenticationToken(String authorizationHeader) {
         StorifyUser storifyUser = getStorifyUserFromAuthorizationHeader(authorizationHeader);
-        User user = userService.convertStorifyUserIntoUserDetails(storifyUser);
-        return new UsernamePasswordAuthenticationToken(user.getUsername(), null, user.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(storifyUser.getEmail(), null, storifyUser.getAuthorities());
     }
 
     //This method doesn't work
     @Override
-    public String getAccessTokenFromRefreshToken(String authorizationHeader) {
-        StorifyUser storifyUser = getStorifyUserFromAuthorizationHeader(authorizationHeader);
-        return createAccessToken(userService.convertStorifyUserIntoUserDetails(storifyUser));
-    }
-
-    private StorifyUser getStorifyUserFromAuthorizationHeader(String authorizationHeader) {
-        if (authorizationHeader == null) {
-            throw new RuntimeException("The token not found");
-        }
-        if (!authorizationHeader.startsWith("Bearer ")) {
-            throw new RuntimeException("The token is incorrect");
-        }
-        String token = authorizationHeader.substring("Bearer ".length());
+    public StorifyUser getTokensFromRefreshToken(String authorizationHeader) {
+        String token = parseTokenFromAuthorizationHeader(authorizationHeader);
         JWTVerifier verifier = JWT.require(getEncryptionAlgorithm()).build();
         DecodedJWT decodedJWT = verifier.verify(token);
         String email = decodedJWT.getSubject();
         StorifyUser storifyUser = userService.getUserByEmail(email);
-        if (securityProperties.isCheckAccess() && !storifyUser.getToken().getAccessToken().equals(token)) {
-            throw new RuntimeException("The tokens aren's the same");
+        if (!storifyUser.getToken().getRefreshToken().equals(token)) {
+            throw new RuntimeException("Tokens aren't the same");
+        }
+        storifyUser.getToken().setAccessToken(createAccessToken(storifyUser));
+        storifyUser.getToken().setRefreshToken(createRefreshToken(storifyUser));
+        userService.updateStorifyUser(storifyUser);
+        return storifyUser;
+    }
+
+    private StorifyUser getStorifyUserFromAuthorizationHeader(String authorizationHeader) {
+        String token = parseTokenFromAuthorizationHeader(authorizationHeader);
+        JWTVerifier verifier = JWT.require(getEncryptionAlgorithm()).build();
+        DecodedJWT decodedJWT = verifier.verify(token);
+        String email = decodedJWT.getSubject();
+        StorifyUser storifyUser = userService.getUserByEmail(email);
+        if (securityProperties.isCheckAccess()) {
+            if (!storifyUser.getToken().getAccessToken().equals(token)) {
+                throw new RuntimeException("Tokens aren't the same");
+            }
         }
         return storifyUser;
     }
 
+    private String parseTokenFromAuthorizationHeader(String authorizationHeader) {
+        if (!authorizationHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("The token is incorrect");
+        }
+        return authorizationHeader.substring("Bearer ".length());
+    }
+
     @Override
-    public void saveToken(User user, String accessToken, String refreshToken) {
-        StorifyUser storifyUser = userService.getUserByEmail(user.getUsername());
+    public void saveTokens(StorifyUser storifyUser, String accessToken, String refreshToken) {
         storifyUser.getToken().setAccessToken(accessToken);
         storifyUser.getToken().setRefreshToken(refreshToken);
-        log.info("access token from save method {}", storifyUser.getToken().getAccessToken());
         userService.updateStorifyUser(storifyUser);
     }
 
     @Override
     public void setTokensAfterActivation(StorifyUser storifyUser) {
-        User user = userService.convertStorifyUserIntoUserDetails(storifyUser);
-        String accessToken = createAccessToken(user);
-        String refreshToken = createRefreshToken(user);
-        saveToken(user, accessToken, refreshToken);
+        String accessToken = createAccessToken(storifyUser);
+        String refreshToken = createRefreshToken(storifyUser);
+        saveTokens(storifyUser, accessToken, refreshToken);
     }
 
     private Algorithm getEncryptionAlgorithm() {

@@ -4,17 +4,19 @@ import internship.mbicycle.storify.model.StorifyUser;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.User;
 
+import java.util.List;
+
 public interface TokenService {
 
-    String createAccessToken(User user);
+    String createAccessToken(StorifyUser storifyUser);
 
-    String createRefreshToken(User user);
+    String createRefreshToken(StorifyUser storifyUser);
 
     UsernamePasswordAuthenticationToken getAuthenticationToken(String authorizationHeader);
 
-    String getAccessTokenFromRefreshToken(String authorizationHeader);
+    StorifyUser getTokensFromRefreshToken(String authorizationHeader);
 
-    void saveToken(User user, String accessToken, String refreshToken);
+    void saveTokens(StorifyUser user, String accessToken, String refreshToken);
 
     void setTokensAfterActivation(StorifyUser storifyUser);
 }

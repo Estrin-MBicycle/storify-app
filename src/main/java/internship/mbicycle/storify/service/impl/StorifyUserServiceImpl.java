@@ -1,46 +1,27 @@
 package internship.mbicycle.storify.service.impl;
 
+import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.model.Token;
 import internship.mbicycle.storify.repository.StorifyUserRepository;
-import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.service.MailSenderService;
 import internship.mbicycle.storify.service.StorifyUserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class StorifyUserServiceImpl implements StorifyUserService, UserDetailsService {
+public class StorifyUserServiceImpl implements StorifyUserService {
 
     private final PasswordEncoder passwordEncoder;
     private final StorifyUserRepository userRepository;
     private final MailSenderService mailSenderService;
-
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<StorifyUser> optionalStorifyUser = userRepository.findByEmail(email);
-        if (optionalStorifyUser.isEmpty()) {
-            throw new UsernameNotFoundException("User not found in database");
-        }
-        StorifyUser storifyUser = optionalStorifyUser.get();
-        return convertStorifyUserIntoUserDetails(storifyUser);
-    }
-
-    public User convertStorifyUserIntoUserDetails(StorifyUser storifyUser) {
-        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(storifyUser.getRole()));
-        return new User(storifyUser.getEmail(), storifyUser.getPassword(), authorities);
-    }
 
     @Override
     public void updateStorifyUser(StorifyUser storifyUser) {
@@ -64,11 +45,7 @@ public class StorifyUserServiceImpl implements StorifyUserService, UserDetailsSe
 
     @Override
     public StorifyUser getUserById(long id) {
-        Optional<StorifyUser> optionalStorifyUser = userRepository.findById(id);
-        if (optionalStorifyUser.isEmpty()) {
-            throw new UsernameNotFoundException("User not found in database");
-        }
-        return optionalStorifyUser.get();
+        return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found in db"));
     }
 
     @Override
@@ -78,11 +55,8 @@ public class StorifyUserServiceImpl implements StorifyUserService, UserDetailsSe
 
     @Override
     public StorifyUser activateEmail(String code) {
-        Optional<StorifyUser> optionalStorifyUser = userRepository.findByActivationCode(code);
-        if (optionalStorifyUser.isEmpty()) {
-            throw new UsernameNotFoundException("User not found in database");
-        }
-        StorifyUser storifyUser = optionalStorifyUser.get();
+        StorifyUser storifyUser = userRepository.findByActivationCode(code)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found in database with it activation code"));
         storifyUser.setActivationCode(null);
         storifyUser.setRole("ROLE_USER");
         return userRepository.save(storifyUser);
@@ -90,10 +64,7 @@ public class StorifyUserServiceImpl implements StorifyUserService, UserDetailsSe
 
     @Override
     public StorifyUser getUserByEmail(String email) {
-        Optional<StorifyUser> optionalStorifyUser = userRepository.findByEmail(email);
-        if (optionalStorifyUser.isEmpty()) {
-            throw new UsernameNotFoundException("User not found in database");
-        }
-        return optionalStorifyUser.get();
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found in db"));
     }
 }

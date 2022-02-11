@@ -13,5 +13,4 @@ public class SecurityProperties {
 
     private String jwtSecret;
     private boolean checkAccess;
-
 }

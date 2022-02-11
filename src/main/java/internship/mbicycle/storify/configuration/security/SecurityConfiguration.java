@@ -1,5 +1,6 @@
 package internship.mbicycle.storify.configuration.security;
 
+import internship.mbicycle.storify.service.StorifyUserService;
 import internship.mbicycle.storify.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +22,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
+    private final StorifyUserService userService;
 
 
     @Override
@@ -35,7 +37,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/token/refresh/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilter(new CustomAuthenticationFilter(authenticationManagerBean(), tokenService))
+                .addFilter(new CustomAuthenticationFilter(authenticationManagerBean(), tokenService, userService))
                 .addFilterBefore(new CustomAuthorizationFilter(tokenService), UsernamePasswordAuthenticationFilter.class);
     }
 
