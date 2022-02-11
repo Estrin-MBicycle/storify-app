@@ -15,6 +15,17 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  mail:
+    host: smtp.yandex.ru
+    username: storify@yandex.ru
+    password: Mbicycle.com
+    port: 465
+    protocol: smtps
+
+jwt:
+  token:
+    jwt-secret: storify
+    check-access: true
 
 ---
 
