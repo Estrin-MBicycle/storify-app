@@ -27,7 +27,8 @@
             <column name="price"
                     type="int">
             </column>
-            <column name="count" type="int">
+            <column name="count"
+                    type="int">
             </column>
         </createTable>
     </changeSet>
