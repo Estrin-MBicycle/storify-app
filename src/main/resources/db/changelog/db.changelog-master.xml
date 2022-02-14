@@ -11,10 +11,12 @@
     <include file="db/changelog/db.changelog-harbachou-createTableFavorite.xml"/>
     <include file="db/changelog/db.changelog-harbachou-createTableBasket.xml"/>
     <include file="db/changelog/db.changelog-createTableProductBasket.xml"/>
+    <include file="db/changelog/db.changelog-addColumnToProduct.xml"/>
     <include file="db/changelog/db.changelog-addFkToOrder.xml"/>
     <include file="db/changelog/db.changelog-addFkToStore.xml"/>
     <include file="db/changelog/db.changelog-addFkToFavorite.xml"/>
     <include file="db/changelog/db.changelog-addFkToProfile.xml"/>
+    <include file="db/changelog/db.changelog-addFkToProduct.xml"/>
     <include file="db/changelog/db.changelog-createTableToken.xml"/>
     <include file="db/changelog/db.changelog-addFkToStorifyUser.xml"/>
 
