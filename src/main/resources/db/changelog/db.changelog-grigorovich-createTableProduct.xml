@@ -29,9 +29,6 @@
             <column name="count"
                     type="int">
             </column>
-            <column name="store_id"
-                    type="bigint">
-            </column>
         </createTable>
     </changeSet>
 </databaseChangeLog>
