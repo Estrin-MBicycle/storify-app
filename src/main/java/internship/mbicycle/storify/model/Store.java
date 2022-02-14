@@ -12,11 +12,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
-import java.util.List;
 
 @Entity
-@Table(name = "store")
 @Data
 @Builder
 @NoArgsConstructor
@@ -26,19 +23,15 @@ import java.util.List;
 public class Store {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
     @Column(name = "store_name")
     private String storeName;
 
-    @Column(name = "description")
     private String description;
 
-    @Column(name = "address")
     private String address;
 
-    @Column(name = "profit")
     private Long profit;
 
 // нужна entity Profile
