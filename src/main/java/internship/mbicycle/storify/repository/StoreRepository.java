@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface StoreRepository extends JpaRepository<Store, Long> {
     List<Store> findStoresByProfileId(Long profileId);
-    Optional<Store> findStoresByProfileIdAndId(Long profileId, Long id);
+    Optional<Store> findStoresByIdAndProfileId(Long id, Long profileId);
 }

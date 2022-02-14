@@ -22,8 +22,8 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public Optional<Store> findStoresByProfileIdAndId(Long profileId, Long id) {
-        return Optional.ofNullable(storeRepository.findStoresByProfileIdAndId(profileId, id))
+    public Optional<Store> findStoresByIdAndProfileId(Long id, Long profileId) {
+        return Optional.ofNullable(storeRepository.findStoresByIdAndProfileId(id, profileId))
                 .orElseThrow(() -> new RuntimeException()); //В дальшейшем напишу своё исключение
     }
 }
