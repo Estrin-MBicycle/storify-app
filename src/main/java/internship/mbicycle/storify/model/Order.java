@@ -32,6 +32,6 @@ public class Order {
     private String uniqueCode;
 
     @Column(name = "profile_id")
-    private Integer profileId;
+    private Long profileId;
 
 }
