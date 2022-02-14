@@ -30,17 +30,17 @@ public class Profile {
     @JsonIgnore
     private Basket basket;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "profile", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "profile")
     @JsonIgnore
     private List<Store> stores;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.MERGE})
     @JoinTable(name="favorite",
             joinColumns={@JoinColumn(name="profile_id")},
             inverseJoinColumns={@JoinColumn(name="product_id")})
     private List<Product> favorite;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "profile", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "profile")
     @JsonIgnore
     private List<Order> orders;
 
