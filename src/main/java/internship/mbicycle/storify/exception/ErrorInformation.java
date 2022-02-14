@@ -29,4 +29,5 @@ public class ErrorInformation {
     public String getException() {
         return exception;
     }
+
 }
