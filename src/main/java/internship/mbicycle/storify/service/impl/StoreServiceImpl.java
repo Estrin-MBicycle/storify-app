@@ -1,7 +1,8 @@
-package internship.mbicycle.storify.service;
+package internship.mbicycle.storify.service.impl;
 
 import internship.mbicycle.storify.model.Store;
 import internship.mbicycle.storify.repository.StoreRepository;
+import internship.mbicycle.storify.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,5 +26,10 @@ public class StoreServiceImpl implements StoreService {
     public Optional<Store> findStoresByIdAndProfileId(Long id, Long profileId) {
         return Optional.ofNullable(storeRepository.findStoresByIdAndProfileId(id, profileId))
                 .orElseThrow(() -> new RuntimeException()); //В дальшейшем напишу своё исключение
+    }
+
+    @Override
+    public void updateStoreInfo(String storeName, String description, String address, Long id) {
+        storeRepository.updateStoreInfo(storeName, description, address, id);
     }
 }
