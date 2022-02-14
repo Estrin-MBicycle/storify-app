@@ -9,7 +9,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -39,7 +38,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         StorifyUser storifyUser = userService.getUserByEmail(user.getUsername());
         String accessToken = tokenService.createAccessToken(storifyUser);
         String refreshToken = tokenService.createRefreshToken(storifyUser);
-        tokenService.saveTokens(storifyUser, accessToken, refreshToken);
+        tokenService.saveTokenPair(storifyUser, accessToken, refreshToken);
         response.setHeader("access_token", accessToken);
         response.setHeader("refresh_token", refreshToken);
     }

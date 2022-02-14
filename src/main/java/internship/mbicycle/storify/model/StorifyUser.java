@@ -1,16 +1,16 @@
 package internship.mbicycle.storify.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 
 @Entity
 @Data
@@ -22,24 +22,14 @@ public class StorifyUser implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "email")
     private String email;
-
-    @Column(name = "password")
     private String password;
-
-    @Column(name = "activation_code")
     private String activationCode;
-
-    @Column(name = "role")
     private String role;
-
-    @Column(name = "name")
     private String name;
-
-    @Column(name = "tempConfirmCode")
     private String tempConfirmCode;
 
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "token_id", referencedColumnName = "id")
     private Token token;

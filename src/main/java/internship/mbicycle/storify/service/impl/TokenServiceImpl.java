@@ -11,14 +11,14 @@ import internship.mbicycle.storify.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.stream.Collectors;
 
-import static java.util.Arrays.stream;
+import static internship.mbicycle.storify.util.ExceptionMessage.INVALID_TOKEN;
+import static internship.mbicycle.storify.util.ExceptionMessage.NOT_THE_SAME_TOKENS;
+import static internship.mbicycle.storify.util.TimeConstant.FIVE_MINUTES;
+import static internship.mbicycle.storify.util.TimeConstant.TEN_DAYS;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +33,7 @@ public class TokenServiceImpl implements TokenService {
         StorifyUser userFromDb = userService.getUserByEmail(storifyUser.getEmail());
         return JWT.create()
                 .withSubject(userFromDb.getEmail())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 5)) // 5 minutes
+                .withExpiresAt(new Date(System.currentTimeMillis() + FIVE_MINUTES))
                 .withClaim("role", userFromDb.getRole())
                 .sign(getEncryptionAlgorithm());
     }
@@ -42,26 +42,25 @@ public class TokenServiceImpl implements TokenService {
     public String createRefreshToken(StorifyUser storifyUser) {
         return JWT.create()
                 .withSubject(storifyUser.getEmail())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 10)) // 10 days
+                .withExpiresAt(new Date(System.currentTimeMillis() + TEN_DAYS))
                 .sign(getEncryptionAlgorithm());
     }
 
     @Override
     public UsernamePasswordAuthenticationToken getAuthenticationToken(String authorizationHeader) {
-        StorifyUser storifyUser = getStorifyUserFromAuthorizationHeader(authorizationHeader);
+        String token = parseTokenByAuthorizationHeader(authorizationHeader);
+        StorifyUser storifyUser = getStorifyUserByToken(token);
+        if (!isValidAccessToken(storifyUser, token)) {
+            throw new RuntimeException(NOT_THE_SAME_TOKENS);
+        }
         return new UsernamePasswordAuthenticationToken(storifyUser.getEmail(), null, storifyUser.getAuthorities());
     }
 
-    //This method doesn't work
     @Override
-    public StorifyUser getTokensFromRefreshToken(String authorizationHeader) {
-        String token = parseTokenFromAuthorizationHeader(authorizationHeader);
-        JWTVerifier verifier = JWT.require(getEncryptionAlgorithm()).build();
-        DecodedJWT decodedJWT = verifier.verify(token);
-        String email = decodedJWT.getSubject();
-        StorifyUser storifyUser = userService.getUserByEmail(email);
-        if (!storifyUser.getToken().getRefreshToken().equals(token)) {
-            throw new RuntimeException("Tokens aren't the same");
+    public StorifyUser getStorifyUserByRefreshToken(String refreshToken) {
+        StorifyUser storifyUser = getStorifyUserByToken(refreshToken);
+        if (!storifyUser.getToken().getRefreshToken().equals(refreshToken)) {
+            throw new RuntimeException(NOT_THE_SAME_TOKENS);
         }
         storifyUser.getToken().setAccessToken(createAccessToken(storifyUser));
         storifyUser.getToken().setRefreshToken(createRefreshToken(storifyUser));
@@ -69,39 +68,41 @@ public class TokenServiceImpl implements TokenService {
         return storifyUser;
     }
 
-    private StorifyUser getStorifyUserFromAuthorizationHeader(String authorizationHeader) {
-        String token = parseTokenFromAuthorizationHeader(authorizationHeader);
-        JWTVerifier verifier = JWT.require(getEncryptionAlgorithm()).build();
-        DecodedJWT decodedJWT = verifier.verify(token);
-        String email = decodedJWT.getSubject();
-        StorifyUser storifyUser = userService.getUserByEmail(email);
-        if (securityProperties.isCheckAccess()) {
-            if (!storifyUser.getToken().getAccessToken().equals(token)) {
-                throw new RuntimeException("Tokens aren't the same");
-            }
-        }
-        return storifyUser;
-    }
-
-    private String parseTokenFromAuthorizationHeader(String authorizationHeader) {
-        if (!authorizationHeader.startsWith("Bearer ")) {
-            throw new RuntimeException("The token is incorrect");
-        }
-        return authorizationHeader.substring("Bearer ".length());
-    }
-
     @Override
-    public void saveTokens(StorifyUser storifyUser, String accessToken, String refreshToken) {
+    public void saveTokenPair(StorifyUser storifyUser, String accessToken, String refreshToken) {
         storifyUser.getToken().setAccessToken(accessToken);
         storifyUser.getToken().setRefreshToken(refreshToken);
         userService.updateStorifyUser(storifyUser);
     }
 
     @Override
-    public void setTokensAfterActivation(StorifyUser storifyUser) {
+    public void setTokenPairAfterActivation(StorifyUser storifyUser) {
         String accessToken = createAccessToken(storifyUser);
         String refreshToken = createRefreshToken(storifyUser);
-        saveTokens(storifyUser, accessToken, refreshToken);
+        saveTokenPair(storifyUser, accessToken, refreshToken);
+    }
+
+    private boolean isValidAccessToken(StorifyUser storifyUser, String token) {
+        if (securityProperties.isCheckAccess()) {
+            if (storifyUser.getToken().getAccessToken().equals(token)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public String parseTokenByAuthorizationHeader(String authorizationHeader) {
+        if (!authorizationHeader.startsWith("Bearer ")) {
+            throw new RuntimeException(INVALID_TOKEN);
+        }
+        return authorizationHeader.substring("Bearer ".length());
+    }
+
+    private StorifyUser getStorifyUserByToken(String token) {
+        JWTVerifier verifier = JWT.require(getEncryptionAlgorithm()).build();
+        DecodedJWT decodedJWT = verifier.verify(token);
+        String email = decodedJWT.getSubject();
+        return userService.getUserByEmail(email);
     }
 
     private Algorithm getEncryptionAlgorithm() {

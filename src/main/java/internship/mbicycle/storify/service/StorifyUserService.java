@@ -14,10 +14,11 @@ public interface StorifyUserService {
 
     List<StorifyUser> getAllUsers();
 
-    StorifyUser activateEmail(String code);
-
     void updateStorifyUser(StorifyUser storifyUser);
 
     StorifyUser getUserByEmail(String email);
 
+    StorifyUser getUserByActivationCode(String code);
+
+    StorifyUser activateUserByEmail(String code);
 }
