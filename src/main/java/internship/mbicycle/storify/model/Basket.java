@@ -18,7 +18,8 @@ public class Basket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(name = "profile_id", fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "profile_id")
     private Profile profile;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

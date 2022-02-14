@@ -39,7 +39,7 @@ public class Profile {
             inverseJoinColumns={@JoinColumn(name="product_id")})
     private List<Product> favorite;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "profile")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "profileId")
     @JsonIgnore
     private List<Order> orders;
 
