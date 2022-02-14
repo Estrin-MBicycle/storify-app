@@ -15,8 +15,6 @@ public class StoreDTO {
     private String description;
     private String address;
     private Long profit;
-
-// нужен ProfileDto
-//    private ProfileDto profileDto;
+    private ProfileDTO profileDTO;
 
 }
