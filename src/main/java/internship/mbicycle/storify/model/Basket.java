@@ -1,26 +1,25 @@
 package internship.mbicycle.storify.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
-
-/**
- * @author Aliaksandr Harbachou
- */
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Data
-@Table(name = "basket")
 public class Basket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToOne(name = "profile_id", fetch = FetchType.LAZY)
+    private Profile profile;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(
@@ -34,6 +33,5 @@ public class Basket {
                     referencedColumnName = "id"
             )
     )
-    private List<Product> productList = new ArrayList<>();
-
+    private List<Product> productList;
 }
