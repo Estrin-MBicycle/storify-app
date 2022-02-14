@@ -34,7 +34,6 @@ public class Product {
 
     private Integer count;
 
-    @Column(name = "store_id")
     private Long storeId;
 
 }

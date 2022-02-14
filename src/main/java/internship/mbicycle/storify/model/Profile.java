@@ -25,25 +25,22 @@ public class Profile {
     private String address;
     private String phone;
 
-
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "basket_id")
-//    @JsonIgnore
-//    private Basket basket;
-
-    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    @JoinColumn(name = "basket_id")
     @JsonIgnore
+    private Basket basket;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "profile")
     private List<Store> stores;
 
-//    @ManyToMany(fetch = FetchType.LAZY)
-//    @JoinTable(name="favorite",
-//            joinColumns={@JoinColumn(name="profile_id")},
-//            inverseJoinColumns={@JoinColumn(name="product_id")})
-//    @JsonIgnore
-//    private List<Product> favorite;
-//
-//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "profile", fetch = FetchType.LAZY)
-//    @JsonIgnore
-//    private List<Order> orders;
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.MERGE})
+    @JoinTable(name="favorite",
+            joinColumns={@JoinColumn(name="profile_id")},
+            inverseJoinColumns={@JoinColumn(name="product_id")})
+    private List<Product> favorite;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "profile")
+    @JsonIgnore
+    private List<Order> orders;
 
 }

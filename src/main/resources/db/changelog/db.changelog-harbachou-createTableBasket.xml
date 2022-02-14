@@ -8,11 +8,17 @@
         <createTable tableName="basket">
             <column name="id"
                     type="bigint"
-                    autoIncrement="true">
+                    autoIncrement="true"
+                    generationType="identity">
                 <constraints primaryKey="true"
                              nullable="false"/>
             </column>
+            <column name="profile_id"
+                    type="bigint">
+                <constraints
+                        nullable="false"
+                        foreignKeyName="fk_profile_id" references="profile(id)" />
+            </column>
         </createTable>
     </changeSet>
-
 </databaseChangeLog>
