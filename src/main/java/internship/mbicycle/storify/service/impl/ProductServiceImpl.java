@@ -53,30 +53,30 @@ public class ProductServiceImpl implements ProductService {
         return convertToDTO(productDb);
     }
 
-    public Product convertToEntity(ProductDTO dto) {
-        if (dto == null) {
+    public Product convertToEntity(ProductDTO productDTO) {
+        if (productDTO == null) {
             return null;
         }
         return Product.builder()
-                .count(dto.getCount())
-                .description(dto.getDescription())
-                .id(dto.getId())
-                .image(dto.getImage())
-                .productName(dto.getProductName())
-                .price(dto.getPrice())
-                .storeId(dto.getStoreId())
+                .count(productDTO.getCount())
+                .description(productDTO.getDescription())
+                .id(productDTO.getId())
+                .image(productDTO.getImage())
+                .productName(productDTO.getProductName())
+                .price(productDTO.getPrice())
+                .storeId(productDTO.getStoreId())
                 .build();
     }
 
-    private ProductDTO convertToDTO(Product entity) {
+    private ProductDTO convertToDTO(Product product) {
         return ProductDTO.builder()
-                .id(entity.getId())
-                .description(entity.getDescription())
-                .count(entity.getCount())
-                .image(entity.getImage())
-                .price(entity.getPrice())
-                .productName(entity.getProductName())
-                .storeId(entity.getStoreId())
+                .id(product.getId())
+                .description(product.getDescription())
+                .count(product.getCount())
+                .image(product.getImage())
+                .price(product.getPrice())
+                .productName(product.getProductName())
+                .storeId(product.getStoreId())
                 .build();
     }
 }
