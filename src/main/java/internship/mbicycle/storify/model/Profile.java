@@ -25,11 +25,6 @@ public class Profile {
     private String address;
     private String phone;
 
-    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    @JoinColumn(name = "basket_id")
-    @JsonIgnore
-    private Basket basket;
-
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "profile")
     private List<Store> stores;
 
