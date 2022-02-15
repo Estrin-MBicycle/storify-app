@@ -48,14 +48,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDTO> findAllProductsFromStore(Long storeId) {
+    public List<ProductDTO> getAllProductsFromStore(Long storeId) {
         return productRepository.findAllByStoreId(storeId).stream()
                 .map(ProductServiceImpl::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public ProductDTO findById(Long id) {
+    public ProductDTO getProductById(Long id) {
         Product productDb = productRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException(ErrorCode.NOT_FOUND_PRODUCT));
         return convertToDTO(productDb);
@@ -63,7 +63,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void removeProductById(Long id) {
-        productRepository.removeById(id);
+        productRepository.removeProductById(id);
     }
 
     @Override
@@ -87,11 +87,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void removeProductByStoreIdAndId(Long storeId, Long productId) {
-        productRepository.removeByStoreIdAndId(storeId, productId);
+        productRepository.removeProductByStoreIdAndId(storeId, productId);
     }
 
     @Override
-    public ProductDTO findByName(String name) {
+    public ProductDTO getProductByName(String name) {
         Product productDb = productRepository.findProductByProductName(name).orElseThrow(() ->
                 new ResourceNotFoundException(ErrorCode.NOT_FOUND_PRODUCT));
         return convertToDTO(productDb);

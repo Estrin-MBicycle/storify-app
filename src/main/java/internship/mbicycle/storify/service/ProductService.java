@@ -6,15 +6,15 @@ import java.util.List;
 
 public interface ProductService {
 
-    ProductDTO findById(Long id);
+    ProductDTO getProductById(Long id);
 
-    ProductDTO findByName(String name);
+    ProductDTO getProductByName(String name);
 
-    List<ProductDTO> findAllProductsFromStore(Long storeId);
+    List<ProductDTO> getAllProductsFromStore(Long storeId);
 
     void removeProductById(Long id);
 
-    void removeProductByStoreIdAndId(Long storeId,Long productId);
+    void removeProductByStoreIdAndId(Long storeId, Long productId);
 
     void removeAllProductsByStoreId(Long storeId);
 

@@ -25,12 +25,12 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
-        return ResponseEntity.ok(productService.findById(id));
+        return ResponseEntity.ok(productService.getProductById(id));
     }
 
     @GetMapping("/{name}")
     public ResponseEntity<ProductDTO> getProductByName(@PathVariable String name) {
-        return ResponseEntity.ok(productService.findByName(name));
+        return ResponseEntity.ok(productService.getProductByName(name));
     }
 
     @GetMapping
@@ -40,7 +40,7 @@ public class ProductController {
 
     @GetMapping("/stores/{id}")
     public ResponseEntity<List<ProductDTO>> getAllProductsFromStore(@PathVariable Long id) {
-        return ResponseEntity.ok(productService.findAllProductsFromStore(id));
+        return ResponseEntity.ok(productService.getAllProductsFromStore(id));
     }
 
     @PostMapping
