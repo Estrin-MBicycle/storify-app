@@ -1,5 +1,6 @@
 package internship.mbicycle.storify.service.impl;
 
+import internship.mbicycle.storify.dto.StoreDTO;
 import internship.mbicycle.storify.model.Store;
 import internship.mbicycle.storify.repository.StoreRepository;
 import internship.mbicycle.storify.service.StoreService;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -16,20 +17,65 @@ import java.util.Optional;
 public class StoreServiceImpl implements StoreService {
 
     private final StoreRepository storeRepository;
+    //   private final ProfileService profileService;
 
     @Override
-    public List<Store> findStoresByProfileId(Long id) {
-        return storeRepository.findStoresByProfileId(id);
+    public List<StoreDTO> findStoresByProfileId(Long profileId) {
+        return storeRepository.findStoresByProfileId(profileId)
+                .stream()
+                .map(store -> fromStoreToStoreDTO(store))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<Store> findStoresByIdAndProfileId(Long id, Long profileId) {
-        return Optional.ofNullable(storeRepository.findStoresByIdAndProfileId(id, profileId))
-                .orElseThrow(() -> new RuntimeException()); //В дальшейшем напишу своё исключение
+    public StoreDTO findStoresByIdAndProfileId(Long id, Long profileId) {
+        Store store = storeRepository.findStoresByIdAndProfileId(id, profileId).orElseThrow(() -> new RuntimeException());
+        return fromStoreToStoreDTO(store);
     }
 
     @Override
-    public void updateStoreInfo(String storeName, String description, String address, Long id) {
-        storeRepository.updateStoreInfo(storeName, description, address, id);
+    public StoreDTO saveStore(StoreDTO storeDTO) {
+        Store store = fromStoreDTOToStore(storeDTO);
+        storeRepository.save(store);
+        return storeDTO;
+    }
+
+    @Override
+    public void deleteByIdAndProfileId(Long id, Long profileId) {
+        storeRepository.deleteByIdAndProfileId(id, profileId);
+    }
+
+    @Override
+    public void deleteAllByProfileId(Long profileId) {
+        storeRepository.deleteAllByProfileId(profileId);
+    }
+
+
+    public static Store fromStoreDTOToStore(StoreDTO storeDTO) {
+        if (storeDTO == null) {
+            return null;
+        }
+        Store store = new Store();
+        store.setId(storeDTO.getId());
+        store.setStoreName(storeDTO.getStoreName());
+        store.setDescription(storeDTO.getDescription());
+        store.setAddress(storeDTO.getAddress());
+        store.setProfit(storeDTO.getProfit());
+        return store;
+    }
+
+    public static StoreDTO fromStoreToStoreDTO(Store store) {
+        if (store == null) {
+            return null;
+        }
+        //    target.setFileType(fileTypeConverter.toDto(source.getFileType()));
+        return StoreDTO.builder()
+                .id(store.getId())
+                .storeName(store.getStoreName())
+                .description(store.getDescription())
+                .address(store.getAddress())
+                .profit(store.getProfit())
+                //   .profileDTO()
+                .build();
     }
 }
