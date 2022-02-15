@@ -1,12 +1,16 @@
 package internship.mbicycle.storify.service.impl;
 
 import internship.mbicycle.storify.dto.ProfileDTO;
+import internship.mbicycle.storify.exception.ErrorCode;
+import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.model.Profile;
 import internship.mbicycle.storify.repository.ProfileRepository;
 import internship.mbicycle.storify.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -17,13 +21,14 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public ProfileDTO getById(long id) {
-        Profile temp = this.profileRepository.getById(id);
+        Profile temp = Optional.ofNullable(profileRepository.findById(id))
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.NOT_FOUND_PROFILE)).get();
         return this.convertEntityToDTO(temp);
     }
 
     @Override
-    public ProfileDTO update(long id, ProfileDTO profileDTO) {
-        Profile temp = this.profileRepository.getById(id);
+    public ProfileDTO updateProfile(long id, ProfileDTO profileDTO) {
+        Profile temp = this.profileRepository.findById(id).get();
         temp.setName(profileDTO.getName());
         temp.setSurname(profileDTO.getSurname());
         temp.setTown(profileDTO.getTown());
