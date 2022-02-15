@@ -5,7 +5,7 @@ import internship.mbicycle.storify.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/profile")
+@RequestMapping("/profiles")
 @RestController
 @RequiredArgsConstructor
 public class ProfileController {
@@ -17,7 +17,7 @@ public class ProfileController {
         return this.profileService.getById(id);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ProfileDTO updateProfile(@PathVariable Long id, @RequestBody ProfileDTO profileDTO) {
         return this.profileService.updateProfile(id, profileDTO);
     }
