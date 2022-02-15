@@ -21,7 +21,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO findById(Long id) {
        Product productDb =  productRepository.findById(id).orElseThrow(() ->
                new ResourceNotFoundException(ErrorCode.NOT_FOUND_PRODUCT));
-        return convertToDto(productDb);
+        return convertToDTO(productDb);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO findByName(String name) {
         Product productDb =  productRepository.findProductByProductName(name).orElseThrow(() ->
         new ResourceNotFoundException(ErrorCode.NOT_FOUND_PRODUCT));
-        return convertToDto(productDb);
+        return convertToDTO(productDb);
     }
 
     public Product convertToEntity(ProductDTO dto) {
@@ -68,7 +68,7 @@ public class ProductServiceImpl implements ProductService {
                 .build();
     }
 
-    private ProductDTO convertToDto(Product entity) {
+    private ProductDTO convertToDTO(Product entity) {
         return ProductDTO.builder()
                 .id(entity.getId())
                 .description(entity.getDescription())
