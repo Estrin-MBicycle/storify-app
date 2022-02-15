@@ -14,11 +14,11 @@ import java.util.List;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public final ResponseEntity<ErrorInformation> handleUserNotFoundException(ResourceNotFoundException ex,
-                                                                              WebRequest request) {
+    public final ResponseEntity<ErrorData> handleUserNotFoundException(ResourceNotFoundException ex,
+                                                                       WebRequest request) {
         List<String> details = new ArrayList<>();
-        details.add(ex.getLocalizedMessage());
-        ErrorInformation error = new ErrorInformation(ErrorCode.NOT_FOUND_STORE, details);
+        details.add(ex.getMessage());
+        ErrorData error = new ErrorData(ErrorCode.NOT_FOUND_STORE, details);
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 }

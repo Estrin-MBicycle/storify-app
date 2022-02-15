@@ -5,8 +5,8 @@ import java.util.List;
 /**
  * ErrorInformation class. Its only purpose is to return information about the detected error.
  */
-public class ErrorInformation {
-    public ErrorInformation(String message, List<String> details) {
+public class ErrorData {
+    public ErrorData(String message, List<String> details) {
         super();
         this.message = message;
         this.details = details;
@@ -15,7 +15,7 @@ public class ErrorInformation {
     private String message;
     private List<String> details;
 
-    public ErrorInformation(ErrorCode message, List<String> details) {
+    public ErrorData(ErrorCode message, List<String> details) {
         this(message.getMessage(), details);
 
     }
