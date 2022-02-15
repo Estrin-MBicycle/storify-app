@@ -20,28 +20,28 @@ import java.util.List;
 public class StoreController {
     private final StoreService storeService;
 
-    @GetMapping("/findAll/{profileId}")
+    @GetMapping("/{profileId}")
     public List<StoreDTO> findAllStores(@PathVariable Long profileId) {
         return storeService.findStoresByProfileId(profileId);
     }
 
-    @GetMapping("/findOneStore/{id}/{profileId}")
+    @GetMapping("/{id}/{profileId}")
     public StoreDTO findOneStore(@PathVariable Long id, @PathVariable Long profileId) {
         return storeService.findStoresByIdAndProfileId(id, profileId);
     }
 
-    @PostMapping("/saveStore")
+    @PostMapping()
     public StoreDTO saveUsers(@RequestBody StoreDTO storeDTO)  {
         return storeService.saveStore(storeDTO);
     }
 
-    @DeleteMapping("/deleteAllStores/{profileId}")
+    @DeleteMapping("/{profileId}")
     public ResponseEntity<Void> deleteUsers(@PathVariable Long profileId) {
         storeService.deleteAllByProfileId(profileId);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/deleteOneStore/{id}/{profileId}")
+    @DeleteMapping("/{id}/{profileId}")
     public ResponseEntity<Void> deleteUsers(@PathVariable Long id, @PathVariable Long profileId) {
         storeService.deleteByIdAndProfileId(id, profileId);
         return ResponseEntity.ok().build();
