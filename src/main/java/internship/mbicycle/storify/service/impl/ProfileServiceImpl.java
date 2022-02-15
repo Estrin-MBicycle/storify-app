@@ -23,19 +23,19 @@ public class ProfileServiceImpl implements ProfileService {
     public ProfileDTO getById(long id) {
         Profile temp = Optional.ofNullable(profileRepository.findById(id))
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.NOT_FOUND_PROFILE)).get();
-        return this.convertEntityToDTO(temp);
+        return convertEntityToDTO(temp);
     }
 
     @Override
     public ProfileDTO updateProfile(long id, ProfileDTO profileDTO) {
-        Profile temp = this.profileRepository.findById(id).get();
+        Profile temp = profileRepository.findById(id).get();
         temp.setName(profileDTO.getName());
         temp.setSurname(profileDTO.getSurname());
         temp.setTown(profileDTO.getTown());
         temp.setAddress(profileDTO.getAddress());
         temp.setPhone(profileDTO.getPhone());
-        Profile result = this.profileRepository.save(temp);
-        return this.convertEntityToDTO(result);
+        Profile result = profileRepository.save(temp);
+        return convertEntityToDTO(result);
     }
 
     public static ProfileDTO convertEntityToDTO(Profile profile) {

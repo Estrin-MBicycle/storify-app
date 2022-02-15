@@ -14,12 +14,12 @@ public class ProfileController {
 
     @GetMapping("/{id}")
     public ProfileDTO getProfileById(@PathVariable Long id) {
-        return this.profileService.getById(id);
+        return profileService.getById(id);
     }
 
     @PutMapping("/{id}")
     public ProfileDTO updateProfile(@PathVariable Long id, @RequestBody ProfileDTO profileDTO) {
-        return this.profileService.updateProfile(id, profileDTO);
+        return profileService.updateProfile(id, profileDTO);
     }
 
 }
