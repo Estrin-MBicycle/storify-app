@@ -36,13 +36,13 @@ public class StoreController {
     }
 
     @DeleteMapping("/{profileId}")
-    public ResponseEntity<Void> deleteAllStores(@PathVariable Long profileId) {
+    public ResponseEntity<?> deleteAllStores(@PathVariable Long profileId) {
         storeService.deleteAllByProfileId(profileId);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}/{profileId}")
-    public ResponseEntity<Void> deleteStore(@PathVariable Long id, @PathVariable Long profileId) {
+    public ResponseEntity<?> deleteStore(@PathVariable Long id, @PathVariable Long profileId) {
         storeService.deleteByIdAndProfileId(id, profileId);
         return ResponseEntity.ok().build();
     }
