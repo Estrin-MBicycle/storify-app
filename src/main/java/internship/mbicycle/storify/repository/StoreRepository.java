@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface StoreRepository extends JpaRepository<Store, Long> {
     List<Store> findStoresByProfileId(Long profileId);
     Optional<Store> findStoresByIdAndProfileId(Long id, Long profileId);
+    void deleteAllByProfileId(Long profileId);
+    void deleteByIdAndProfileId(Long id, Long profileId);
 }
