@@ -1,5 +1,7 @@
 package internship.mbicycle.storify.service;
 
+import internship.mbicycle.storify.exception.ErrorCode;
+import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.model.Store;
 import internship.mbicycle.storify.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,6 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public Optional<Store> findStoresByIdAndProfileId(Long id, Long profileId) {
         return Optional.ofNullable(storeRepository.findStoresByIdAndProfileId(id, profileId))
-                .orElseThrow(() -> new RuntimeException()); //В дальшейшем напишу своё исключение
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.NOT_FOUND_STORE));
     }
 }
