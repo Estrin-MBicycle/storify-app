@@ -1,0 +1,21 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+    <changeSet id="drop_constraint_basket_id"
+               author="zaiceva">
+        <dropForeignKeyConstraint  baseTableName="profile"
+                                   constraintName="fk_profile_basket"/>
+        <dropNotNullConstraint  columnDataType="bigint"
+                                columnName="basket_id"
+                                tableName="profile"/>
+    </changeSet>
+
+    <changeSet id="drop_column_basket_id"
+               author="zaiceva">
+        <dropColumn  columnName="basket_id"
+                     tableName="profile">
+        </dropColumn>
+    </changeSet>
+
+</databaseChangeLog>
