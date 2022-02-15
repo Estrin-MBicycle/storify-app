@@ -1,6 +1,8 @@
 package internship.mbicycle.storify.service.impl;
 
 import internship.mbicycle.storify.dto.StoreDTO;
+import internship.mbicycle.storify.exception.ErrorCode;
+import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.model.Store;
 import internship.mbicycle.storify.repository.StoreRepository;
 import internship.mbicycle.storify.service.StoreService;
@@ -11,12 +13,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class StoreServiceImpl implements StoreService {
 
     private final StoreRepository storeRepository;
+    //нужен ProfileService
     //   private final ProfileService profileService;
 
     @Override
@@ -29,7 +33,7 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public StoreDTO findStoresByIdAndProfileId(Long id, Long profileId) {
-        Store store = storeRepository.findStoresByIdAndProfileId(id, profileId).orElseThrow(() -> new RuntimeException());
+        Store store = storeRepository.findStoresByIdAndProfileId(id, profileId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.NOT_FOUND_STORE));
         return fromStoreToStoreDTO(store);
     }
 

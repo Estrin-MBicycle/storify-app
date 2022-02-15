@@ -44,9 +44,8 @@ public class Store {
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
-
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "store_id")
+    @JoinColumn(name = "storeId")
     private List<Product> products;
 
 }
