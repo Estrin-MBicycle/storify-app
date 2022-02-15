@@ -38,7 +38,7 @@ public class Store {
 
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "store_id")
+    @JoinColumn(name = "storeId")
     private List<Product> products;
 
 }
