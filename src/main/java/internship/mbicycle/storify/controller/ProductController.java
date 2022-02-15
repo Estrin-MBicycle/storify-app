@@ -24,39 +24,45 @@ public class ProductController {
     private final ProductServiceImpl productService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDTO> getById(@PathVariable Long id) {
-        return ResponseEntity.status(200).body(productService.findById(id));
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.findById(id));
     }
 
     @GetMapping("/{name}")
-    public ResponseEntity<ProductDTO> getById(@PathVariable String name) {
-        return ResponseEntity.status(200).body(productService.findByName(name));
+    public ResponseEntity<ProductDTO> getProductByName(@PathVariable String name) {
+        return ResponseEntity.ok(productService.findByName(name));
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<ProductDTO>> getAllProduct() {
-        return ResponseEntity.status(200).body(productService.getAllProduct());
+    @GetMapping
+    public ResponseEntity<List<ProductDTO>> getAllProducts() {
+        return ResponseEntity.ok(productService.getAllProducts());
     }
 
     @GetMapping("/stores/{id}")
-    public ResponseEntity<List<ProductDTO>> getAllProductFromStore(@PathVariable Long id) {
-        return ResponseEntity.status(200).body(productService.findAllProductsFromStore(id));
+    public ResponseEntity<List<ProductDTO>> getAllProductsFromStore(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.findAllProductsFromStore(id));
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) {
-        return ResponseEntity.status(200).body(productService.saveProduct(productDTO));
+        return ResponseEntity.ok(productService.saveProduct(productDTO));
     }
 
-    @PutMapping("/update")
+    @PutMapping
     public ResponseEntity<ProductDTO> updateProduct(@RequestBody ProductDTO productDTO) {
-        return ResponseEntity.status(201).body(productService.saveProduct(productDTO));
+        return ResponseEntity.ok(productService.saveProduct(productDTO));
     }
 
-    @DeleteMapping("/delete/{storeId}/{productId}")
-    public ResponseEntity<Void> deleteProductFromStore(@PathVariable Long storeId,
-                                                       @PathVariable Long productId) {
+    @DeleteMapping("/{storeId}/{productId}")
+    public ResponseEntity<?> deleteProductFromStore(@PathVariable Long storeId,
+                                                    @PathVariable Long productId) {
         productService.removeProductByStoreIdAndId(storeId, productId);
-        return ResponseEntity.status(204).build();
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{storeId}")
+    public ResponseEntity<?> deleteAllProductsFromStore(@PathVariable Long storeId) {
+        productService.removeAllProductsByStoreId(storeId);
+        return ResponseEntity.noContent().build();
     }
 }

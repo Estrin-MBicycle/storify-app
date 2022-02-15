@@ -20,7 +20,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
 
-    public static Product convertToEntity(ProductDTO productDTO) {
+    public static Product convertToProduct(ProductDTO productDTO) {
         if (productDTO == null) {
             return null;
         }
@@ -62,12 +62,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void removeProduct(Long id) {
+    public void removeProductById(Long id) {
         productRepository.removeById(id);
     }
 
     @Override
-    public List<ProductDTO> getAllProduct() {
+    public List<ProductDTO> getAllProducts() {
         return productRepository.findAll().stream()
                 .map(ProductServiceImpl::convertToDTO)
                 .collect(Collectors.toList());
@@ -75,13 +75,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDTO saveProduct(ProductDTO productDto) {
-        Product product = convertToEntity(productDto);
+        Product product = convertToProduct(productDto);
         productRepository.save(product);
         return productDto;
     }
 
     @Override
-    public void removeAllProductByStoreId(Long storeId) {
+    public void removeAllProductsByStoreId(Long storeId) {
         productRepository.removeAllByStoreId(storeId);
     }
 

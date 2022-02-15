@@ -12,14 +12,14 @@ public interface ProductService {
 
     List<ProductDTO> findAllProductsFromStore(Long storeId);
 
-    void removeProduct(Long id);
+    void removeProductById(Long id);
 
     void removeProductByStoreIdAndId(Long storeId,Long productId);
 
-    void removeAllProductByStoreId(Long storeId);
+    void removeAllProductsByStoreId(Long storeId);
 
     ProductDTO saveProduct(ProductDTO product);
 
-    List<ProductDTO> getAllProduct();
+    List<ProductDTO> getAllProducts();
 
 }
