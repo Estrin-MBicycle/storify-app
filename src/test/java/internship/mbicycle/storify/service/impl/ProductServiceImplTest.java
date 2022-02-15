@@ -21,13 +21,13 @@ class ProductServiceImplTest {
 
     @Test
     void testFindByIncorrectId() {
-        assertThrows(ResourceNotFoundException.class, () -> productService.findById(-4L));
+        assertThrows(ResourceNotFoundException.class, () -> productService.getProductById(-4L));
     }
 
     @Test
     void testMessageFindByIncorrectId() {
         ResourceNotFoundException thrown = Assertions.assertThrows(ResourceNotFoundException.class, () ->
-                productService.findById(-45L));
+                productService.getProductById(-45L));
         Assertions.assertEquals("Product not found.", thrown.getMessage());
     }
 }
