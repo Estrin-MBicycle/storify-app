@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,12 +27,18 @@ public class OrderServiceImpl implements OrderService {
     private final GeneratorUniqueCodeImpl generatorUniqueCode;
 
     public static Order convertDTOToOrder(OrderDTO orderDTO) {
+        List<Product> productList = new ArrayList<>();
+
         if (orderDTO == null) {
             return null;
         }
-        List<Product> productList = orderDTO.getProductDTOList().stream()
-                .map(ProductServiceImpl::convertToProduct)
-                .collect(Collectors.toList());
+
+        List<ProductDTO> productDTOList = orderDTO.getProductDTOList();
+        if (productDTOList != null) {
+            productList = productDTOList.stream()
+                    .map(ProductServiceImpl::convertToProduct)
+                    .collect(Collectors.toList());
+        }
 
         return Order.builder()
                 .date(orderDTO.getDate())
@@ -44,10 +51,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     public static OrderDTO convertOrderToDTO(Order order) {
+        List<ProductDTO> productDTOList = new ArrayList<>();
 
-        List<ProductDTO> productDTOList = order.getProductList().stream()
-                .map(ProductServiceImpl::convertToDTO)
-                .collect(Collectors.toList());
+        List<Product> productList = order.getProductList();
+        if (productList != null) {
+            productDTOList = productList.stream()
+                    .map(ProductServiceImpl::convertToDTO)
+                    .collect(Collectors.toList());
+        }
 
         return OrderDTO.builder()
                 .id(order.getId())
