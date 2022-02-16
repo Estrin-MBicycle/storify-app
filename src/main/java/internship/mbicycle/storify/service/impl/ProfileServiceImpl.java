@@ -46,12 +46,13 @@ public class ProfileServiceImpl implements ProfileService {
         profileDTO.setTown(profile.getTown());
         profileDTO.setAddress(profile.getAddress());
         profileDTO.setPhone(profile.getPhone());
-//        need method
-//        for(int i = 0; i < profile.getStores().size(); i++) {
-//            profileDTO.getStores().add(
-//                    StoreServiceImpl.convertEntityToDTO(
-//                            profile.getStores().get(i)));
-//        }
+        if(profileDTO.getStores() != null) {
+            for(int i = 0; i < profile.getStores().size(); i++) {
+                profileDTO.getStores().add(
+                        StoreServiceImpl.fromStoreToStoreDTO(
+                                profile.getStores().get(i)));
+            }
+        }
         return profileDTO;
     }
 
@@ -63,12 +64,13 @@ public class ProfileServiceImpl implements ProfileService {
         profile.setTown(profileDTO.getTown());
         profile.setAddress(profileDTO.getAddress());
         profile.setPhone(profileDTO.getPhone());
-//        need method
-//        for(int i = 0; i < profileDTO.getStores().size(); i++) {
-//            profile.getStores().add(
-//                    StoreServiceImpl.convertDTOToEntity(
-//                            profileDTO.getStores().get(i)));
-//        }
+        if(profileDTO.getStores() != null) {
+            for (int i = 0; i < profileDTO.getStores().size(); i++) {
+                profile.getStores().add(
+                        StoreServiceImpl.fromStoreDTOToStore(
+                                profileDTO.getStores().get(i)));
+            }
+        }
         return profile;
     }
 }

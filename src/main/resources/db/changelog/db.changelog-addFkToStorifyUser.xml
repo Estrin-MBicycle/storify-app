@@ -13,4 +13,14 @@
                                  referencedTableName="token"
                                  referencedColumnNames="id"/>
     </changeSet>
+
+    <changeSet id="add_storify_user_constraint"
+               author="zaiceva">
+        <addForeignKeyConstraint  baseColumnNames="profile_id"
+                                  baseTableName="storify_user"
+                                  constraintName="fk_storify_user_profile"
+                                  referencedColumnNames="id"
+                                  referencedTableName="profile" />
+    </changeSet>
+
 </databaseChangeLog>
