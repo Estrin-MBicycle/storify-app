@@ -53,8 +53,9 @@ public class ProfileServiceImpl implements ProfileService {
         profileDTO.setAddress(profile.getAddress());
         profileDTO.setPhone(profile.getPhone());
         if(profile.getStores() != null) {
-            profileDTO.setStores(profile.getStores().stream().filter(Objects::nonNull)
-                    .map(StoreServiceImpl::fromStoreToStoreDTO).collect(Collectors.toList()));
+            profileDTO.setStores(profile.getStores().stream()
+                    .map(StoreServiceImpl::fromStoreToStoreDTO)
+                    .collect(Collectors.toList()));
         } else {
             profileDTO.setStores(new ArrayList<StoreDTO>());
         }
@@ -70,7 +71,8 @@ public class ProfileServiceImpl implements ProfileService {
         profile.setAddress(profileDTO.getAddress());
         profile.setPhone(profileDTO.getPhone());
         if(profileDTO.getStores() != null) {
-            profile.setStores(profileDTO.getStores().stream().map(StoreServiceImpl::fromStoreDTOToStore)
+            profile.setStores(profileDTO.getStores().stream()
+                    .map(StoreServiceImpl::fromStoreDTOToStore)
                     .collect(Collectors.toList()));
         } else {
             profile.setStores(new ArrayList<Store>());
