@@ -10,6 +10,9 @@ import java.util.Optional;
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
     List<Order>  findAllByDate (LocalDate date);
-    Optional<Order> findByUniqueCode (String uniqueCode);
+
+    Optional<Order> findOrderByUniqueCode (String uniqueCode);
+
+    List<Order> findAllByProfileId(Long profileId);
 
 }
