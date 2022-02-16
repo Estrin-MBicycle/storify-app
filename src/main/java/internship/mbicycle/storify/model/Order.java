@@ -40,6 +40,8 @@ public class Order {
     @Column(name = "profile_id")
     private Long profileId;
 
+    private boolean delivered;
+
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH,
             CascadeType.PERSIST})
     @JoinTable(

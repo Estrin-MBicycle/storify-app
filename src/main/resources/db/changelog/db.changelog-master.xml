@@ -20,5 +20,6 @@
     <include file="db/changelog/db.changelog-createTableToken.xml"/>
     <include file="db/changelog/db.changelog-addFkToStorifyUser.xml"/>
     <include file="db/changelog/db.changelog-deleteColumnAndConstraintProfile.xml"/>
+    <include file="db/changelog/db.changelog-addColumnToOrderAndConstraint.xml"/>
 
 </databaseChangeLog>

@@ -20,4 +20,5 @@ public class OrderDTO {
     private String uniqueCode;
     private Long profileId;
     private List<ProductDTO> productDTOList;
+    private boolean delivered;
 }
