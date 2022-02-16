@@ -23,6 +23,7 @@ import static internship.mbicycle.storify.exception.ErrorCode.NOT_FOUND_ORDER;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
+    private final GeneratorUniqueCodeImpl generatorUniqueCode;
 
     public static Order convertDTOToOrder(OrderDTO orderDTO) {
         if (orderDTO == null) {
@@ -96,6 +97,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDTO saveOrder(OrderDTO orderDTO) {
+        orderDTO.setUniqueCode(generatorUniqueCode.generationUniqueCode());
+        orderDTO.setDate(LocalDate.now());
         orderRepository.save(convertDTOToOrder(orderDTO));
         return orderDTO;
     }

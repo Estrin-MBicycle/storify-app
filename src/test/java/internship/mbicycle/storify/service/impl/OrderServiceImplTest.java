@@ -10,7 +10,7 @@ import org.mockito.Mockito;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class OrderServiceImplTest {
 
@@ -18,7 +18,8 @@ class OrderServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderServiceImpl(Mockito.mock(OrderRepository.class));
+        orderService = new OrderServiceImpl(Mockito.mock(OrderRepository.class),
+                Mockito.mock(GeneratorUniqueCodeImpl.class));
     }
 
     @Test

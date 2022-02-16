@@ -63,7 +63,7 @@ public class OrderController {
 
     @GetMapping("/{profileId}/{isDelivered}")
     public ResponseEntity<?> getAllDeliveredOrdersByProfileId(@PathVariable Long profileId,
-                                                                 @PathVariable boolean isDelivered) {
+                                                              @PathVariable boolean isDelivered) {
         return ResponseEntity.ok(orderService.getAllOrdersByProfileIdAndDelivered(profileId, isDelivered));
     }
 }
