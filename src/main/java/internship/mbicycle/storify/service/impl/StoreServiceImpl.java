@@ -81,7 +81,7 @@ public class StoreServiceImpl implements StoreService {
                 .description(store.getDescription())
                 .address(store.getAddress())
                 .profit(store.getProfit())
-                .profileDTO(ProfileServiceImpl.convertEntityToDTO(store.getProfile()))
+                .profileDTO(ProfileServiceImpl.convertProfileToProfileDTO(store.getProfile()))
                 .build();
     }
 }
