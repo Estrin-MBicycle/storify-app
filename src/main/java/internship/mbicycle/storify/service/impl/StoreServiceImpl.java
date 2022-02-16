@@ -3,7 +3,9 @@ package internship.mbicycle.storify.service.impl;
 import internship.mbicycle.storify.dto.StoreDTO;
 import internship.mbicycle.storify.exception.ErrorCode;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
+import internship.mbicycle.storify.model.Profile;
 import internship.mbicycle.storify.model.Store;
+import internship.mbicycle.storify.repository.ProfileRepository;
 import internship.mbicycle.storify.repository.StoreRepository;
 import internship.mbicycle.storify.service.StoreService;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +22,7 @@ import java.util.stream.Collectors;
 public class StoreServiceImpl implements StoreService {
 
     private final StoreRepository storeRepository;
-    //нужен ProfileService
-    //   private final ProfileService profileService;
+    private final ProfileRepository profileRepository;
 
     @Override
     public List<StoreDTO> findStoresByProfileId(Long profileId) {
@@ -38,10 +39,12 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public StoreDTO saveStore(StoreDTO storeDTO) {
+    public StoreDTO saveStore(StoreDTO storeDTO, Long profileId) {
         Store store = fromStoreDTOToStore(storeDTO);
-        storeRepository.save(store);
-        return storeDTO;
+        Profile profile = profileRepository.getById(profileId);
+        store.setProfile(profile);
+        Store save = storeRepository.save(store);
+        return fromStoreToStoreDTO(save);
     }
 
     @Override
@@ -72,14 +75,13 @@ public class StoreServiceImpl implements StoreService {
         if (store == null) {
             return null;
         }
-        //    target.setFileType(fileTypeConverter.toDto(source.getFileType()));
         return StoreDTO.builder()
                 .id(store.getId())
                 .storeName(store.getStoreName())
                 .description(store.getDescription())
                 .address(store.getAddress())
                 .profit(store.getProfit())
-                //   .profileDTO()
+                .profileDTO(ProfileServiceImpl.convertEntityToDTO(store.getProfile()))
                 .build();
     }
 }
