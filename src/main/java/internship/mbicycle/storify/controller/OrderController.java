@@ -1,7 +1,6 @@
 package internship.mbicycle.storify.controller;
 
 import internship.mbicycle.storify.dto.OrderDTO;
-import internship.mbicycle.storify.service.impl.GeneratorUniqueCodeImpl;
 import internship.mbicycle.storify.service.impl.OrderServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +20,6 @@ import java.time.LocalDate;
 public class OrderController {
 
     private final OrderServiceImpl orderService;
-    private final GeneratorUniqueCodeImpl generatorUniqueCode;
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getOrderById(@PathVariable Long id) {
@@ -50,7 +48,6 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<?> createOrder(@RequestBody OrderDTO orderDTO) {
-        orderDTO.setUniqueCode(generatorUniqueCode.generationUniqueCode());
         return ResponseEntity.ok(orderService.saveOrder(orderDTO));
     }
 
@@ -66,7 +63,7 @@ public class OrderController {
 
     @GetMapping("/{profileId}/{isDelivered}")
     public ResponseEntity<?> getAllDeliveredOrdersByProfileId(@PathVariable Long profileId,
-                                                                 @PathVariable boolean isDelivered) {
+                                                              @PathVariable boolean isDelivered) {
         return ResponseEntity.ok(orderService.getAllOrdersByProfileIdAndDelivered(profileId, isDelivered));
     }
 }
