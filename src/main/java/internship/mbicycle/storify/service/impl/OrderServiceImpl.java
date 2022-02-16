@@ -38,6 +38,7 @@ public class OrderServiceImpl implements OrderService {
                 .profileId(orderDTO.getProfileId())
                 .uniqueCode(orderDTO.getUniqueCode())
                 .productList(productList)
+                .delivered(orderDTO.isDelivered())
                 .build();
     }
 
@@ -54,7 +55,22 @@ public class OrderServiceImpl implements OrderService {
                 .profileId(order.getProfileId())
                 .uniqueCode(order.getUniqueCode())
                 .productDTOList(productDTOList)
+                .delivered(order.isDelivered())
                 .build();
+    }
+
+    @Override
+    public List<OrderDTO> getAllOrdersByDelivered(boolean isDelivered) {
+        return orderRepository.findAllByDelivered(isDelivered).stream()
+                .map(OrderServiceImpl::convertOrderToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OrderDTO> getAllOrdersByProfileIdAndDelivered(Long profileId, boolean isDelivered) {
+        return orderRepository.findAllByProfileIdAndDelivered(profileId, isDelivered).stream()
+                .map(OrderServiceImpl::convertOrderToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override

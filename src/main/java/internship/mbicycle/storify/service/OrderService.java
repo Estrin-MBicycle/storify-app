@@ -1,6 +1,7 @@
 package internship.mbicycle.storify.service;
 
 import internship.mbicycle.storify.dto.OrderDTO;
+import internship.mbicycle.storify.model.Order;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,4 +19,8 @@ public interface OrderService {
     List<OrderDTO> getAllOrders();
 
     OrderDTO saveOrder(OrderDTO order);
+
+    List<OrderDTO> getAllOrdersByDelivered(boolean isDelivered);
+
+    List<OrderDTO> getAllOrdersByProfileIdAndDelivered(Long profileId, boolean isDelivered);
 }
