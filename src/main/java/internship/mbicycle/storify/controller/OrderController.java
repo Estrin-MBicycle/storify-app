@@ -57,12 +57,12 @@ public class OrderController {
     }
 
     @GetMapping("/{isDelivered}")
-    public ResponseEntity<?> getAllOrdersByDelivered(@PathVariable boolean isDelivered) {
+    public ResponseEntity<?> getAllDeliveredOrders(@PathVariable boolean isDelivered) {
         return ResponseEntity.ok(orderService.getAllOrdersByDelivered(isDelivered));
     }
 
     @GetMapping("/{profileId}/{isDelivered}")
-    public ResponseEntity<?> getAllOrdersByProfileIdAndDelivered(@PathVariable Long profileId,
+    public ResponseEntity<?> getAllDeliveredOrdersByProfileId(@PathVariable Long profileId,
                                                                  @PathVariable boolean isDelivered) {
         return ResponseEntity.ok(orderService.getAllOrdersByProfileIdAndDelivered(profileId, isDelivered));
     }
