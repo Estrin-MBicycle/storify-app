@@ -27,8 +27,8 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public ProfileDTO getById(long id) {
-        Profile temp = Optional.ofNullable(profileRepository.findById(id))
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.NOT_FOUND_PROFILE)).get();
+        Profile temp = Optional.ofNullable(profileRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.NOT_FOUND_PROFILE))).get();
         return convertProfileToProfileDTO(temp);
     }
 
@@ -45,6 +45,9 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     public static ProfileDTO convertProfileToProfileDTO(Profile profile) {
+        if (profile == null) {
+            return null;
+        }
         ProfileDTO profileDTO = new ProfileDTO();
         profileDTO.setId(profile.getId());
         profileDTO.setName(profile.getName());
@@ -63,6 +66,9 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     public static Profile convertProfileDTOToProfile(ProfileDTO profileDTO) {
+        if (profileDTO == null) {
+            return null;
+        }
         Profile profile = new Profile();
         profile.setId(profileDTO.getId());
         profile.setName(profileDTO.getName());
