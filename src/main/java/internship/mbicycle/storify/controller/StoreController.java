@@ -1,6 +1,7 @@
 package internship.mbicycle.storify.controller;
 
 import internship.mbicycle.storify.dto.StoreDTO;
+import internship.mbicycle.storify.service.ProfileService;
 import internship.mbicycle.storify.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -30,9 +31,9 @@ public class StoreController {
         return storeService.findStoresByIdAndProfileId(id, profileId);
     }
 
-    @PostMapping()
-    public StoreDTO saveStore(@RequestBody StoreDTO storeDTO)  {
-        return storeService.saveStore(storeDTO);
+    @PostMapping("/{profileId}")
+    public StoreDTO saveStore(@RequestBody StoreDTO storeDTO, @PathVariable Long profileId)  {
+        return storeService.saveStore(storeDTO, profileId);
     }
 
     @DeleteMapping("/{profileId}")

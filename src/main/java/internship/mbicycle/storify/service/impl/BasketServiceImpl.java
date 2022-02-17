@@ -17,10 +17,10 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class BasketServiceImpl implements BasketService {
 
     private final BasketRepository basketRepository;
+
 
     @Override
     public BasketDTO getBasket(Long profileId) {
@@ -30,6 +30,7 @@ public class BasketServiceImpl implements BasketService {
         return convertBasketToDTO(basketDb);
     }
 
+    @Transactional
     @Override
     public void saveProduct(ProductDTO productDTO, Long basketId) {
         Basket basket = basketRepository.getById(basketId);
@@ -38,7 +39,7 @@ public class BasketServiceImpl implements BasketService {
         basket.setProductList(productList);
         basketRepository.save(basket);
     }
-
+    @Transactional
     @Override
     public void removeProductFromBasket(ProductDTO productDTO, Long basketId) {
         Basket basket = basketRepository.getById(basketId);
@@ -47,7 +48,7 @@ public class BasketServiceImpl implements BasketService {
         basket.setProductList(productList);
         basketRepository.save(basket);
     }
-
+    @Transactional
     @Override
     public void removeAllProductsFromBasket(Product product, Long basketId) {
         Basket basket = basketRepository.getById(basketId);
@@ -76,7 +77,7 @@ public class BasketServiceImpl implements BasketService {
 
         return Basket.builder()
                 .id(basketDTO.getId())
-                .profile(ProfileServiceImpl.convertDTOToEntity(basketDTO.getProfile()))
+                .profile(ProfileServiceImpl.convertProfileDTOToProfile(basketDTO.getProfile()))
                 .productList(productList)
                 .build();
     }
@@ -88,7 +89,7 @@ public class BasketServiceImpl implements BasketService {
 
         return BasketDTO.builder()
                 .id(basket.getId())
-                .profile(ProfileServiceImpl.convertEntityToDTO(basket.getProfile()))
+                .profile(ProfileServiceImpl.convertProfileToProfileDTO(basket.getProfile()))
                 .productList(productDTOList)
                 .build();
     }

@@ -1,16 +1,22 @@
 package internship.mbicycle.storify.service.impl;
 
 import internship.mbicycle.storify.dto.ProfileDTO;
+import internship.mbicycle.storify.dto.StoreDTO;
 import internship.mbicycle.storify.exception.ErrorCode;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.model.Profile;
+import internship.mbicycle.storify.model.Store;
 import internship.mbicycle.storify.repository.ProfileRepository;
 import internship.mbicycle.storify.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -21,9 +27,9 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public ProfileDTO getById(long id) {
-        Profile temp = Optional.ofNullable(profileRepository.findById(id))
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.NOT_FOUND_PROFILE)).get();
-        return convertEntityToDTO(temp);
+        Profile temp = Optional.ofNullable(profileRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.NOT_FOUND_PROFILE))).get();
+        return convertProfileToProfileDTO(temp);
     }
 
     @Override
@@ -35,10 +41,13 @@ public class ProfileServiceImpl implements ProfileService {
         temp.setAddress(profileDTO.getAddress());
         temp.setPhone(profileDTO.getPhone());
         Profile result = profileRepository.save(temp);
-        return convertEntityToDTO(result);
+        return convertProfileToProfileDTO(result);
     }
 
-    public static ProfileDTO convertEntityToDTO(Profile profile) {
+    public static ProfileDTO convertProfileToProfileDTO(Profile profile) {
+        if (profile == null) {
+            return null;
+        }
         ProfileDTO profileDTO = new ProfileDTO();
         profileDTO.setId(profile.getId());
         profileDTO.setName(profile.getName());
@@ -46,16 +55,20 @@ public class ProfileServiceImpl implements ProfileService {
         profileDTO.setTown(profile.getTown());
         profileDTO.setAddress(profile.getAddress());
         profileDTO.setPhone(profile.getPhone());
-//        need method
-//        for(int i = 0; i < profile.getStores().size(); i++) {
-//            profileDTO.getStores().add(
-//                    StoreServiceImpl.convertEntityToDTO(
-//                            profile.getStores().get(i)));
-//        }
+        if(profile.getStores() != null) {
+            profileDTO.setStores(profile.getStores().stream()
+                    .map(StoreServiceImpl::fromStoreToStoreDTO)
+                    .collect(Collectors.toList()));
+        } else {
+            profileDTO.setStores(new ArrayList<StoreDTO>());
+        }
         return profileDTO;
     }
 
-    public static Profile convertDTOToEntity(ProfileDTO profileDTO) {
+    public static Profile convertProfileDTOToProfile(ProfileDTO profileDTO) {
+        if (profileDTO == null) {
+            return null;
+        }
         Profile profile = new Profile();
         profile.setId(profileDTO.getId());
         profile.setName(profileDTO.getName());
@@ -63,12 +76,13 @@ public class ProfileServiceImpl implements ProfileService {
         profile.setTown(profileDTO.getTown());
         profile.setAddress(profileDTO.getAddress());
         profile.setPhone(profileDTO.getPhone());
-//        need method
-//        for(int i = 0; i < profileDTO.getStores().size(); i++) {
-//            profile.getStores().add(
-//                    StoreServiceImpl.convertDTOToEntity(
-//                            profileDTO.getStores().get(i)));
-//        }
+        if(profileDTO.getStores() != null) {
+            profile.setStores(profileDTO.getStores().stream()
+                    .map(StoreServiceImpl::fromStoreDTOToStore)
+                    .collect(Collectors.toList()));
+        } else {
+            profile.setStores(new ArrayList<Store>());
+        }
         return profile;
     }
 }
