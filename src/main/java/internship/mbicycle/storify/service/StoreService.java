@@ -11,6 +11,8 @@ public interface StoreService {
 
     StoreDTO saveStore(StoreDTO storeDTO, Long profileId);
 
+    StoreDTO updateStore(StoreDTO storeDTO, Long id, Long profileId);
+
     void deleteAllByProfileId(Long profileId);
 
     void deleteByIdAndProfileId(Long id, Long profileId);

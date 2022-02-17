@@ -14,5 +14,4 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     void deleteAllByProfileId(Long profileId);
 
     void deleteByIdAndProfileId(Long id, Long profileId);
-
 }
