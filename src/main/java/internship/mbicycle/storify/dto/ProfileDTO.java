@@ -21,6 +21,4 @@ public class ProfileDTO {
     private String address;
     private String phone;
 
-    private List<StoreDTO> stores;
-
 }
