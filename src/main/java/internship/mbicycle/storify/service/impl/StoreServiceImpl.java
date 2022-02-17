@@ -67,7 +67,6 @@ public class StoreServiceImpl implements StoreService {
         store.setStoreName(storeDTO.getStoreName());
         store.setDescription(storeDTO.getDescription());
         store.setAddress(storeDTO.getAddress());
-        store.setProfit(storeDTO.getProfit());
         return store;
     }
 
@@ -80,7 +79,6 @@ public class StoreServiceImpl implements StoreService {
                 .storeName(store.getStoreName())
                 .description(store.getDescription())
                 .address(store.getAddress())
-                .profit(store.getProfit())
                 .profileDTO(ProfileServiceImpl.convertProfileToProfileDTO(store.getProfile()))
                 .build();
     }

@@ -37,7 +37,6 @@ class StoreServiceImplTest {
                 .storeName("Mila")
                 .description("The best shop")
                 .address("Gomel")
-                .profit(100L)
                 .profile(Profile.builder()
                         .id(10L)
                         .name("Veronika")
@@ -62,7 +61,6 @@ class StoreServiceImplTest {
                 .storeName("Mila")
                 .description("The best shop")
                 .address("Gomel")
-                .profit(100L)
                 .profileDTO(ProfileServiceImpl.convertProfileToProfileDTO(store.getProfile()))
                 .build();
     }
