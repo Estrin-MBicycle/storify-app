@@ -10,7 +10,7 @@ import internship.mbicycle.storify.repository.BasketRepository;
 import internship.mbicycle.storify.service.BasketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,32 +30,29 @@ public class BasketServiceImpl implements BasketService {
         return convertBasketToDTO(basketDb);
     }
 
-    @Transactional
+
     @Override
     public void saveProduct(ProductDTO productDTO, Long basketId) {
         Basket basket = basketRepository.getById(basketId);
         List<Product> productList = basket.getProductList();
         productList.add(ProductServiceImpl.convertToProduct(productDTO));
         basket.setProductList(productList);
-        basketRepository.save(basket);
     }
-    @Transactional
+
     @Override
     public void removeProductFromBasket(ProductDTO productDTO, Long basketId) {
         Basket basket = basketRepository.getById(basketId);
         List<Product> productList = basket.getProductList();
         productList.remove(ProductServiceImpl.convertToProduct(productDTO));
         basket.setProductList(productList);
-        basketRepository.save(basket);
     }
-    @Transactional
+
     @Override
     public void removeAllProductsFromBasket(Product product, Long basketId) {
         Basket basket = basketRepository.getById(basketId);
         List<Product> productList = basket.getProductList();
         productList.clear();
         basket.setProductList(productList);
-        basketRepository.save(basket);
 
     }
 
