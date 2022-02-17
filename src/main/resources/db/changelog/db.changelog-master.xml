@@ -21,5 +21,6 @@
     <include file="db/changelog/db.changelog-addFkToStorifyUser.xml"/>
     <include file="db/changelog/db.changelog-deleteColumnAndConstraintProfile.xml"/>
     <include file="db/changelog/db.changelog-addColumnToOrderAndConstraint.xml"/>
+    <include file="db/changelog/db.changelog-renameTableOrderAndColumns.xml"/>
 
 </databaseChangeLog>
