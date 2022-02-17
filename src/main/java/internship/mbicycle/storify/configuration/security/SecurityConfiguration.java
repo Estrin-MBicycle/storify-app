@@ -24,7 +24,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final TokenService tokenService;
     private final StorifyUserService userService;
 
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -32,9 +31,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/login", "/signUp", "/activate/*").permitAll()
+                .antMatchers("/login", "/sign-up", "/activate/*", "/token/refresh/**").permitAll()
                 .antMatchers("/swagger-resources/**", "/swagger-ui/**", "/v2/api-docs").permitAll()
-                .antMatchers("/token/refresh/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new CustomAuthenticationFilter(authenticationManagerBean(), tokenService, userService))
@@ -46,7 +44,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
-
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
