@@ -48,6 +48,18 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
+    public StoreDTO updateStore(StoreDTO storeDTO, Long id, Long profileId) {
+        Store store = storeRepository.findStoresByIdAndProfileId(id,profileId).get();
+        store.setStoreName(storeDTO.getStoreName());
+        store.setDescription(storeDTO.getDescription());
+        store.setAddress(storeDTO.getAddress());
+        Profile profile = profileRepository.getById(profileId);
+        store.setProfile(profile);
+        Store save = storeRepository.save(store);
+        return fromStoreToStoreDTO(save);
+    }
+
+    @Override
     public void deleteByIdAndProfileId(Long id, Long profileId) {
         storeRepository.deleteByIdAndProfileId(id, profileId);
     }
