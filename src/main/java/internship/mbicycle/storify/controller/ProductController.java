@@ -1,7 +1,9 @@
 package internship.mbicycle.storify.controller;
 
+import java.util.List;
+
 import internship.mbicycle.storify.dto.ProductDTO;
-import internship.mbicycle.storify.service.impl.ProductServiceImpl;
+import internship.mbicycle.storify.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,24 +15,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 
 @RestController
 @RequestMapping("/products")
 @RequiredArgsConstructor
 public class ProductController {
 
-    private final ProductServiceImpl productService;
+    private final ProductService productService;
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
         return ResponseEntity.ok(productService.getProductById(id));
-    }
-
-    @GetMapping("/{name}")
-    public ResponseEntity<ProductDTO> getProductByName(@PathVariable String name) {
-        return ResponseEntity.ok(productService.getProductByName(name));
     }
 
     @GetMapping
