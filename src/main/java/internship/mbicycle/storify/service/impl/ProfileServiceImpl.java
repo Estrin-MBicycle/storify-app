@@ -2,7 +2,7 @@ package internship.mbicycle.storify.service.impl;
 
 import internship.mbicycle.storify.converter.ProfileConverter;
 import internship.mbicycle.storify.dto.ProfileDTO;
-import internship.mbicycle.storify.exception.ResourceNotFoundException;
+import internship.mbicycle.storify.exception.ProfileNotFoundException;
 import internship.mbicycle.storify.model.Profile;
 import internship.mbicycle.storify.repository.ProfileRepository;
 import internship.mbicycle.storify.service.ProfileService;
@@ -23,7 +23,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public ProfileDTO getById(long id) {
         Profile profile = profileRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_PROFILE));
+                .orElseThrow(() -> new ProfileNotFoundException(String.format(NOT_FOUND_PROFILE, id)));
         return profileConverter.convertProfileToProfileDTO(profile);
     }
 

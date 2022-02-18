@@ -12,4 +12,9 @@ public class GlobalExceptionHandler {
     public final ResponseEntity<String> handleUserNotFoundException(ResourceNotFoundException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(ProfileNotFoundException.class)
+    public final ResponseEntity<String> handleProfileNotFoundException(ProfileNotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
 }
