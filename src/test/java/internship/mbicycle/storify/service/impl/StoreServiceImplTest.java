@@ -56,13 +56,13 @@ class StoreServiceImplTest {
                         .build()))
                 .build();
 
-        storeDTO = StoreDTO.builder()
-                .id(10L)
-                .storeName("Mila")
-                .description("The best shop")
-                .address("Gomel")
-                .profileDTO(ProfileServiceImpl.convertProfileToProfileDTO(store.getProfile()))
-                .build();
+//        storeDTO = StoreDTO.builder()
+//                .id(10L)
+//                .storeName("Mila")
+//                .description("The best shop")
+//                .address("Gomel")
+//                .profileDTO(ProfileServiceImpl.convertProfileToProfileDTO(store.getProfile()))
+//                .build();
     }
 
 
