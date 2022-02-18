@@ -1,5 +1,12 @@
 package internship.mbicycle.storify.service.impl;
 
+import static internship.mbicycle.storify.exception.ErrorCode.NOT_FOUND_ORDER;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import internship.mbicycle.storify.dto.OrderDTO;
 import internship.mbicycle.storify.dto.ProductDTO;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
@@ -10,13 +17,6 @@ import internship.mbicycle.storify.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static internship.mbicycle.storify.exception.ErrorCode.NOT_FOUND_ORDER;
 
 @Service
 @RequiredArgsConstructor
@@ -41,7 +41,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return Order.builder()
-                .date(orderDTO.getDate())
+                .purchaseDate(orderDTO.getPurchaseDate())
                 .id(orderDTO.getId())
                 .profileId(orderDTO.getProfileId())
                 .uniqueCode(orderDTO.getUniqueCode())
@@ -62,7 +62,7 @@ public class OrderServiceImpl implements OrderService {
 
         return OrderDTO.builder()
                 .id(order.getId())
-                .date(order.getDate())
+                .purchaseDate(order.getPurchaseDate())
                 .price(order.getPrice())
                 .profileId(order.getProfileId())
                 .uniqueCode(order.getUniqueCode())
@@ -109,7 +109,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDTO saveOrder(OrderDTO orderDTO) {
         orderDTO.setUniqueCode(generatorUniqueCode.generationUniqueCode());
-        orderDTO.setDate(LocalDate.now());
+        orderDTO.setPurchaseDate(LocalDate.now());
         orderRepository.save(convertDTOToOrder(orderDTO));
         return orderDTO;
     }
@@ -123,7 +123,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDTO> getAllOrdersByDate(LocalDate date) {
-        return orderRepository.findAllByDate(date).stream()
+        return orderRepository.findAllByPurchaseDate(date).stream()
                 .map(OrderServiceImpl::convertOrderToDTO)
                 .collect(Collectors.toList());
     }
