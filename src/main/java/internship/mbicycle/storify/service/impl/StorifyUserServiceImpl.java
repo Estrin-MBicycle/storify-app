@@ -11,10 +11,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 
+import static internship.mbicycle.storify.util.Constants.ROLE_USER;
 import static internship.mbicycle.storify.util.EmailMessage.ACTIVATION_GREETING;
+import static internship.mbicycle.storify.util.EmailMessage.REGISTRATION_CONFIRMATION_CODE;
 import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND;
 
 @Service
@@ -32,24 +33,14 @@ public class StorifyUserServiceImpl implements StorifyUserService {
     }
 
     @Override
-    public StorifyUser saveUser(StorifyUser storifyUser) {
-        storifyUser.setRole("ROLE_GUEST");
+    public StorifyUser saveNewUser(StorifyUser storifyUser) {
+        storifyUser.setRole(ROLE_USER);
         storifyUser.setPassword(passwordEncoder.encode(storifyUser.getPassword()));
         storifyUser.setActivationCode(UUID.randomUUID().toString());
         storifyUser.setToken(new Token());
         String message = String.format(ACTIVATION_GREETING, storifyUser.getName(), storifyUser.getActivationCode());
-        mailService.send(storifyUser.getEmail(), "Activation code", message);
+        mailService.send(storifyUser.getEmail(), REGISTRATION_CONFIRMATION_CODE, message);
         return userRepository.save(storifyUser);
-    }
-
-    @Override
-    public StorifyUser getUserById(long id) {
-        return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException(String.format(NOT_FOUND, id)));
-    }
-
-    @Override
-    public List<StorifyUser> getAllUsers() {
-        return userRepository.findAll();
     }
 
     @Override
@@ -68,7 +59,6 @@ public class StorifyUserServiceImpl implements StorifyUserService {
     public StorifyUser activateUserByEmail(String code) {
         StorifyUser storifyUser = getUserByActivationCode(code);
         storifyUser.setActivationCode(null);
-        storifyUser.setRole("ROLE_USER");
         return storifyUser;
     }
 }

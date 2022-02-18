@@ -25,7 +25,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if (!(request.getServletPath().equals("/login") ||
-                request.getServletPath().equals("/signUp") ||
+                request.getServletPath().equals("/sign-up") ||
                 request.getServletPath().equals("/token/refresh") ||
                 request.getServletPath().startsWith("/activate/"))) {
             String authorizationHeader = Optional.ofNullable(request.getHeader(AUTHORIZATION))
