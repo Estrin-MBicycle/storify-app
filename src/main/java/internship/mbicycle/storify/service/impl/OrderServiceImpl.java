@@ -1,7 +1,5 @@
 package internship.mbicycle.storify.service.impl;
 
-import static internship.mbicycle.storify.exception.ErrorCode.NOT_FOUND_ORDER;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +15,8 @@ import internship.mbicycle.storify.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_ORDER;
 
 @Service
 @RequiredArgsConstructor

@@ -2,7 +2,6 @@ package internship.mbicycle.storify.service.impl;
 
 import internship.mbicycle.storify.dto.BasketDTO;
 import internship.mbicycle.storify.dto.ProductDTO;
-import internship.mbicycle.storify.exception.ErrorCode;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.model.Basket;
 import internship.mbicycle.storify.model.Product;
@@ -11,9 +10,10 @@ import internship.mbicycle.storify.service.BasketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_BASKET;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +25,7 @@ public class BasketServiceImpl implements BasketService {
     @Override
     public BasketDTO getBasket(Long profileId) {
         Basket basketDb = basketRepository.findByProfileId(profileId).orElseThrow(() ->
-                new ResourceNotFoundException(ErrorCode.NOT_FOUND_BASKET));
+                new ResourceNotFoundException(NOT_FOUND_BASKET));
 
         return convertBasketToDTO(basketDb);
     }

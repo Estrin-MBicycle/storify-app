@@ -2,7 +2,6 @@ package internship.mbicycle.storify.service.impl;
 
 import internship.mbicycle.storify.converter.ProfileConverter;
 import internship.mbicycle.storify.dto.ProfileDTO;
-import internship.mbicycle.storify.exception.ErrorCode;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.model.Profile;
 import internship.mbicycle.storify.repository.ProfileRepository;
@@ -11,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_PROFILE;
 
 @Service
 @Transactional
@@ -24,7 +23,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public ProfileDTO getById(long id) {
         Profile profile = profileRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.NOT_FOUND_PROFILE));
+                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_PROFILE));
         return profileConverter.convertProfileToProfileDTO(profile);
     }
 
