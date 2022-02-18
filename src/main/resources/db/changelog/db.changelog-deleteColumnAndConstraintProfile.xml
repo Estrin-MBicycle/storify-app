@@ -18,4 +18,11 @@
         </dropColumn>
     </changeSet>
 
+    <changeSet id="drop_constraint_phone"
+               author="zaiceva">
+        <dropNotNullConstraint  columnDataType="varchar(20)"
+                                columnName="phone"
+                                tableName="profile"/>
+    </changeSet>
+
 </databaseChangeLog>
