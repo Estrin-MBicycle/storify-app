@@ -1,13 +1,22 @@
 package internship.mbicycle.storify.service;
 
+import internship.mbicycle.storify.dto.BasketDTO;
+import internship.mbicycle.storify.dto.ProductDTO;
+import internship.mbicycle.storify.model.Basket;
+import internship.mbicycle.storify.model.Product;
+import internship.mbicycle.storify.model.Profile;
+
+import java.util.List;
+
 public interface BasketService {
 
     BasketDTO getBasket(Long userId);
 
-    void addProductToBasket(ProductDTO product, Long userId);
+    void saveProduct(ProductDTO productDTO, Long basket_id);
 
-    void removeProduct(ProductDTO product, Long userId);
+    void removeProductFromBasket(ProductDTO productDTO, Long basket_id);
 
-    void removeAllProducts(Long userId);
+    void removeAllProductsFromBasket(Product product, Long basket_id);
 
+    List<BasketDTO> getListOfOrders();
 }
