@@ -1,5 +1,6 @@
 package internship.mbicycle.storify.service.impl;
 
+import internship.mbicycle.storify.converter.ProfileConverter;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.repository.ProfileRepository;
 import org.junit.jupiter.api.Assertions;
@@ -15,7 +16,7 @@ public class ProfileServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        profileService = new ProfileServiceImpl(Mockito.mock(ProfileRepository.class));
+        profileService = new ProfileServiceImpl(Mockito.mock(ProfileRepository.class),Mockito.mock(ProfileConverter.class));
     }
 
     @Test

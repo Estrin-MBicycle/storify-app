@@ -38,7 +38,8 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public StoreDTO findStoresByIdAndProfileId(Long id, Long profileId) {
-        Store store = storeRepository.findStoresByIdAndProfileId(id, profileId).orElseThrow(() -> new ResourceNotFoundException(String.format(NOT_FOUND_STORE, id)));
+        Store store = storeRepository.findStoresByIdAndProfileId(id, profileId)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format(NOT_FOUND_STORE, id)));
         return storeConverter.fromStoreToStoreDTO(store);
     }
 
@@ -53,7 +54,8 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public StoreDTO updateStore(StoreDTO storeDTO, Long id, Long profileId) {
-        Store store = storeRepository.findStoresByIdAndProfileId(id,profileId).orElseThrow(() -> new ResourceNotFoundException(String.format(NOT_FOUND_STORE, id)));
+        Store store = storeRepository.findStoresByIdAndProfileId(id,profileId)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format(NOT_FOUND_STORE, id)));
         store.setStoreName(storeDTO.getStoreName());
         store.setDescription(storeDTO.getDescription());
         store.setAddress(storeDTO.getAddress());
@@ -67,7 +69,6 @@ public class StoreServiceImpl implements StoreService {
     public void deleteByIdAndProfileId(Long id, Long profileId) {
         storeRepository.deleteByIdAndProfileId(id, profileId);
     }
-
 
     @Override
     public void deleteAllByProfileId(Long profileId) {

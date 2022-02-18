@@ -1,5 +1,6 @@
 package internship.mbicycle.storify.service.impl;
 
+import internship.mbicycle.storify.converter.BasketConverter;
 import internship.mbicycle.storify.dto.BasketDTO;
 import internship.mbicycle.storify.dto.ProductDTO;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
@@ -20,14 +21,14 @@ import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_BASKET
 public class BasketServiceImpl implements BasketService {
 
     private final BasketRepository basketRepository;
-
+    private final BasketConverter basketConverter;
 
     @Override
     public BasketDTO getBasket(Long profileId) {
         Basket basketDb = basketRepository.findByProfileId(profileId).orElseThrow(() ->
                 new ResourceNotFoundException(NOT_FOUND_BASKET));
 
-        return convertBasketToDTO(basketDb);
+        return basketConverter.convertBasketToBasketDTO(basketDb);
     }
 
 
@@ -59,35 +60,7 @@ public class BasketServiceImpl implements BasketService {
     @Override
     public List<BasketDTO> getListOfOrders() {
         return basketRepository.findAll().stream()
-                .map(BasketServiceImpl::convertBasketToDTO)
+                .map(basketConverter::convertBasketToBasketDTO)
                 .collect(Collectors.toList());
-    }
-
-    public static Basket convertDTOToBasket(BasketDTO basketDTO) {
-        if (basketDTO == null) {
-            return null;
-        }
-        List<Product> productList = basketDTO.getProductList()
-                .stream()
-                .map(ProductServiceImpl::convertToProduct)
-                .collect(Collectors.toList());
-
-        return Basket.builder()
-                .id(basketDTO.getId())
-                .profile(ProfileServiceImpl.convertProfileDTOToProfile(basketDTO.getProfile()))
-                .productList(productList)
-                .build();
-    }
-
-    public static BasketDTO convertBasketToDTO(Basket basket) {
-        List<ProductDTO> productDTOList = basket.getProductList().stream()
-                .map(ProductServiceImpl::convertToDTO)
-                .collect(Collectors.toList());
-
-        return BasketDTO.builder()
-                .id(basket.getId())
-                .profile(ProfileServiceImpl.convertProfileToProfileDTO(basket.getProfile()))
-                .productList(productDTOList)
-                .build();
     }
 }
