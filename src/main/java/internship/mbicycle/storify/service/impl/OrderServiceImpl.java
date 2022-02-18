@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static internship.mbicycle.storify.exception.ErrorCode.NOT_FOUND_ORDER;
+import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_ORDER;
 
 @Service
 @RequiredArgsConstructor
