@@ -8,11 +8,7 @@ import java.util.List;
 @Service
 public interface StorifyUserService {
 
-    StorifyUser saveUser(StorifyUser storifyUser);
-
-    StorifyUser getUserById(long id);
-
-    List<StorifyUser> getAllUsers();
+    StorifyUser saveNewUser(StorifyUser storifyUser);
 
     void updateStorifyUser(StorifyUser storifyUser);
 

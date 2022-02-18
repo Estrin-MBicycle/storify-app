@@ -1,7 +1,6 @@
 package internship.mbicycle.storify.service.impl;
 
 import internship.mbicycle.storify.dto.ProductDTO;
-import internship.mbicycle.storify.exception.ErrorCode;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.model.Product;
 import internship.mbicycle.storify.repository.ProductRepository;
@@ -12,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_PRODUCT;
 
 @Service
 @RequiredArgsConstructor
@@ -57,7 +58,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDTO getProductById(Long id) {
         Product productDb = productRepository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException(ErrorCode.NOT_FOUND_PRODUCT));
+                new ResourceNotFoundException(NOT_FOUND_PRODUCT));
         return convertToDTO(productDb);
     }
 
@@ -93,7 +94,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDTO getProductByName(String name) {
         Product productDb = productRepository.findProductByProductName(name).orElseThrow(() ->
-                new ResourceNotFoundException(ErrorCode.NOT_FOUND_PRODUCT));
+                new ResourceNotFoundException(NOT_FOUND_PRODUCT));
         return convertToDTO(productDb);
     }
 }

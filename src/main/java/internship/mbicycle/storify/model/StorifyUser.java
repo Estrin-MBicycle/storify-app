@@ -69,6 +69,10 @@ public class StorifyUser implements UserDetails {
     @JsonIgnore
     @Override
     public boolean isEnabled() {
-        return true;
+        if (activationCode == null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

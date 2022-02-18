@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,15 +18,9 @@ public class StorifyUserController {
     private final StorifyUserService userService;
     private final TokenService tokenService;
 
-    @GetMapping("/users")
-    public List<StorifyUser> getListOfUsers() {
-        return userService.getAllUsers();
-    }
-
-    @PostMapping("/signUp")
-    public StorifyUser addNewUser(StorifyUser storifyUser) {
-        userService.saveUser(storifyUser);
-        return userService.getUserById(storifyUser.getId());
+    @PostMapping("/sign-up")
+    public void addNewUser(StorifyUser storifyUser) {
+        userService.saveNewUser(storifyUser);
     }
 
     @GetMapping("/activate/{code}")

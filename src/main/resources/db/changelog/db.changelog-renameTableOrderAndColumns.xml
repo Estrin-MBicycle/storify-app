@@ -1,0 +1,23 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+
+    <changeSet author="vasili" id="changeOrderTableNameAndColumns">
+        <renameTable  newTableName="purchase"
+                      oldTableName="order"
+                    />
+        <renameTable  newTableName="product_purchase"
+                      oldTableName="product_order"
+        />
+        <renameColumn tableName="product_purchase"
+                      oldColumnName="order_id"
+                      newColumnName="purchase_id"
+                      columnDataType="bigint"/>
+
+        <renameColumn tableName="purchase"
+                      oldColumnName="order_date"
+                      newColumnName="purchase_date"
+                      columnDataType="date"/>
+    </changeSet>
+</databaseChangeLog>

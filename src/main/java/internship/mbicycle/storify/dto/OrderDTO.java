@@ -1,12 +1,12 @@
 package internship.mbicycle.storify.dto;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @Data
 @Builder
@@ -15,7 +15,7 @@ import java.util.List;
 public class OrderDTO {
 
     private Long id;
-    private LocalDate date;
+    private LocalDate purchaseDate;
     private Integer price;
     private String uniqueCode;
     private Long profileId;

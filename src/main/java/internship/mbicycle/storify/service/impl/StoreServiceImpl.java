@@ -1,6 +1,5 @@
 package internship.mbicycle.storify.service.impl;
 
-import internship.mbicycle.storify.converter.StoreConverter;
 import internship.mbicycle.storify.dto.StoreDTO;
 import internship.mbicycle.storify.exception.ErrorCode;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
@@ -15,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_STORE;
 
 
 @Service
@@ -36,7 +37,7 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public StoreDTO findStoresByIdAndProfileId(Long id, Long profileId) {
-        Store store = storeRepository.findStoresByIdAndProfileId(id, profileId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.NOT_FOUND_STORE));
+        Store store = storeRepository.findStoresByIdAndProfileId(id, profileId).orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_STORE));
         return storeConverter.fromStoreToStoreDTO(store);
     }
 
@@ -69,5 +70,31 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public void deleteAllByProfileId(Long profileId) {
         storeRepository.deleteAllByProfileId(profileId);
+    }
+
+
+    public static Store fromStoreDTOToStore(StoreDTO storeDTO) {
+        if (storeDTO == null) {
+            return null;
+        }
+        Store store = new Store();
+        store.setId(storeDTO.getId());
+        store.setStoreName(storeDTO.getStoreName());
+        store.setDescription(storeDTO.getDescription());
+        store.setAddress(storeDTO.getAddress());
+        return store;
+    }
+
+    public static StoreDTO fromStoreToStoreDTO(Store store) {
+        if (store == null) {
+            return null;
+        }
+        return StoreDTO.builder()
+                .id(store.getId())
+                .storeName(store.getStoreName())
+                .description(store.getDescription())
+                .address(store.getAddress())
+                .profileDTO(ProfileServiceImpl.convertProfileToProfileDTO(store.getProfile()))
+                .build();
     }
 }
