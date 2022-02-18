@@ -10,30 +10,24 @@ import org.springframework.stereotype.Controller;
 @RequiredArgsConstructor
 public class StoreConverter {
 
- //   private final ProfileConverter profileConverter; //
+    //   private final ProfileConverter profileConverter; //
 
     public Store fromStoreDTOToStore(StoreDTO storeDTO) {
-        if (storeDTO == null) {
-            return null;
-        }
-        Store store = new Store();
-        store.setId(storeDTO.getId());
-        store.setStoreName(storeDTO.getStoreName());
-        store.setDescription(storeDTO.getDescription());
-        store.setAddress(storeDTO.getAddress());
-        return store;
+        return Store.builder()
+                .id(storeDTO.getId())
+                .storeName(storeDTO.getStoreName())
+                .description(storeDTO.getDescription())
+                .address(storeDTO.getAddress())
+                .build();
     }
 
     public StoreDTO fromStoreToStoreDTO(Store store) {
-        if (store == null) {
-            return null;
-        }
         return StoreDTO.builder()
                 .id(store.getId())
                 .storeName(store.getStoreName())
                 .description(store.getDescription())
                 .address(store.getAddress())
-     //           .profileDTO(ProfileServiceImpl.convertProfileToProfileDTO(store.getProfile()))
+                //           .profileDTO(ProfileServiceImpl.convertProfileToProfileDTO(store.getProfile()))
                 .build();
     }
 }
