@@ -8,30 +8,24 @@ import org.springframework.stereotype.Component;
 public class ProfileConverter {
 
     public ProfileDTO convertProfileToProfileDTO(Profile profile) {
-        if (profile == null) {
-            return null;
-        }
-        ProfileDTO profileDTO = new ProfileDTO();
-        profileDTO.setId(profile.getId());
-        profileDTO.setName(profile.getName());
-        profileDTO.setSurname(profile.getSurname());
-        profileDTO.setTown(profile.getTown());
-        profileDTO.setAddress(profile.getAddress());
-        profileDTO.setPhone(profile.getPhone());
-        return profileDTO;
+        return ProfileDTO.builder()
+                .id(profile.getId())
+                .name(profile.getName())
+                .surname(profile.getSurname())
+                .town(profile.getTown())
+                .address(profile.getAddress())
+                .phone(profile.getPhone())
+                .build();
     }
 
     public Profile convertProfileDTOToProfile(ProfileDTO profileDTO) {
-        if (profileDTO == null) {
-            return null;
-        }
-        Profile profile = new Profile();
-        profile.setId(profileDTO.getId());
-        profile.setName(profileDTO.getName());
-        profile.setSurname(profileDTO.getSurname());
-        profile.setTown(profileDTO.getTown());
-        profile.setAddress(profileDTO.getAddress());
-        profile.setPhone(profileDTO.getPhone());
-        return profile;
+        return Profile.builder()
+                .id(profileDTO.getId())
+                .name(profileDTO.getName())
+                .surname(profileDTO.getSurname())
+                .town(profileDTO.getTown())
+                .address(profileDTO.getAddress())
+                .phone(profileDTO.getPhone())
+                .build();
     }
 }

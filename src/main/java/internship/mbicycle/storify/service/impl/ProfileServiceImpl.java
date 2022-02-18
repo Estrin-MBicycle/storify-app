@@ -23,9 +23,9 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public ProfileDTO getById(long id) {
-        Profile temp = Optional.ofNullable(profileRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.NOT_FOUND_PROFILE))).get();
-        return profileConverter.convertProfileToProfileDTO(temp);
+        Profile profile = profileRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.NOT_FOUND_PROFILE));
+        return profileConverter.convertProfileToProfileDTO(profile);
     }
 
     @Override
