@@ -4,20 +4,20 @@
 
 
     <changeSet author="vasili" id="changeOrderTableNameAndColumns">
-        <renameTable  newTableName="receipt"
+        <renameTable  newTableName="purchase"
                       oldTableName="order"
                     />
-        <renameTable  newTableName="product_receipt"
+        <renameTable  newTableName="product_purchase"
                       oldTableName="product_order"
         />
-        <renameColumn tableName="product_receipt"
+        <renameColumn tableName="product_purchase"
                       oldColumnName="order_id"
-                      newColumnName="receipt_id"
+                      newColumnName="purchase_id"
                       columnDataType="bigint"/>
 
-        <renameColumn tableName="receipt"
+        <renameColumn tableName="purchase"
                       oldColumnName="order_date"
-                      newColumnName="receipt_date"
+                      newColumnName="purchase_date"
                       columnDataType="date"/>
     </changeSet>
 </databaseChangeLog>

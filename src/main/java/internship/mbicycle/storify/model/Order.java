@@ -24,14 +24,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "receipt")
+@Table(name = "purchase")
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "receipt_date")
+    @Column(name = "purchase_date")
     private LocalDate date;
 
     private Integer price;
@@ -47,8 +47,8 @@ public class Order {
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH,
             CascadeType.PERSIST})
     @JoinTable(
-            name = "product_receipt",
-            joinColumns = @JoinColumn(name = "receipt_id"),
+            name = "product_purchase",
+            joinColumns = @JoinColumn(name = "purchase_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id"))
     private List<Product> productList = new ArrayList<>();
 
