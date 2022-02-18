@@ -1,7 +1,6 @@
 package internship.mbicycle.storify.service.impl;
 
 import internship.mbicycle.storify.dto.StoreDTO;
-import internship.mbicycle.storify.exception.ErrorCode;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.model.Profile;
 import internship.mbicycle.storify.model.Store;
@@ -14,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_STORE;
 
 
 @Service
@@ -34,7 +35,7 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public StoreDTO findStoresByIdAndProfileId(Long id, Long profileId) {
-        Store store = storeRepository.findStoresByIdAndProfileId(id, profileId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.NOT_FOUND_STORE));
+        Store store = storeRepository.findStoresByIdAndProfileId(id, profileId).orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_STORE));
         return fromStoreToStoreDTO(store);
     }
 
@@ -49,7 +50,7 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public StoreDTO updateStore(StoreDTO storeDTO, Long id, Long profileId) {
-        Store store = storeRepository.findStoresByIdAndProfileId(id,profileId).get();
+        Store store = storeRepository.findStoresByIdAndProfileId(id, profileId).get();
         store.setStoreName(storeDTO.getStoreName());
         store.setDescription(storeDTO.getDescription());
         store.setAddress(storeDTO.getAddress());

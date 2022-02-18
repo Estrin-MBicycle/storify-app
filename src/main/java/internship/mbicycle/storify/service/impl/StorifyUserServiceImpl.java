@@ -16,7 +16,7 @@ import java.util.UUID;
 import static internship.mbicycle.storify.util.Constants.ROLE_USER;
 import static internship.mbicycle.storify.util.EmailMessage.ACTIVATION_GREETING;
 import static internship.mbicycle.storify.util.EmailMessage.REGISTRATION_CONFIRMATION_CODE;
-import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND;
+import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_USER;
 
 @Service
 @RequiredArgsConstructor
@@ -46,13 +46,13 @@ public class StorifyUserServiceImpl implements StorifyUserService {
     @Override
     public StorifyUser getUserByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format(NOT_FOUND, email)));
+                .orElseThrow(() -> new UsernameNotFoundException(String.format(NOT_FOUND_USER, email)));
     }
 
     @Override
     public StorifyUser getUserByActivationCode(String code) {
         return userRepository.findByActivationCode(code).orElseThrow(
-                () -> new UsernameNotFoundException(String.format(NOT_FOUND, code)));
+                () -> new UsernameNotFoundException(String.format(NOT_FOUND_USER, code)));
     }
 
     @Override
