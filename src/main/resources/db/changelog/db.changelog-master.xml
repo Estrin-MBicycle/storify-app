@@ -22,5 +22,6 @@
     <include file="db/changelog/db.changelog-deleteColumnAndConstraintProfile.xml"/>
     <include file="db/changelog/db.changelog-addColumnToOrderAndConstraint.xml"/>
     <include file="db/changelog/db.changelog-deleteColumnProfitFromTableStore.xml"/>
+    <include file="db/changelog/db.changelog-renameTableOrderAndColumns.xml"/>
 
 </databaseChangeLog>
