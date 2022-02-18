@@ -1,6 +1,7 @@
 package internship.mbicycle.storify.service.impl;
 
 import internship.mbicycle.storify.dto.StoreDTO;
+import internship.mbicycle.storify.exception.ErrorCode;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.model.Profile;
 import internship.mbicycle.storify.model.Store;
@@ -24,40 +25,41 @@ public class StoreServiceImpl implements StoreService {
 
     private final StoreRepository storeRepository;
     private final ProfileRepository profileRepository;
+    private final StoreConverter storeConverter;
 
     @Override
     public List<StoreDTO> findStoresByProfileId(Long profileId) {
         return storeRepository.findStoresByProfileId(profileId)
                 .stream()
-                .map(store -> fromStoreToStoreDTO(store))
+                .map(storeConverter::fromStoreToStoreDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
     public StoreDTO findStoresByIdAndProfileId(Long id, Long profileId) {
         Store store = storeRepository.findStoresByIdAndProfileId(id, profileId).orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_STORE));
-        return fromStoreToStoreDTO(store);
+        return storeConverter.fromStoreToStoreDTO(store);
     }
 
     @Override
     public StoreDTO saveStore(StoreDTO storeDTO, Long profileId) {
-        Store store = fromStoreDTOToStore(storeDTO);
+        Store store = storeConverter.fromStoreDTOToStore(storeDTO);
         Profile profile = profileRepository.getById(profileId);
         store.setProfile(profile);
         Store save = storeRepository.save(store);
-        return fromStoreToStoreDTO(save);
+        return storeConverter.fromStoreToStoreDTO(save);
     }
 
     @Override
     public StoreDTO updateStore(StoreDTO storeDTO, Long id, Long profileId) {
-        Store store = storeRepository.findStoresByIdAndProfileId(id, profileId).get();
+        Store store = storeRepository.findStoresByIdAndProfileId(id,profileId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.NOT_FOUND_STORE));
         store.setStoreName(storeDTO.getStoreName());
         store.setDescription(storeDTO.getDescription());
         store.setAddress(storeDTO.getAddress());
         Profile profile = profileRepository.getById(profileId);
         store.setProfile(profile);
         Store save = storeRepository.save(store);
-        return fromStoreToStoreDTO(save);
+        return storeConverter.fromStoreToStoreDTO(save);
     }
 
     @Override
