@@ -1,7 +1,6 @@
 package internship.mbicycle.storify.model;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -31,25 +30,22 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "purchase_date")
-    private LocalDate date;
+    private LocalDate purchaseDate;
 
     private Integer price;
 
-    @Column(name = "unique_code")
     private String uniqueCode;
 
-    @Column(name = "profile_id")
     private Long profileId;
 
     private boolean delivered;
 
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH,
-            CascadeType.PERSIST})
+        CascadeType.PERSIST})
     @JoinTable(
-            name = "product_purchase",
-            joinColumns = @JoinColumn(name = "purchase_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id"))
+        name = "product_purchase",
+        joinColumns = @JoinColumn(name = "purchase_id"),
+        inverseJoinColumns = @JoinColumn(name = "product_id"))
     private List<Product> productList = new ArrayList<>();
 
 }

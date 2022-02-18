@@ -1,5 +1,10 @@
 package internship.mbicycle.storify.service.impl;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.time.LocalDate;
+import java.util.List;
+
 import internship.mbicycle.storify.dto.OrderDTO;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.model.Order;
@@ -8,11 +13,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import java.time.LocalDate;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class OrderServiceImplTest {
 
@@ -28,13 +28,13 @@ class OrderServiceImplTest {
         order = Order.builder()
                 .id(87L)
                 .delivered(false)
-                .date(LocalDate.now())
+                .purchaseDate(LocalDate.now())
                 .build();
 
         orderDTO = OrderDTO.builder()
                 .delivered(false)
                 .id(55L)
-                .date(LocalDate.now())
+                .purchaseDate(LocalDate.now())
                 .build();
 
     }
