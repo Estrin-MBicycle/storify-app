@@ -1,6 +1,6 @@
 package internship.mbicycle.storify.service.impl;
 
-import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_ORDER;
+import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_PURCHASE;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -62,14 +62,14 @@ public class PurchaseServiceImpl implements PurchaseService {
     @Override
     public PurchaseDTO getPurchaseById(Long id) {
         Purchase purchase = purchaseRepository.findById(id).orElseThrow(() ->
-            new ResourceNotFoundException(NOT_FOUND_ORDER));
+            new ResourceNotFoundException(NOT_FOUND_PURCHASE));
         return convertOrderToDTO(purchase);
     }
 
     @Override
     public PurchaseDTO getPurchaseByUniqueCode(String uniqueCode) {
         Purchase purchase = purchaseRepository.findPurchaseByUniqueCode(uniqueCode).orElseThrow(() ->
-            new ResourceNotFoundException(NOT_FOUND_ORDER));
+            new ResourceNotFoundException(NOT_FOUND_PURCHASE));
         return convertOrderToDTO(purchase);
     }
 

@@ -1,9 +1,13 @@
 package internship.mbicycle.storify.service.impl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.only;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Optional;
 
 import internship.mbicycle.storify.dto.PurchaseDTO;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
@@ -12,19 +16,26 @@ import internship.mbicycle.storify.repository.PurchaseRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class PurchaseServiceImplTest {
 
-    private PurchaseServiceImpl orderService;
+    @Mock
+    private PurchaseRepository purchaseRepository;
+    @Mock
+    private GeneratorUniqueCodeImpl generatorUniqueCode;
+
+    @InjectMocks
+    private PurchaseServiceImpl purchaseService;
     private Purchase purchase;
     private PurchaseDTO purchaseDTO;
 
     @BeforeEach
     void setUp() {
-        orderService = new PurchaseServiceImpl(Mockito.mock(PurchaseRepository.class),
-            Mockito.mock(GeneratorUniqueCodeImpl.class));
-
         purchase = Purchase.builder()
             .id(87L)
             .delivered(false)
@@ -32,29 +43,34 @@ class PurchaseServiceImplTest {
             .build();
 
         purchaseDTO = PurchaseDTO.builder()
+            .id(87L)
             .delivered(false)
-            .id(55L)
             .purchaseDate(LocalDate.now())
             .build();
-
     }
 
     @Test
     void testFindByIncorrectId() {
-        assertThrows(ResourceNotFoundException.class, () -> orderService.getPurchaseById(-4L));
+        final Long id = 5L;
+        given(purchaseRepository.findById(id)).willReturn(Optional.empty());
+        ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () ->
+            purchaseService.getPurchaseById(id));
+        assertEquals("Purchase not found.", thrown.getMessage());
     }
 
     @Test
-    void testMessageFindByIncorrectId() {
-        ResourceNotFoundException thrown = Assertions.assertThrows(ResourceNotFoundException.class, () ->
-            orderService.getPurchaseByUniqueCode("0"));
-        Assertions.assertEquals("Order not found.", thrown.getMessage());
+    void testFindById() {
+        final Long id = 89L;
+        given(purchaseRepository.findById(id)).willReturn(Optional.of(purchase));
+        PurchaseDTO actual = purchaseService.getPurchaseById(id);
+        assertEquals(purchaseDTO, actual);
     }
 
     @Test
-    void testFindByProfileId() {
-        List<PurchaseDTO> list = orderService.getAllPurchasesByProfileId(0L);
-        Assertions.assertTrue(list.isEmpty());
+    void testSaveProduct() {
+        purchaseService.savePurchase(purchaseDTO);
+        then(purchaseRepository).should(only()).save(purchase);
+        then(generatorUniqueCode).should(only()).generationUniqueCode();
     }
 
     @Test
