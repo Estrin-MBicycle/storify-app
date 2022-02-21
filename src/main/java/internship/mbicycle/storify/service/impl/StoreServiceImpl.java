@@ -37,8 +37,9 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public StoreDTO findStoresByIdAndProfileId(Long id, Long profileId) {
-        Store store = storeRepository.findStoresByIdAndProfileId(id, profileId).orElseThrow(() -> new ResourceNotFoundException(String.format(NOT_FOUND_STORE, id)));
+    public StoreDTO findStoreByIdAndProfileId(Long id, Long profileId) {
+        Store store = storeRepository.findStoresByIdAndProfileId(id, profileId)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format(NOT_FOUND_STORE, id)));
         return storeConverter.fromStoreToStoreDTO(store);
     }
 
