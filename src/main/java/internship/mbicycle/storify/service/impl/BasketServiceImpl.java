@@ -23,14 +23,6 @@ public class BasketServiceImpl implements BasketService {
     private final BasketRepository basketRepository;
     private final BasketConverter basketConverter;
 
-    @Override
-    public BasketDTO getBasket(Long profileId) {
-        Basket basketDb = basketRepository.findByProfileId(profileId).orElseThrow(() ->
-                new ResourceNotFoundException(NOT_FOUND_BASKET));
-
-        return basketConverter.convertBasketToBasketDTO(basketDb);
-    }
-
 
     @Override
     public void saveProduct(ProductDTO productDTO, Long basketId) {

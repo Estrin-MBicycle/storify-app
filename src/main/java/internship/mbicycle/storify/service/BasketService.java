@@ -10,8 +10,6 @@ import java.util.List;
 
 public interface BasketService {
 
-    BasketDTO getBasket(Long userId);
-
     void saveProduct(ProductDTO productDTO, Long basket_id);
 
     void removeProductFromBasket(ProductDTO productDTO, Long basket_id);
