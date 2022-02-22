@@ -1,6 +1,7 @@
 package internship.mbicycle.storify.controller;
 
 import internship.mbicycle.storify.dto.PurchaseDTO;
+import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.service.PurchaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -30,13 +31,15 @@ public class PurchaseController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createOrder(@RequestBody PurchaseDTO purchaseDTO) {
-        return ResponseEntity.ok(purchaseService.savePurchase(purchaseDTO));
+    public ResponseEntity<?> createOrder(@RequestBody PurchaseDTO purchaseDTO,
+                                         @RequestBody StorifyUser user) {
+        return ResponseEntity.ok(purchaseService.savePurchase(user, purchaseDTO));
     }
 
     @PutMapping
-    public ResponseEntity<?> updateOrder(@RequestBody PurchaseDTO purchaseDTO) {
-        return ResponseEntity.ok(purchaseService.savePurchase(purchaseDTO));
+    public ResponseEntity<?> updateOrder(@RequestBody PurchaseDTO purchaseDTO
+            , @RequestBody StorifyUser user) {
+        return ResponseEntity.ok(purchaseService.savePurchase(user, purchaseDTO));
     }
 
     @GetMapping("/{profileId}/{isDelivered}")
