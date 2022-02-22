@@ -1,5 +1,6 @@
 package internship.mbicycle.storify.service.impl;
 
+import internship.mbicycle.storify.converter.ProductConverter;
 import internship.mbicycle.storify.dto.ProductDTO;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.model.Product;
@@ -20,38 +21,12 @@ import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_PRODUC
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
-
-    public static Product convertToProduct(ProductDTO productDTO) {
-        if (productDTO == null) {
-            return null;
-        }
-        return Product.builder()
-                .count(productDTO.getCount())
-                .description(productDTO.getDescription())
-                .id(productDTO.getId())
-                .image(productDTO.getImage())
-                .productName(productDTO.getProductName())
-                .price(productDTO.getPrice())
-                .storeId(productDTO.getStoreId())
-                .build();
-    }
-
-    public static ProductDTO convertToDTO(Product product) {
-        return ProductDTO.builder()
-                .id(product.getId())
-                .description(product.getDescription())
-                .count(product.getCount())
-                .image(product.getImage())
-                .price(product.getPrice())
-                .productName(product.getProductName())
-                .storeId(product.getStoreId())
-                .build();
-    }
+    private final ProductConverter productConverter;
 
     @Override
     public List<ProductDTO> getAllProductsFromStore(Long storeId) {
         return productRepository.findAllByStoreId(storeId).stream()
-                .map(ProductServiceImpl::convertToDTO)
+                .map(productConverter::convertProductToProductDTO)
                 .collect(Collectors.toList());
     }
 
@@ -59,7 +34,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO getProductById(Long id) {
         Product productDb = productRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException(NOT_FOUND_PRODUCT));
-        return convertToDTO(productDb);
+        return productConverter.convertProductToProductDTO(productDb);
     }
 
     @Override
@@ -70,13 +45,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDTO> getAllProducts() {
         return productRepository.findAll().stream()
-                .map(ProductServiceImpl::convertToDTO)
+                .map(productConverter::convertProductToProductDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
     public ProductDTO saveProduct(ProductDTO productDto) {
-        Product product = convertToProduct(productDto);
+        Product product = productConverter.convertProductDTOToProduct(productDto);
         productRepository.save(product);
         return productDto;
     }
@@ -95,6 +70,6 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO getProductByName(String name) {
         Product productDb = productRepository.findProductByProductName(name).orElseThrow(() ->
                 new ResourceNotFoundException(NOT_FOUND_PRODUCT));
-        return convertToDTO(productDb);
+        return productConverter.convertProductToProductDTO(productDb);
     }
 }

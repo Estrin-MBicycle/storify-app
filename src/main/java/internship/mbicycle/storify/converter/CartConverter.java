@@ -16,10 +16,11 @@ import java.util.stream.Collectors;
 public class CartConverter {
 
     private final ProfileConverter profileConverter;
+    private final ProductConverter productConverter;
 
     public CartDTO convertCartToCartDTO(Cart cart) {
         List<ProductDTO> productDTOList = cart.getProductList().stream()
-                .map(ProductServiceImpl::convertToDTO)
+                .map(productConverter::convertProductToProductDTO)
                 .collect(Collectors.toList());
 
         return CartDTO.builder()
@@ -34,7 +35,7 @@ public class CartConverter {
         }
         List<Product> productList = cartDTO.getProductList()
                 .stream()
-                .map(ProductServiceImpl::convertToProduct)
+                .map(productConverter::convertProductDTOToProduct)
                 .collect(Collectors.toList());
 
         return Cart.builder()
