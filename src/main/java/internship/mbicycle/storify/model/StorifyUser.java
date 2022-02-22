@@ -43,6 +43,11 @@ public class StorifyUser implements UserDetails {
     }
 
     @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "profile_id", referencedColumnName = "id")
+    private Profile profile;
+
+    @JsonIgnore
     @Override
     public String getUsername() {
         return getEmail();

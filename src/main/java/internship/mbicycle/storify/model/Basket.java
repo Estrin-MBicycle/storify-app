@@ -18,19 +18,9 @@ public class Basket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "profile_id")
-    private Profile profile;
-
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "product_basket",
-            joinColumns = @JoinColumn(
-                    name = "product_id"
-            ),
-            inverseJoinColumns = @JoinColumn(
-                    name = "basket_id"
-            )
-    )
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "product_basket",
+            joinColumns = @JoinColumn(name = "basket_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id"))
     private List<Product> productList;
 }

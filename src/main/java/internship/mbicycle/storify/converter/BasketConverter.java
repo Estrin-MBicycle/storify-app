@@ -24,7 +24,6 @@ public class BasketConverter {
 
         return BasketDTO.builder()
                 .id(basket.getId())
-                .profile(profileConverter.convertProfileToProfileDTO(basket.getProfile()))
                 .productList(productDTOList)
                 .build();
     }
@@ -40,7 +39,6 @@ public class BasketConverter {
 
         return Basket.builder()
                 .id(basketDTO.getId())
-                .profile(profileConverter.convertProfileDTOToProfile(basketDTO.getProfile()))
                 .productList(productList)
                 .build();
     }

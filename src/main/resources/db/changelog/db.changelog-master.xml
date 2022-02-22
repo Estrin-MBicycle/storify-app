@@ -24,5 +24,6 @@
     <include file="db/changelog/db.changelog-deleteColumnProfitFromTableStore.xml"/>
     <include file="db/changelog/db.changelog-renameTableOrderAndColumns.xml"/>
     <include file="db/changelog/db.changelog-createNewTableProductPurchase.xml"/>
+    <include file="db/changelog/db.changelog-changedConnectionBasketAndProfile.xml"/>
 
 </databaseChangeLog>
