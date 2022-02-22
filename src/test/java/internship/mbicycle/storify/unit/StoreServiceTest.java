@@ -3,6 +3,7 @@ package internship.mbicycle.storify.unit;
 
 import internship.mbicycle.storify.converter.StoreConverter;
 import internship.mbicycle.storify.dto.ProfileDTO;
+import internship.mbicycle.storify.dto.PurchasedAndNotPaidProduct;
 import internship.mbicycle.storify.dto.StoreDTO;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.model.Profile;
@@ -33,6 +34,7 @@ class StoreServiceTest {
 
     public static final Long ID = 2L;
     public static final Long PROFILE_ID = 1L;
+    public static final Long LIMIT = 1L;
 
     @Mock
     private StoreRepository storeRepository;
@@ -112,5 +114,23 @@ class StoreServiceTest {
         then(storeRepository).shouldHaveNoMoreInteractions();
         then(profileRepository).should(only()).getById(PROFILE_ID);
         then(storeConverter).should(only()).fromStoreToStoreDTO(store);
+    }
+
+    @Test
+    void shouldFindMostPurchasedProductsInStore() {
+        given(storeRepository.findMostPurchasedProductsInStore(ID, LIMIT)).willReturn(new ArrayList<>());
+        List<PurchasedAndNotPaidProduct> expected = new ArrayList<>();
+        List<PurchasedAndNotPaidProduct> actual = storeService.findMostPurchasedProductsInStore(ID, LIMIT);
+        assertEquals(expected, actual);
+        then(storeRepository).should(only()).findMostPurchasedProductsInStore(ID, LIMIT);
+    }
+
+    @Test
+    void shouldFindLestPurchasedProductsInStore() {
+        given(storeRepository.findLestPurchasedProductsInStore(ID, LIMIT)).willReturn(new ArrayList<>());
+        List<PurchasedAndNotPaidProduct> expected = new ArrayList<>();
+        List<PurchasedAndNotPaidProduct> actual = storeService.findLestPurchasedProductsInStore(ID, LIMIT);
+        assertEquals(expected, actual);
+        then(storeRepository).should(only()).findLestPurchasedProductsInStore(ID, LIMIT);
     }
 }

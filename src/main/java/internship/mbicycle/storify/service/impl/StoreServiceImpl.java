@@ -1,6 +1,7 @@
 package internship.mbicycle.storify.service.impl;
 
 import internship.mbicycle.storify.converter.StoreConverter;
+import internship.mbicycle.storify.dto.PurchasedAndNotPaidProduct;
 import internship.mbicycle.storify.dto.StoreDTO;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.model.Profile;
@@ -69,6 +70,15 @@ public class StoreServiceImpl implements StoreService {
         storeRepository.deleteByIdAndProfileId(id, profileId);
     }
 
+    @Override
+    public List<PurchasedAndNotPaidProduct> findMostPurchasedProductsInStore(Long id, Long limit) {
+        return storeRepository.findMostPurchasedProductsInStore(id, limit);
+    }
+
+    @Override
+    public List<PurchasedAndNotPaidProduct> findLestPurchasedProductsInStore(Long id, Long limit) {
+        return storeRepository.findLestPurchasedProductsInStore(id, limit);
+    }
 
     @Override
     public void deleteAllByProfileId(Long profileId) {

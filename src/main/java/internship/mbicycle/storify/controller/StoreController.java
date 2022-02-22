@@ -1,5 +1,6 @@
 package internship.mbicycle.storify.controller;
 
+import internship.mbicycle.storify.dto.PurchasedAndNotPaidProduct;
 import internship.mbicycle.storify.dto.StoreDTO;
 import internship.mbicycle.storify.service.StoreService;
 import lombok.RequiredArgsConstructor;
@@ -51,5 +52,15 @@ public class StoreController {
     public ResponseEntity<?> deleteStoreByProfileId(@PathVariable Long id, @PathVariable Long profileId) {
         storeService.deleteByIdAndProfileId(id, profileId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/products/most/{id}/{limit}")
+    public List<PurchasedAndNotPaidProduct> findMostPurchasedProductsInStore(@PathVariable Long id, @PathVariable Long limit) {
+        return storeService.findMostPurchasedProductsInStore(id, limit);
+    }
+
+    @GetMapping("/products/lest/{id}/{limit}")
+    public List<PurchasedAndNotPaidProduct> findLestPurchasedProductsInStore(@PathVariable Long id, @PathVariable Long limit) {
+        return storeService.findLestPurchasedProductsInStore(id, limit);
     }
 }

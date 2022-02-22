@@ -1,5 +1,6 @@
 package internship.mbicycle.storify.model;
 
+import internship.mbicycle.storify.dto.PurchasedAndNotPaidProduct;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,18 +8,54 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@NamedNativeQueries({
+        @NamedNativeQuery(
+        name = "find_most_purchased_products",
+        query = "select p.product_name name, sum(p.price*pp.count) profit "+
+        "from purchase pu "+
+        "inner join product_purchase pp on pu.id = pp.purchase "+
+        "inner join product p on pp.product = p.id "+
+        "where p.store_id = :id "+
+        "group by name "+
+        "order by sum(p.price*pp.count) desc "+
+        "limit :limit",
+        resultSetMapping = "most_purchased_products"),
+        @NamedNativeQuery(
+                name = "find_least_purchased_products",
+                query = "select p.product_name name, sum(p.price*pp.count) profit "+
+                        "from purchase pu "+
+                        "inner join product_purchase pp on pu.id = pp.purchase "+
+                        "inner join product p on pp.product = p.id "+
+                        "where p.store_id = :id "+
+                        "group by name "+
+                        "order by sum(p.price*pp.count) "+
+                        "limit :limit",
+                resultSetMapping = "least_purchased_products")
+})
+@SqlResultSetMappings({
+        @SqlResultSetMapping(
+        name="most_purchased_products",
+        classes = @ConstructorResult(
+                targetClass = PurchasedAndNotPaidProduct.class,
+                columns = {
+                        @ColumnResult(name = "name", type = String.class),
+                        @ColumnResult(name = "profit", type = Long.class)
+                }
+        )),
+        @SqlResultSetMapping(
+                name="least_purchased_products",
+                classes = @ConstructorResult(
+                        targetClass = PurchasedAndNotPaidProduct.class,
+                        columns = {
+                                @ColumnResult(name = "name", type = String.class),
+                                @ColumnResult(name = "profit", type = Long.class)
+                        }
+                ))
+        })
 @Data
 @Builder
 @NoArgsConstructor
