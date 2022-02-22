@@ -46,19 +46,16 @@ class StoreServiceTest {
 
     @Test
     void shouldFindStoresByProfileId() {
-
         given(storeRepository.findStoresByProfileId(PROFILE_ID)).willReturn(new ArrayList<>());
         List<StoreDTO> expected = new ArrayList<>();
         List<StoreDTO> actual = storeService.findStoresByProfileId(PROFILE_ID);
         assertEquals(expected, actual);
         then(storeRepository).should(only()).findStoresByProfileId(PROFILE_ID);
         then(profileRepository).shouldHaveNoInteractions();
-
     }
 
     @Test
     void shouldFindStoreByIdAndProfileId() {
-
         given(storeRepository.findStoresByIdAndProfileId(ID, PROFILE_ID)).willReturn(Optional.empty());
 
         final ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
@@ -68,12 +65,10 @@ class StoreServiceTest {
 
         then(storeRepository).should(only()).findStoresByIdAndProfileId(ID, PROFILE_ID);
         then(profileRepository).shouldHaveNoInteractions();
-
     }
 
     @Test
     void shouldSaveStore() {
-
         final Profile profile = Profile.builder().id(PROFILE_ID).build();
         final Store store = Store.builder().id(ID).profile(profile).build();
         final ProfileDTO profileDTO = ProfileDTO.builder().id(PROFILE_ID).build();
@@ -85,14 +80,37 @@ class StoreServiceTest {
         given(profileRepository.getById(PROFILE_ID)).willReturn(profile);
         given(storeRepository.save(store)).willReturn(store);
 
-        StoreDTO actual = storeService.saveStore(expected, PROFILE_ID);
+        final StoreDTO actual = storeService.saveStore(expected, PROFILE_ID);
         assertEquals(expected, actual);
 
         then(storeRepository).should(only()).save(store);
         then(profileRepository).should(only()).getById(PROFILE_ID);
         then(storeConverter).should(times(1)).fromStoreDTOToStore(expected);
         then(storeConverter).should(times(1)).fromStoreToStoreDTO(store);
-        then(profileRepository).shouldHaveNoMoreInteractions();
+        then(storeConverter).shouldHaveNoMoreInteractions();
     }
 
+    @Test
+    void shouldUpdateStore() {
+        final Profile profile = Profile.builder().id(PROFILE_ID).build();
+        final Store store = Store.builder().id(ID).profile(profile).build();
+        final ProfileDTO profileDTO = ProfileDTO.builder().id(PROFILE_ID).build();
+        final StoreDTO expected = StoreDTO.builder().id(ID).profileDTO(profileDTO).build();
+
+        given(storeRepository.findStoresByIdAndProfileId(ID, PROFILE_ID)).willReturn(Optional.ofNullable(store));
+        given(profileRepository.getById(PROFILE_ID)).willReturn(profile);
+        assert store != null;
+        given(storeConverter.fromStoreToStoreDTO(store)).willReturn(expected);
+        given(storeRepository.save(store)).willReturn(store);
+
+
+        final StoreDTO actual = storeService.updateStore(expected, ID, PROFILE_ID);
+        assertEquals(expected, actual);
+
+        then(storeRepository).should(times(1)).findStoresByIdAndProfileId(ID, PROFILE_ID);
+        then(storeRepository).should(times(1)).save(store);
+        then(storeRepository).shouldHaveNoMoreInteractions();
+        then(profileRepository).should(only()).getById(PROFILE_ID);
+        then(storeConverter).should(only()).fromStoreToStoreDTO(store);
+    }
 }
