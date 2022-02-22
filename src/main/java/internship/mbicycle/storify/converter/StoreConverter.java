@@ -4,9 +4,10 @@ import internship.mbicycle.storify.dto.StoreDTO;
 import internship.mbicycle.storify.model.Store;
 import internship.mbicycle.storify.service.impl.ProfileServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
-@Controller
+@Component
 @RequiredArgsConstructor
 public class StoreConverter {
 

@@ -29,13 +29,13 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public ProfileDTO updateProfile(long id, ProfileDTO profileDTO) {
-        Profile temp = profileRepository.findById(id).get();
-        temp.setName(profileDTO.getName());
-        temp.setSurname(profileDTO.getSurname());
-        temp.setTown(profileDTO.getTown());
-        temp.setAddress(profileDTO.getAddress());
-        temp.setPhone(profileDTO.getPhone());
-        Profile result = profileRepository.save(temp);
+        Profile profile = profileRepository.getById(id);
+        profile.setName(profileDTO.getName());
+        profile.setSurname(profileDTO.getSurname());
+        profile.setTown(profileDTO.getTown());
+        profile.setAddress(profileDTO.getAddress());
+        profile.setPhone(profileDTO.getPhone());
+        Profile result = profileRepository.save(profile);
         return profileConverter.convertProfileToProfileDTO(result);
     }
 }
