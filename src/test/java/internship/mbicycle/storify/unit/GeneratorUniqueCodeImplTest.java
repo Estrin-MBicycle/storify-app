@@ -1,10 +1,9 @@
-package internship.mbicycle.storify.service.impl;
+package internship.mbicycle.storify.unit;
 
+import internship.mbicycle.storify.service.impl.GeneratorUniqueCodeImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class GeneratorUniqueCodeImplTest {
 

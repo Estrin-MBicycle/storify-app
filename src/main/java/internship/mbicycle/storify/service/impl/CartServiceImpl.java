@@ -1,6 +1,7 @@
 package internship.mbicycle.storify.service.impl;
 
 import internship.mbicycle.storify.converter.CartConverter;
+import internship.mbicycle.storify.converter.ProductConverter;
 import internship.mbicycle.storify.dto.CartDTO;
 import internship.mbicycle.storify.dto.ProductDTO;
 import internship.mbicycle.storify.model.Cart;
@@ -19,13 +20,14 @@ public class CartServiceImpl implements CartService {
 
     private final CartRepository cartRepository;
     private final CartConverter cartConverter;
+    private final ProductConverter productConverter;
 
 
     @Override
     public void saveProduct(ProductDTO productDTO, Long basketId) {
         Cart basket = cartRepository.getById(basketId);
         List<Product> productList = basket.getProductList();
-        productList.add(ProductServiceImpl.convertToProduct(productDTO));
+        productList.add(productConverter.convertProductDTOToProduct(productDTO));
         basket.setProductList(productList);
     }
 
@@ -33,7 +35,7 @@ public class CartServiceImpl implements CartService {
     public void removeProductFromCart(ProductDTO productDTO, Long basketId) {
         Cart cart = cartRepository.getById(basketId);
         List<Product> productList = cart.getProductList();
-        productList.remove(ProductServiceImpl.convertToProduct(productDTO));
+        productList.remove(productConverter.convertProductDTOToProduct(productDTO));
         cart.setProductList(productList);
     }
 
