@@ -28,7 +28,7 @@ public class StoreController {
 
     @GetMapping("/{id}/{profileId}")
     public StoreDTO findStore(@PathVariable Long id, @PathVariable Long profileId) {
-        return storeService.findStoresByIdAndProfileId(id, profileId);
+        return storeService.findStoreByIdAndProfileId(id, profileId);
     }
 
     @PostMapping("/{profileId}")

@@ -7,7 +7,7 @@ import java.util.List;
 public interface StoreService {
     List<StoreDTO> findStoresByProfileId(Long profileId);
 
-    StoreDTO findStoresByIdAndProfileId(Long id, Long profileId);
+    StoreDTO findStoreByIdAndProfileId(Long id, Long profileId);
 
     StoreDTO saveStore(StoreDTO storeDTO, Long profileId);
 
