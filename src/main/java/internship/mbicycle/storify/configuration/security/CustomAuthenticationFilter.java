@@ -1,9 +1,11 @@
 package internship.mbicycle.storify.configuration.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.service.StorifyUserService;
 import internship.mbicycle.storify.service.TokenService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,6 +18,8 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static org.springframework.http.MediaType.TEXT_HTML_VALUE;
+
 @RequiredArgsConstructor
 @Slf4j
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -24,12 +28,21 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     private final TokenService tokenService;
     private final StorifyUserService userService;
 
+    @SneakyThrows
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
-        return authenticationManager.authenticate(authenticationToken);
+        Authentication authentication = null;
+        try {
+            String email = request.getParameter("email");
+            String password = request.getParameter("password");
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
+            authentication = authenticationManager.authenticate(authenticationToken);
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setContentType(TEXT_HTML_VALUE);
+            new ObjectMapper().writeValue(response.getWriter(), e.getMessage());
+        }
+        return authentication;
     }
 
     @Override

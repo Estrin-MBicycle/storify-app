@@ -4,12 +4,11 @@ import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.service.StorifyUserService;
 import internship.mbicycle.storify.service.TokenService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.security.Principal;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,6 +28,16 @@ public class StorifyUserController {
         tokenService.setTokenPairAfterActivation(storifyUser);
         response.setHeader("access_token", storifyUser.getToken().getAccessToken());
         response.setHeader("refresh_token", storifyUser.getToken().getRefreshToken());
+    }
+
+    @GetMapping("/update/email")
+    public void sendConfirmationEmail(Principal principal) {
+        userService.sendConfirmationEmail(principal.getName());
+    }
+
+    @PatchMapping("/update/{code}")
+    public void updateEmail(String newEmail, @PathVariable String code, Principal principal) {
+        userService.updateEmail(newEmail, code, principal.getName());
     }
 
 }
