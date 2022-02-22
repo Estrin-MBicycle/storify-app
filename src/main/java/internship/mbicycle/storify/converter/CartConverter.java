@@ -1,8 +1,8 @@
 package internship.mbicycle.storify.converter;
 
-import internship.mbicycle.storify.dto.BasketDTO;
+import internship.mbicycle.storify.dto.CartDTO;
 import internship.mbicycle.storify.dto.ProductDTO;
-import internship.mbicycle.storify.model.Basket;
+import internship.mbicycle.storify.model.Cart;
 import internship.mbicycle.storify.model.Product;
 import internship.mbicycle.storify.service.impl.ProductServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -13,32 +13,32 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class BasketConverter {
+public class CartConverter {
 
     private final ProfileConverter profileConverter;
 
-    public BasketDTO convertBasketToBasketDTO(Basket basket) {
-        List<ProductDTO> productDTOList = basket.getProductList().stream()
+    public CartDTO convertCartToCartDTO(Cart cart) {
+        List<ProductDTO> productDTOList = cart.getProductList().stream()
                 .map(ProductServiceImpl::convertToDTO)
                 .collect(Collectors.toList());
 
-        return BasketDTO.builder()
-                .id(basket.getId())
+        return CartDTO.builder()
+                .id(cart.getId())
                 .productList(productDTOList)
                 .build();
     }
 
-    public Basket convertBasketDTOToBasket(BasketDTO basketDTO) {
-        if (basketDTO == null) {
+    public Cart convertCartDTOToCart(CartDTO cartDTO) {
+        if (cartDTO == null) {
             return null;
         }
-        List<Product> productList = basketDTO.getProductList()
+        List<Product> productList = cartDTO.getProductList()
                 .stream()
                 .map(ProductServiceImpl::convertToProduct)
                 .collect(Collectors.toList());
 
-        return Basket.builder()
-                .id(basketDTO.getId())
+        return Cart.builder()
+                .id(cartDTO.getId())
                 .productList(productList)
                 .build();
     }

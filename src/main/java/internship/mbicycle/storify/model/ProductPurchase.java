@@ -21,7 +21,7 @@ public class ProductPurchase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private  Long purchase;
+    private Long purchase;
 
     private Long product;
 

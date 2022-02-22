@@ -1,0 +1,23 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+    <changeSet author="harbachou" id="changeBasketTableNameAndColumns">
+        <renameTable newTableName="cart"
+                     oldTableName="basket"
+        />
+        <renameTable newTableName="product_cart"
+                     oldTableName="product_basket"
+        />
+        <renameColumn tableName="product_cart"
+                      oldColumnName="basket_id"
+                      newColumnName="cart_id"
+                      columnDataType="bigint"/>
+
+        <renameColumn tableName="profile"
+                      oldColumnName="basket_id"
+                      newColumnName="cart_id"
+                      columnDataType="bigint"/>
+
+    </changeSet>
+</databaseChangeLog>

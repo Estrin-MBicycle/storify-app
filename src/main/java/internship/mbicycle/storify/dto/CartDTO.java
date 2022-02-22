@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BasketDTO {
+public class CartDTO {
     private Long id;
     private ProfileDTO profile;
     private List<ProductDTO> productList;
