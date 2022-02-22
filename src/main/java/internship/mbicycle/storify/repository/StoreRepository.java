@@ -15,7 +15,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     void deleteAllByProfileId(Long profileId);
 
     void deleteByIdAndProfileId(Long id, Long profileId);
-
+/*  This query doesn't work now
     @Query(name = "select p.product_name name, count(p.product_name) 'count' " +
             "from purchase pu " +
             "inner join product_purchase pp " +
@@ -27,5 +27,5 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
             "order by count(name) desc " +
             "limit :limit", nativeQuery = true)
     List<String> findMostPurchasedProductsInStore(Long id, Long limit);
-
+*/
 }

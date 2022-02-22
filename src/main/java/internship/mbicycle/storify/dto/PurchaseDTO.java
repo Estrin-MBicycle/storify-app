@@ -1,7 +1,7 @@
 package internship.mbicycle.storify.dto;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,13 +12,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderDTO {
+public class PurchaseDTO {
 
     private Long id;
     private LocalDate purchaseDate;
     private Integer price;
     private String uniqueCode;
     private Long profileId;
-    private List<ProductDTO> productDTOList;
+    private Map<Long, Integer> productDTOMap;
     private boolean delivered;
 }
