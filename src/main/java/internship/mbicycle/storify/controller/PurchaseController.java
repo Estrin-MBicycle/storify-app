@@ -1,7 +1,7 @@
 package internship.mbicycle.storify.controller;
 
-import internship.mbicycle.storify.dto.OrderDTO;
-import internship.mbicycle.storify.service.OrderService;
+import internship.mbicycle.storify.dto.PurchaseDTO;
+import internship.mbicycle.storify.service.PurchaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,33 +15,33 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/orders")
 @RequiredArgsConstructor
-public class OrderController {
+public class PurchaseController {
 
-    private final OrderService orderService;
+    private final PurchaseService purchaseService;
 
     @GetMapping
     public ResponseEntity<?> getAllOrders() {
-        return ResponseEntity.ok(orderService.getAllOrders());
+        return ResponseEntity.ok(purchaseService.getAllPurchases());
     }
 
     @GetMapping("/{uniqueCode}")
     public ResponseEntity<?> getOrderByUniqueCode(@PathVariable String uniqueCode) {
-        return ResponseEntity.ok(orderService.getOrderByUniqueCode(uniqueCode));
+        return ResponseEntity.ok(purchaseService.getPurchaseByUniqueCode(uniqueCode));
     }
 
     @PostMapping
-    public ResponseEntity<?> createOrder(@RequestBody OrderDTO orderDTO) {
-        return ResponseEntity.ok(orderService.saveOrder(orderDTO));
+    public ResponseEntity<?> createOrder(@RequestBody PurchaseDTO purchaseDTO) {
+        return ResponseEntity.ok(purchaseService.savePurchase(purchaseDTO));
     }
 
     @PutMapping
-    public ResponseEntity<?> updateOrder(@RequestBody OrderDTO orderDTO) {
-        return ResponseEntity.ok(orderService.saveOrder(orderDTO));
+    public ResponseEntity<?> updateOrder(@RequestBody PurchaseDTO purchaseDTO) {
+        return ResponseEntity.ok(purchaseService.savePurchase(purchaseDTO));
     }
 
     @GetMapping("/{profileId}/{isDelivered}")
     public ResponseEntity<?> getAllDeliveredOrdersByProfileId(@PathVariable Long profileId,
                                                               @PathVariable boolean isDelivered) {
-        return ResponseEntity.ok(orderService.getAllOrdersByProfileIdAndDelivered(profileId, isDelivered));
+        return ResponseEntity.ok(purchaseService.getAllPurchasesByProfileIdAndDelivered(profileId, isDelivered));
     }
 }

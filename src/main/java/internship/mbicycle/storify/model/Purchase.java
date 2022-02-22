@@ -1,17 +1,16 @@
 package internship.mbicycle.storify.model;
 
-import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.MapKeyColumn;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,8 +22,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "purchase")
-public class Order {
+public class Purchase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,12 +38,10 @@ public class Order {
 
     private boolean delivered;
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH,
-        CascadeType.PERSIST})
-    @JoinTable(
-        name = "product_purchase",
-        joinColumns = @JoinColumn(name = "purchase_id"),
-        inverseJoinColumns = @JoinColumn(name = "product_id"))
-    private List<Product> productList = new ArrayList<>();
-
+    @ElementCollection
+    @CollectionTable(name = "product_purchase",
+        joinColumns = @JoinColumn(name = "purchase", referencedColumnName = "id"))
+    @MapKeyColumn(name = "product")
+    @Column(name = "count")
+    private Map<Long, Integer> products;
 }
