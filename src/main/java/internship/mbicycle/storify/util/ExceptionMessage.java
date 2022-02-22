@@ -9,5 +9,4 @@ public class ExceptionMessage {
     public static final String NOT_FOUND_PRODUCT = "Product not found.";
     public static final String NOT_FOUND_PROFILE = "Profile with id %d not found.";
     public static final String NOT_FOUND_PURCHASE = "Purchase not found.";
-    public static final String NOT_FOUND_BASKET = "Basket not found.";
 }

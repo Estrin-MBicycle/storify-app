@@ -11,8 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Builder
-@EqualsAndHashCode(exclude = {"basket", "stores", "favorite", "orders"})
-@ToString(exclude = {"basket", "stores", "favorite", "orders"})
+@EqualsAndHashCode(exclude = {"cart", "stores", "favorite", "purchase"})
+@ToString(exclude = {"cart", "stores", "favorite", "purchase"})
 public class Profile {
 
     @Id
@@ -36,10 +36,10 @@ public class Profile {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "profileId")
     @JsonIgnore
-    private List<Purchase> orders;
+    private List<Purchase> purchase;
 
     @OneToOne
-    @JoinColumn(name = "basket_id", referencedColumnName = "id")
-    private Basket basket;
+    @JoinColumn(name = "cart_id", referencedColumnName = "id")
+    private Cart cart;
 
 }

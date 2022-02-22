@@ -1,10 +1,10 @@
 package internship.mbicycle.storify.service.impl;
 
-import internship.mbicycle.storify.model.Basket;
+import internship.mbicycle.storify.model.Cart;
 import internship.mbicycle.storify.model.Profile;
 import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.model.Token;
-import internship.mbicycle.storify.repository.BasketRepository;
+import internship.mbicycle.storify.repository.CartRepository;
 import internship.mbicycle.storify.repository.ProfileRepository;
 import internship.mbicycle.storify.repository.StorifyUserRepository;
 import internship.mbicycle.storify.service.MailService;
@@ -31,7 +31,7 @@ public class StorifyUserServiceImpl implements StorifyUserService {
     private final StorifyUserRepository userRepository;
     private final MailService mailService;
     private final ProfileRepository profileRepository;
-    private final BasketRepository basketRepository;
+    private final CartRepository cartRepository;
 
     @Override
     public void updateStorifyUser(StorifyUser storifyUser) {
@@ -45,9 +45,9 @@ public class StorifyUserServiceImpl implements StorifyUserService {
         storifyUser.setActivationCode(UUID.randomUUID().toString());
         storifyUser.setToken(new Token());
         storifyUser.setProfile(new Profile());
-        Basket basket = new Basket();
-        basketRepository.save(basket);
-        storifyUser.getProfile().setBasket(basket);
+        Cart cart = new Cart();
+        cartRepository.save(cart);
+        storifyUser.getProfile().setCart(cart);
         String message = String.format(ACTIVATION_GREETING, storifyUser.getName(), storifyUser.getActivationCode());
         mailService.send(storifyUser.getEmail(), REGISTRATION_CONFIRMATION_CODE, message);
         return userRepository.save(storifyUser);
