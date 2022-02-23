@@ -26,5 +26,6 @@
     <include file="db/changelog/db.changelog-createNewTableProductPurchase.xml"/>
     <include file="db/changelog/db.changelog-changedConnectionBasketAndProfile.xml"/>
     <include file="db/changelog/db.changelog-renameTableBasketAndColumns.xml"/>
+    <include file="db/changelog/db.changelog-dropConstrainUniqueProductName.xml"/>
 
 </databaseChangeLog>
