@@ -40,7 +40,8 @@ public class ProfileServiceImplTest {
     void shouldFindProfileById() {
         given(profileRepository.findById(PROFILE_ID)).willReturn(Optional.empty());
 
-        ProfileNotFoundException exception = assertThrows(ProfileNotFoundException.class, () -> profileService.getById(PROFILE_ID));
+        ProfileNotFoundException exception = assertThrows(ProfileNotFoundException.class,
+                () -> profileService.getById(PROFILE_ID));
 
         assertEquals(String.format(NOT_FOUND_PROFILE, PROFILE_ID), exception.getMessage());
 
