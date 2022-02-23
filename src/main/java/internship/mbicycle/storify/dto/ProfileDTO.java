@@ -18,4 +18,6 @@ public class ProfileDTO {
     private String address;
     private String phone;
 
+    private CartDTO cartDTO;
+
 }

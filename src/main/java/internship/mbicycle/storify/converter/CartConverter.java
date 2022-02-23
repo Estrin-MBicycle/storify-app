@@ -4,7 +4,6 @@ import internship.mbicycle.storify.dto.CartDTO;
 import internship.mbicycle.storify.dto.ProductDTO;
 import internship.mbicycle.storify.model.Cart;
 import internship.mbicycle.storify.model.Product;
-import internship.mbicycle.storify.service.impl.ProductServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +14,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CartConverter {
 
-    private final ProfileConverter profileConverter;
     private final ProductConverter productConverter;
 
     public CartDTO convertCartToCartDTO(Cart cart) {
