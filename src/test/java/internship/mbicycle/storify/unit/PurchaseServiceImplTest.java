@@ -1,8 +1,10 @@
 package internship.mbicycle.storify.unit;
 
+import internship.mbicycle.storify.converter.PurchaseConverter;
 import internship.mbicycle.storify.dto.PurchaseDTO;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.model.Purchase;
+import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.repository.PurchaseRepository;
 import internship.mbicycle.storify.service.impl.GeneratorUniqueCodeImpl;
 import internship.mbicycle.storify.service.impl.PurchaseServiceImpl;
@@ -29,11 +31,14 @@ class PurchaseServiceImplTest {
     private PurchaseRepository purchaseRepository;
     @Mock
     private GeneratorUniqueCodeImpl generatorUniqueCode;
+    @Mock
+    private PurchaseConverter purchaseConverter;
 
     @InjectMocks
     private PurchaseServiceImpl purchaseService;
     private Purchase purchase;
     private PurchaseDTO purchaseDTO;
+    private StorifyUser user;
 
     @BeforeEach
     void setUp() {
@@ -48,6 +53,11 @@ class PurchaseServiceImplTest {
                 .delivered(false)
                 .purchaseDate(LocalDate.now())
                 .build();
+
+        user = new StorifyUser();
+        user.setName("Vasili");
+        user.setPassword("123456");
+        user.setEmail("vasili@gmail.com");
     }
 
     @Test
@@ -63,13 +73,15 @@ class PurchaseServiceImplTest {
     void testFindById() {
         final Long id = 89L;
         given(purchaseRepository.findById(id)).willReturn(Optional.of(purchase));
+        given(purchaseConverter.convertPurchaseToPurchaseDTO(purchase)).willReturn(purchaseDTO);
         PurchaseDTO actual = purchaseService.getPurchaseById(id);
         assertEquals(purchaseDTO, actual);
     }
 
     @Test
     void testSaveProduct() {
-        purchaseService.savePurchase(purchaseDTO);
+        given(purchaseConverter.convertPurchaseDTOToPurchase(purchaseDTO)).willReturn(purchase);
+        purchaseService.savePurchase(user, purchaseDTO);
         then(purchaseRepository).should(only()).save(purchase);
         then(generatorUniqueCode).should(only()).generationUniqueCode();
     }

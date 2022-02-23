@@ -1,5 +1,6 @@
 package internship.mbicycle.storify.unit;
 
+import internship.mbicycle.storify.converter.ProductConverter;
 import internship.mbicycle.storify.dto.ProductDTO;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.model.Product;
@@ -25,6 +26,8 @@ class ProductServiceImplTest {
 
     @Mock
     private ProductRepository productRepository;
+    @Mock
+    private ProductConverter productConverter;
 
     @InjectMocks
     private ProductServiceImpl productService;
@@ -60,6 +63,7 @@ class ProductServiceImplTest {
     @Test
     void testGetProductById() {
         final Long id = 89L;
+        given(productConverter.convertProductToProductDTO(product)).willReturn(productDTO);
         given(productRepository.findById(id)).willReturn(Optional.of(product));
         ProductDTO actual = productService.getProductById(id);
         assertEquals(productDTO, actual);
@@ -67,6 +71,7 @@ class ProductServiceImplTest {
 
     @Test
     void testSaveProduct() {
+        given(productConverter.convertProductDTOToProduct(productDTO)).willReturn(product);
         productService.saveProduct(productDTO);
         then(productRepository).should(only()).save(product);
     }

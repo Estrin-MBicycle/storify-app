@@ -4,7 +4,9 @@ import internship.mbicycle.storify.converter.PurchaseConverter;
 import internship.mbicycle.storify.dto.PurchaseDTO;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.model.Purchase;
+import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.repository.PurchaseRepository;
+import internship.mbicycle.storify.service.MailService;
 import internship.mbicycle.storify.service.PurchaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,7 @@ public class PurchaseServiceImpl implements PurchaseService {
     private final PurchaseRepository purchaseRepository;
     private final GeneratorUniqueCodeImpl generatorUniqueCode;
     private final PurchaseConverter purchaseConverter;
+    private final MailService mailService;
 
     @Override
     public List<PurchaseDTO> getAllPurchasesByProfileIdAndDelivered(Long profileId, boolean isDelivered) {
@@ -54,10 +57,11 @@ public class PurchaseServiceImpl implements PurchaseService {
     }
 
     @Override
-    public PurchaseDTO savePurchase(PurchaseDTO purchaseDTO) {
+    public PurchaseDTO savePurchase(StorifyUser user, PurchaseDTO purchaseDTO) {
         purchaseDTO.setUniqueCode(generatorUniqueCode.generationUniqueCode());
         purchaseDTO.setPurchaseDate(LocalDate.now());
         purchaseRepository.save(purchaseConverter.convertPurchaseDTOToPurchase(purchaseDTO));
+        mailService.sendPurchaseMessage(user, purchaseDTO);
         return purchaseDTO;
     }
 
