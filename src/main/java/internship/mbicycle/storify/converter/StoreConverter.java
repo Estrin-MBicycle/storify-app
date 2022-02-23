@@ -2,14 +2,10 @@ package internship.mbicycle.storify.converter;
 
 import internship.mbicycle.storify.dto.StoreDTO;
 import internship.mbicycle.storify.model.Store;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 public class StoreConverter {
-
-    private final ProfileConverter profileConverter;
 
     public Store fromStoreDTOToStore(StoreDTO storeDTO) {
         return Store.builder()
@@ -26,7 +22,6 @@ public class StoreConverter {
                 .storeName(store.getStoreName())
                 .description(store.getDescription())
                 .address(store.getAddress())
-                .profileDTO(profileConverter.convertProfileToProfileDTO(store.getProfile()))
                 .build();
     }
 }

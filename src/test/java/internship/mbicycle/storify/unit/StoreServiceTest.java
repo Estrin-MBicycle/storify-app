@@ -2,7 +2,6 @@ package internship.mbicycle.storify.unit;
 
 
 import internship.mbicycle.storify.converter.StoreConverter;
-import internship.mbicycle.storify.dto.ProfileDTO;
 import internship.mbicycle.storify.dto.StoreDTO;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.model.Profile;
@@ -33,6 +32,7 @@ class StoreServiceTest {
 
     public static final Long ID = 2L;
     public static final Long PROFILE_ID = 1L;
+    public static final Long LIMIT = 1L;
 
     @Mock
     private StoreRepository storeRepository;
@@ -55,24 +55,46 @@ class StoreServiceTest {
     }
 
     @Test
+    void shouldFindStoresByProfileIdNot() {
+        given(storeRepository.findStoresByProfileIdNot(PROFILE_ID)).willReturn(new ArrayList<>());
+        List<StoreDTO> expected = new ArrayList<>();
+        List<StoreDTO> actual = storeService.findStoresByProfileIdNot(PROFILE_ID);
+        assertEquals(expected, actual);
+        then(storeRepository).should(only()).findStoresByProfileIdNot(PROFILE_ID);
+        then(profileRepository).shouldHaveNoInteractions();
+    }
+
+    @Test
     void shouldFindStoreByIdAndProfileId() {
-        given(storeRepository.findStoresByIdAndProfileId(ID, PROFILE_ID)).willReturn(Optional.empty());
+        given(storeRepository.findStoreByIdAndProfileId(ID, PROFILE_ID)).willReturn(Optional.empty());
 
         final ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
                 () -> storeService.findStoreByIdAndProfileId(ID, PROFILE_ID));
 
         assertEquals(String.format(NOT_FOUND_STORE, ID), exception.getMessage());
 
-        then(storeRepository).should(only()).findStoresByIdAndProfileId(ID, PROFILE_ID);
+        then(storeRepository).should(only()).findStoreByIdAndProfileId(ID, PROFILE_ID);
+        then(profileRepository).shouldHaveNoInteractions();
+    }
+
+    @Test
+    void shouldFindStoreById() {
+        given(storeRepository.findStoreById(ID)).willReturn(Optional.empty());
+
+        final ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
+                () -> storeService.findStoreById(ID));
+
+        assertEquals(String.format(NOT_FOUND_STORE, ID), exception.getMessage());
+
+        then(storeRepository).should(only()).findStoreById(ID);
         then(profileRepository).shouldHaveNoInteractions();
     }
 
     @Test
     void shouldSaveStore() {
         final Profile profile = Profile.builder().id(PROFILE_ID).build();
-        final Store store = Store.builder().id(ID).profile(profile).build();
-        final ProfileDTO profileDTO = ProfileDTO.builder().id(PROFILE_ID).build();
-        final StoreDTO expected = StoreDTO.builder().id(ID).profileDTO(profileDTO).build();
+        final Store store = Store.builder().id(ID).build();
+        final StoreDTO expected = StoreDTO.builder().id(ID).build();
 
 
         given(storeConverter.fromStoreToStoreDTO(store)).willReturn(expected);
@@ -94,10 +116,9 @@ class StoreServiceTest {
     void shouldUpdateStore() {
         final Profile profile = Profile.builder().id(PROFILE_ID).build();
         final Store store = Store.builder().id(ID).profile(profile).build();
-        final ProfileDTO profileDTO = ProfileDTO.builder().id(PROFILE_ID).build();
-        final StoreDTO expected = StoreDTO.builder().id(ID).profileDTO(profileDTO).build();
+        final StoreDTO expected = StoreDTO.builder().id(ID).build();
 
-        given(storeRepository.findStoresByIdAndProfileId(ID, PROFILE_ID)).willReturn(Optional.ofNullable(store));
+        given(storeRepository.findStoreByIdAndProfileId(ID, PROFILE_ID)).willReturn(Optional.ofNullable(store));
         given(profileRepository.getById(PROFILE_ID)).willReturn(profile);
         assert store != null;
         given(storeConverter.fromStoreToStoreDTO(store)).willReturn(expected);
@@ -107,10 +128,28 @@ class StoreServiceTest {
         final StoreDTO actual = storeService.updateStore(expected, ID, PROFILE_ID);
         assertEquals(expected, actual);
 
-        then(storeRepository).should(times(1)).findStoresByIdAndProfileId(ID, PROFILE_ID);
+        then(storeRepository).should(times(1)).findStoreByIdAndProfileId(ID, PROFILE_ID);
         then(storeRepository).should(times(1)).save(store);
         then(storeRepository).shouldHaveNoMoreInteractions();
         then(profileRepository).should(only()).getById(PROFILE_ID);
         then(storeConverter).should(only()).fromStoreToStoreDTO(store);
+    }
+
+    @Test
+    void shouldFindMostPurchasedProductsInStore() {
+        given(storeRepository.findMostPurchasedProductsInStore(ID, LIMIT)).willReturn(new ArrayList<>());
+        List<StoreRepository.PurchasedAndNotPaidProduct> expected = new ArrayList<>();
+        List<StoreRepository.PurchasedAndNotPaidProduct> actual = storeService.findMostPurchasedProductsInStore(ID, LIMIT);
+        assertEquals(expected, actual);
+        then(storeRepository).should(only()).findMostPurchasedProductsInStore(ID, LIMIT);
+    }
+
+    @Test
+    void shouldFindLestPurchasedProductsInStore() {
+        given(storeRepository.findLestPurchasedProductsInStore(ID, LIMIT)).willReturn(new ArrayList<>());
+        List<StoreRepository.PurchasedAndNotPaidProduct> expected = new ArrayList<>();
+        List<StoreRepository.PurchasedAndNotPaidProduct> actual = storeService.findLestPurchasedProductsInStore(ID, LIMIT);
+        assertEquals(expected, actual);
+        then(storeRepository).should(only()).findLestPurchasedProductsInStore(ID, LIMIT);
     }
 }
