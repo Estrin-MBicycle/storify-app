@@ -3,19 +3,16 @@ package internship.mbicycle.storify.service.impl;
 import internship.mbicycle.storify.converter.ProductConverter;
 import internship.mbicycle.storify.dto.ProductDTO;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
-import internship.mbicycle.storify.exception.ValidationException;
 import internship.mbicycle.storify.model.Product;
+import internship.mbicycle.storify.model.Store;
 import internship.mbicycle.storify.repository.ProductRepository;
+import internship.mbicycle.storify.repository.StoreRepository;
 import internship.mbicycle.storify.service.ProductService;
-import internship.mbicycle.storify.util.ExceptionMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_PRODUCT;
@@ -27,6 +24,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductConverter productConverter;
+    private final StoreRepository storeRepository;
 
     @Override
     public List<ProductDTO> getAllProductsFromStore(Long storeId) {
@@ -55,11 +53,27 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO saveProduct(ProductDTO productDto) {
-        validationProductDTO(productDto);
+    public ProductDTO updateProduct(ProductDTO product, Long id, Long storeId) {
+        Product productDb = productRepository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException(NOT_FOUND_PRODUCT));
+        productDb.setProductName(product.getProductName());
+        productDb.setDescription(product.getDescription());
+        productDb.setCount(product.getCount());
+        productDb.setPrice(product.getPrice());
+        productDb.setImage(product.getImage());
+        Store store = storeRepository.getById(storeId);
+        productDb.setStore(store);
+        Product save = productRepository.save(productDb);
+        return productConverter.convertProductToProductDTO(save);
+    }
+
+    @Override
+    public ProductDTO saveProduct(ProductDTO productDto, Long storeId) {
         Product product = productConverter.convertProductDTOToProduct(productDto);
-        productRepository.save(product);
-        return productDto;
+        Store store = storeRepository.getById(storeId);
+        product.setStore(store);
+        Product save = productRepository.save(product);
+        return productConverter.convertProductToProductDTO(save);
     }
 
     @Override
@@ -77,19 +91,5 @@ public class ProductServiceImpl implements ProductService {
         Product productDb = productRepository.findProductByProductName(name).orElseThrow(() ->
                 new ResourceNotFoundException(NOT_FOUND_PRODUCT));
         return productConverter.convertProductToProductDTO(productDb);
-    }
-
-    private void validationProductDTO(ProductDTO productDTO) {
-        Set<ConstraintViolation<ProductDTO>> violations = Validation.buildDefaultValidatorFactory()
-                .getValidator()
-                .validate(productDTO);
-        if (!violations.isEmpty()) {
-            throw new ValidationException(
-                    ExceptionMessage.VALIDATION_ERROR,
-                    String.join(";\n", violations.stream()
-                            .map(it -> String.format("%s : rejected value [%s] - %s",
-                                    it.getPropertyPath(), it.getInvalidValue(), it.getMessage()))
-                            .toArray(String[]::new)));
-        }
     }
 }
