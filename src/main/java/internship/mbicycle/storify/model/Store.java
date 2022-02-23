@@ -41,8 +41,7 @@ public class Store {
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "storeId")
+    @OneToMany(targetEntity=Product.class, cascade = CascadeType.ALL, orphanRemoval=true, mappedBy = "store")
     private List<Product> products;
 
 }

@@ -19,7 +19,6 @@ public class ProductConverter {
                 .image(productDTO.getImage())
                 .productName(productDTO.getProductName())
                 .price(productDTO.getPrice())
-                .storeId(productDTO.getStoreId())
                 .build();
     }
 
@@ -31,7 +30,6 @@ public class ProductConverter {
                 .image(product.getImage())
                 .price(product.getPrice())
                 .productName(product.getProductName())
-                .storeId(product.getStoreId())
                 .build();
     }
 }
