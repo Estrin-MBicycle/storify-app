@@ -1,14 +1,18 @@
 package internship.mbicycle.storify.service;
 
-import internship.mbicycle.storify.dto.PurchasedAndNotPaidProduct;
 import internship.mbicycle.storify.dto.StoreDTO;
+import internship.mbicycle.storify.repository.StoreRepository;
 
 import java.util.List;
 
 public interface StoreService {
     List<StoreDTO> findStoresByProfileId(Long profileId);
 
+    List<StoreDTO> findStoresByProfileIdNot(Long profileId);
+
     StoreDTO findStoreByIdAndProfileId(Long id, Long profileId);
+
+    StoreDTO findStoreById(Long id);
 
     StoreDTO saveStore(StoreDTO storeDTO, Long profileId);
 
@@ -18,8 +22,8 @@ public interface StoreService {
 
     void deleteByIdAndProfileId(Long id, Long profileId);
 
-    List<PurchasedAndNotPaidProduct> findMostPurchasedProductsInStore(Long id, Long limit);
+    List<StoreRepository.PurchasedAndNotPaidProduct> findMostPurchasedProductsInStore(Long id, Long limit);
 
-    List<PurchasedAndNotPaidProduct> findLestPurchasedProductsInStore(Long id, Long limit);
+    List<StoreRepository.PurchasedAndNotPaidProduct> findLestPurchasedProductsInStore(Long id, Long limit);
 
 }

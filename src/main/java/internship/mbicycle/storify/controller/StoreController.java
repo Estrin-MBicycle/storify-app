@@ -1,7 +1,7 @@
 package internship.mbicycle.storify.controller;
 
-import internship.mbicycle.storify.dto.PurchasedAndNotPaidProduct;
 import internship.mbicycle.storify.dto.StoreDTO;
+import internship.mbicycle.storify.repository.StoreRepository;
 import internship.mbicycle.storify.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,13 +23,23 @@ public class StoreController {
     private final StoreService storeService;
 
     @GetMapping("/{profileId}")
-    public List<StoreDTO> getAllStores(@PathVariable Long profileId) {
+    public List<StoreDTO> getAllProfileStores(@PathVariable Long profileId) {
         return storeService.findStoresByProfileId(profileId);
     }
 
+    @GetMapping("/all/{profileId}")
+    public List<StoreDTO> getAllStores(@PathVariable Long profileId) {
+        return storeService.findStoresByProfileIdNot(profileId);
+    }
+
     @GetMapping("/{id}/{profileId}")
-    public StoreDTO findStore(@PathVariable Long id, @PathVariable Long profileId) {
+    public StoreDTO findProfileStore(@PathVariable Long id, @PathVariable Long profileId) {
         return storeService.findStoreByIdAndProfileId(id, profileId);
+    }
+
+    @GetMapping("/store/{id}")
+    public StoreDTO findStore(@PathVariable Long id) {
+        return storeService.findStoreById(id);
     }
 
     @PostMapping("/{profileId}")
@@ -55,12 +65,12 @@ public class StoreController {
     }
 
     @GetMapping("/products/most/{id}/{limit}")
-    public List<PurchasedAndNotPaidProduct> findMostPurchasedProductsInStore(@PathVariable Long id, @PathVariable Long limit) {
+    public List<StoreRepository.PurchasedAndNotPaidProduct> findMostPurchasedProductsInStore(@PathVariable Long id, @PathVariable Long limit) {
         return storeService.findMostPurchasedProductsInStore(id, limit);
     }
 
     @GetMapping("/products/lest/{id}/{limit}")
-    public List<PurchasedAndNotPaidProduct> findLestPurchasedProductsInStore(@PathVariable Long id, @PathVariable Long limit) {
+    public List<StoreRepository.PurchasedAndNotPaidProduct> findLestPurchasedProductsInStore(@PathVariable Long id, @PathVariable Long limit) {
         return storeService.findLestPurchasedProductsInStore(id, limit);
     }
 }

@@ -1,7 +1,6 @@
 package internship.mbicycle.storify.service.impl;
 
 import internship.mbicycle.storify.converter.StoreConverter;
-import internship.mbicycle.storify.dto.PurchasedAndNotPaidProduct;
 import internship.mbicycle.storify.dto.StoreDTO;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.model.Profile;
@@ -37,8 +36,23 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
+    public List<StoreDTO> findStoresByProfileIdNot(Long profileId) {
+        return storeRepository.findStoresByProfileIdNot(profileId)
+                .stream()
+                .map(storeConverter::fromStoreToStoreDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public StoreDTO findStoreByIdAndProfileId(Long id, Long profileId) {
-        Store store = storeRepository.findStoresByIdAndProfileId(id, profileId)
+        Store store = storeRepository.findStoreByIdAndProfileId(id, profileId)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format(NOT_FOUND_STORE, id)));
+        return storeConverter.fromStoreToStoreDTO(store);
+    }
+
+    @Override
+    public StoreDTO findStoreById(Long id) {
+        Store store = storeRepository.findStoreById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format(NOT_FOUND_STORE, id)));
         return storeConverter.fromStoreToStoreDTO(store);
     }
@@ -54,7 +68,7 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public StoreDTO updateStore(StoreDTO storeDTO, Long id, Long profileId) {
-        Store store = storeRepository.findStoresByIdAndProfileId(id,profileId).orElseThrow(() -> new ResourceNotFoundException(String.format(NOT_FOUND_STORE, id)));
+        Store store = storeRepository.findStoreByIdAndProfileId(id,profileId).orElseThrow(() -> new ResourceNotFoundException(String.format(NOT_FOUND_STORE, id)));
         store.setStoreName(storeDTO.getStoreName());
         store.setDescription(storeDTO.getDescription());
         store.setAddress(storeDTO.getAddress());
@@ -70,12 +84,12 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public List<PurchasedAndNotPaidProduct> findMostPurchasedProductsInStore(Long id, Long limit) {
+    public List<StoreRepository.PurchasedAndNotPaidProduct> findMostPurchasedProductsInStore(Long id, Long limit) {
         return storeRepository.findMostPurchasedProductsInStore(id, limit);
     }
 
     @Override
-    public List<PurchasedAndNotPaidProduct> findLestPurchasedProductsInStore(Long id, Long limit) {
+    public List<StoreRepository.PurchasedAndNotPaidProduct> findLestPurchasedProductsInStore(Long id, Long limit) {
         return storeRepository.findLestPurchasedProductsInStore(id, limit);
     }
 
@@ -83,5 +97,4 @@ public class StoreServiceImpl implements StoreService {
     public void deleteAllByProfileId(Long profileId) {
         storeRepository.deleteAllByProfileId(profileId);
     }
-
 }
