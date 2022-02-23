@@ -1,5 +1,7 @@
 package internship.mbicycle.storify.service.impl;
 
+import internship.mbicycle.storify.converter.StorifyUserConverter;
+import internship.mbicycle.storify.dto.StorifyUserDTO;
 import internship.mbicycle.storify.exception.StorifyUserNotFoundException;
 import internship.mbicycle.storify.model.Cart;
 import internship.mbicycle.storify.model.Profile;
@@ -29,6 +31,7 @@ public class StorifyUserServiceImpl implements StorifyUserService {
     private final StorifyUserRepository userRepository;
     private final MailService mailService;
     private final CartRepository cartRepository;
+    private final StorifyUserConverter userConverter;
 
     @Override
     public void updateStorifyUser(StorifyUser storifyUser) {
@@ -36,12 +39,14 @@ public class StorifyUserServiceImpl implements StorifyUserService {
     }
 
     @Override
-    public StorifyUser saveNewUser(StorifyUser storifyUser) {
+    public StorifyUser saveNewUser(StorifyUserDTO storifyUserDTO) {
+        StorifyUser storifyUser = userConverter.convertStorifyUserDTOToStorifyUser(storifyUserDTO);
         storifyUser.setRole(ROLE_USER);
         storifyUser.setPassword(passwordEncoder.encode(storifyUser.getPassword()));
         storifyUser.setActivationCode(UUID.randomUUID().toString());
         storifyUser.setToken(new Token());
         storifyUser.setProfile(new Profile());
+        storifyUser.getProfile().setName(storifyUser.getName());
         Cart cart = new Cart();
         cartRepository.save(cart);
         storifyUser.getProfile().setCart(cart);
