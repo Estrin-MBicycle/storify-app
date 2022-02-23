@@ -18,22 +18,22 @@ public class ProductDTO {
 
     private Long id;
 
-    @NotBlank(message = "{error.productName.notBlank}")
-    @Size(min = 3, max = 50, message = "{error.length.productName}")
+    @NotBlank(message = "Name must not be empty")
+    @Size(min = 3, max = 50, message = "Product mame must have [3..50] length")
     private String productName;
 
     private String image;
 
-    @NotBlank(message = "{error.description.notBlank}")
-    @Size(min = 3, max = 255, message = "{error.length.description}")
+    @NotBlank(message = "Description must not be empty")
+    @Size(min = 3, max = 255, message = "Description must have [3..255] length")
     private String description;
 
-    @NotNull(message = "{error.required.field}")
-    @DecimalMin(value = "0", inclusive = false, message = "{error.invalid.value}")
+    @NotNull(message = "The field is required")
+    @DecimalMin(value = "0", inclusive = false, message = "Invalid value")
     private Integer price;
 
-    @NotNull(message = "{error.required.field}")
-    @DecimalMin(value = "0", inclusive = false, message = "{error.invalid.value}")
+    @NotNull(message = "The field is required")
+    @DecimalMin(value = "0", inclusive = false, message = "Invalid value")
     private Integer count;
 
 }

@@ -4,7 +4,9 @@ import internship.mbicycle.storify.converter.ProductConverter;
 import internship.mbicycle.storify.dto.ProductDTO;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.model.Product;
+import internship.mbicycle.storify.model.Store;
 import internship.mbicycle.storify.repository.ProductRepository;
+import internship.mbicycle.storify.repository.StoreRepository;
 import internship.mbicycle.storify.service.impl.ProductServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,11 +30,14 @@ class ProductServiceImplTest {
     private ProductRepository productRepository;
     @Mock
     private ProductConverter productConverter;
+    @Mock
+    private StoreRepository storeRepository;
 
     @InjectMocks
     private ProductServiceImpl productService;
     private Product product;
     private ProductDTO productDTO;
+    private Store store;
 
     @BeforeEach
     void setUp() {
@@ -48,6 +53,12 @@ class ProductServiceImplTest {
                 .price(1000)
                 .id(89L)
                 .count(57)
+                .build();
+
+        store = Store.builder()
+                .id(9L)
+                .address("Test")
+                .description("Store Test")
                 .build();
     }
 
@@ -71,8 +82,10 @@ class ProductServiceImplTest {
 
     @Test
     void testSaveProduct() {
+        final Long storeId = 9L;
         given(productConverter.convertProductDTOToProduct(productDTO)).willReturn(product);
-        productService.saveProduct(productDTO);
+        given(storeRepository.getById(storeId)).willReturn(store);
+        productService.saveProduct(productDTO, storeId);
         then(productRepository).should(only()).save(product);
     }
 }
