@@ -31,11 +31,11 @@ public class MailServiceImpl implements MailService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(mailProperties.getUsername());
         message.setTo(user.getEmail());
-        message.setText(createMessage(user, purchaseDTO));
+        message.setText(createPurchaseMessage(user, purchaseDTO));
         mailSender.send(message);
     }
 
-    private String createMessage(StorifyUser user, PurchaseDTO purchaseDTO) {
+    private String createPurchaseMessage(StorifyUser user, PurchaseDTO purchaseDTO) {
         return String.format("Dear %s your order for the amount %d (%s),you can get by showing your unique code - %s ",
                 user.getUsername(), purchaseDTO.getPrice(), purchaseDTO.getProductDTOMap(), purchaseDTO.getUniqueCode());
     }
