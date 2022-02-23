@@ -25,5 +25,6 @@
     <include file="db/changelog/db.changelog-renameTableOrderAndColumns.xml"/>
     <include file="db/changelog/db.changelog-createNewTableProductPurchase.xml"/>
     <include file="db/changelog/db.changelog-changedConnectionBasketAndProfile.xml"/>
+    <include file="db/changelog/db.changelog-renameTableBasketAndColumns.xml"/>
 
 </databaseChangeLog>

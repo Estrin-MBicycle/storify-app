@@ -13,14 +13,14 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Data
-public class Basket {
+public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "product_basket",
-            joinColumns = @JoinColumn(name = "basket_id"),
+    @JoinTable(name = "product_cart",
+            joinColumns = @JoinColumn(name = "cart_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id"))
     private List<Product> productList;
 }

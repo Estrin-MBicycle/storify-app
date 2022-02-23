@@ -1,7 +1,9 @@
 package internship.mbicycle.storify.service.impl;
 
+import internship.mbicycle.storify.exception.TokenNotFoundException;
 import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.repository.StorifyUserRepository;
+import internship.mbicycle.storify.service.StorifyUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,12 +17,11 @@ import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_USER;
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private final StorifyUserRepository userRepository;
+    private final StorifyUserService userService;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        StorifyUser storifyUser = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException(NOT_FOUND_USER));
+        StorifyUser storifyUser = userService.getUserByEmail(email);
         return User.builder()
                 .username(storifyUser.getUsername())
                 .password(storifyUser.getPassword())

@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 
 import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_STORE;
 
-
 @Service
 @RequiredArgsConstructor
 @Transactional

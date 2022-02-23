@@ -1,16 +1,15 @@
 package internship.mbicycle.storify.service.impl;
 
-import internship.mbicycle.storify.model.Basket;
+import internship.mbicycle.storify.exception.StorifyUserNotFoundException;
+import internship.mbicycle.storify.model.Cart;
 import internship.mbicycle.storify.model.Profile;
 import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.model.Token;
-import internship.mbicycle.storify.repository.BasketRepository;
-import internship.mbicycle.storify.repository.ProfileRepository;
+import internship.mbicycle.storify.repository.CartRepository;
 import internship.mbicycle.storify.repository.StorifyUserRepository;
 import internship.mbicycle.storify.service.MailService;
 import internship.mbicycle.storify.service.StorifyUserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,8 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
 import static internship.mbicycle.storify.util.Constants.ROLE_USER;
-import static internship.mbicycle.storify.util.EmailMessage.ACTIVATION_GREETING;
-import static internship.mbicycle.storify.util.EmailMessage.REGISTRATION_CONFIRMATION_CODE;
+import static internship.mbicycle.storify.util.EmailMessage.*;
 import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_USER;
 
 @Service
@@ -30,8 +28,7 @@ public class StorifyUserServiceImpl implements StorifyUserService {
     private final PasswordEncoder passwordEncoder;
     private final StorifyUserRepository userRepository;
     private final MailService mailService;
-    private final ProfileRepository profileRepository;
-    private final BasketRepository basketRepository;
+    private final CartRepository cartRepository;
 
     @Override
     public void updateStorifyUser(StorifyUser storifyUser) {
@@ -45,9 +42,9 @@ public class StorifyUserServiceImpl implements StorifyUserService {
         storifyUser.setActivationCode(UUID.randomUUID().toString());
         storifyUser.setToken(new Token());
         storifyUser.setProfile(new Profile());
-        Basket basket = new Basket();
-        basketRepository.save(basket);
-        storifyUser.getProfile().setBasket(basket);
+        Cart cart = new Cart();
+        cartRepository.save(cart);
+        storifyUser.getProfile().setCart(cart);
         String message = String.format(ACTIVATION_GREETING, storifyUser.getName(), storifyUser.getActivationCode());
         mailService.send(storifyUser.getEmail(), REGISTRATION_CONFIRMATION_CODE, message);
         return userRepository.save(storifyUser);
@@ -56,13 +53,13 @@ public class StorifyUserServiceImpl implements StorifyUserService {
     @Override
     public StorifyUser getUserByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format(NOT_FOUND_USER, email)));
+                .orElseThrow(() -> new StorifyUserNotFoundException(String.format(NOT_FOUND_USER, email)));
     }
 
     @Override
     public StorifyUser getUserByActivationCode(String code) {
         return userRepository.findByActivationCode(code).orElseThrow(
-                () -> new UsernameNotFoundException(String.format(NOT_FOUND_USER, code)));
+                () -> new StorifyUserNotFoundException(String.format(NOT_FOUND_USER, code)));
     }
 
     @Override
@@ -70,5 +67,22 @@ public class StorifyUserServiceImpl implements StorifyUserService {
         StorifyUser storifyUser = getUserByActivationCode(code);
         storifyUser.setActivationCode(null);
         return storifyUser;
+    }
+
+    @Override
+    public void updateEmail(String newEmail, String code, String email) {
+        StorifyUser storifyUser = getUserByEmail(email);
+        if (!storifyUser.getTempConfirmCode().equals(code)) {
+            throw new StorifyUserNotFoundException(String.format(NOT_FOUND_USER, code));
+        }
+        storifyUser.setEmail(newEmail);
+    }
+
+    @Override
+    public void sendConfirmationEmail(String email) {
+        StorifyUser storifyUser = getUserByEmail(email);
+        storifyUser.setTempConfirmCode(UUID.randomUUID().toString());
+        String message = String.format(CONFIRMATION_EMAIL, storifyUser.getName(), storifyUser.getTempConfirmCode());
+        mailService.send(storifyUser.getEmail(), CONFIRMATION_CODE, message);
     }
 }

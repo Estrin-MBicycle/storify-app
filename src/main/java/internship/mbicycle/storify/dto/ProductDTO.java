@@ -17,6 +17,5 @@ public class ProductDTO {
     private String description;
     private Integer price;
     private Integer count;
-    private Long storeId;
 
 }
