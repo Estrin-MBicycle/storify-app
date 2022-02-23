@@ -2,7 +2,9 @@ package internship.mbicycle.storify.service.impl;
 
 import internship.mbicycle.storify.converter.ProductConverter;
 import internship.mbicycle.storify.dto.ProductDTO;
+import internship.mbicycle.storify.exception.ErrorCode;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
+import internship.mbicycle.storify.exception.ValidationException;
 import internship.mbicycle.storify.model.Product;
 import internship.mbicycle.storify.repository.ProductRepository;
 import internship.mbicycle.storify.service.ProductService;
@@ -10,7 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_PRODUCT;
@@ -51,6 +56,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDTO saveProduct(ProductDTO productDto) {
+        validationProductDTO(productDto);
         Product product = productConverter.convertProductDTOToProduct(productDto);
         productRepository.save(product);
         return productDto;
@@ -71,5 +77,19 @@ public class ProductServiceImpl implements ProductService {
         Product productDb = productRepository.findProductByProductName(name).orElseThrow(() ->
                 new ResourceNotFoundException(NOT_FOUND_PRODUCT));
         return productConverter.convertProductToProductDTO(productDb);
+    }
+
+    private void validationProductDTO(ProductDTO productDTO) {
+        Set<ConstraintViolation<ProductDTO>> violations = Validation.buildDefaultValidatorFactory()
+                .getValidator()
+                .validate(productDTO);
+        if (!violations.isEmpty()) {
+            throw new ValidationException(
+                    ErrorCode.VALIDATION_ERROR,
+                    String.join(";\n", violations.stream()
+                            .map(it -> String.format("%s : rejected value [%s] - %s",
+                                    it.getPropertyPath(), it.getInvalidValue(), it.getMessage()))
+                            .toArray(String[]::new)));
+        }
     }
 }
