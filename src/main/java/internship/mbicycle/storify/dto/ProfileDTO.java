@@ -33,8 +33,8 @@ public class ProfileDTO {
     @Size(max = 50, message = "address must be max 50 symbols")
     private String address;
 
-    @Pattern(regexp = "^\\+375\\s\\(\\d{2}\\)\\s\\d{3}-\\d{2}-\\d{2}$",
-            message = "phone number is not valid (+375 (11) 222-33-44)")
+    @Pattern(regexp = "^\\+375\\((?:25|29|33|44)\\)\\d{3}-\\d{2}-\\d{2}$",
+            message = "phone number is not valid (+375(25|29|33|44)222-33-44)")
     private String phone;
 
     private CartDTO cartDTO;
