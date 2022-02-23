@@ -1,5 +1,7 @@
 package internship.mbicycle.storify.configuration.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import internship.mbicycle.storify.exception.InvalidAuthorizationHeaderException;
 import internship.mbicycle.storify.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
+import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_AUTHORIZATION_HEADER;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.MediaType.TEXT_HTML_VALUE;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,12 +32,20 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                 request.getServletPath().equals("/sign-up") ||
                 request.getServletPath().equals("/token/refresh") ||
                 request.getServletPath().startsWith("/activate/"))) {
-            String authorizationHeader = Optional.ofNullable(request.getHeader(AUTHORIZATION))
-                    .orElseThrow(() -> new RuntimeException("The token not found"));
-            UsernamePasswordAuthenticationToken authenticationToken =
-                    tokenService.getAuthenticationToken(authorizationHeader);
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            try {
+                String authorizationHeader = Optional.ofNullable(request.getHeader(AUTHORIZATION))
+                        .orElseThrow(() -> new InvalidAuthorizationHeaderException(NOT_FOUND_AUTHORIZATION_HEADER));
+                UsernamePasswordAuthenticationToken authenticationToken =
+                        tokenService.getAuthenticationToken(authorizationHeader);
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                filterChain.doFilter(request, response);
+            } catch (Exception e) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                response.setContentType(TEXT_HTML_VALUE);
+                new ObjectMapper().writeValue(response.getWriter(), e.getMessage());
+            }
+        } else {
+            filterChain.doFilter(request, response);
         }
-        filterChain.doFilter(request, response);
     }
 }

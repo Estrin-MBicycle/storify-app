@@ -9,12 +9,27 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public final ResponseEntity<String> handleUserNotFoundException(ResourceNotFoundException e) {
+    public final ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(ProfileNotFoundException.class)
     public final ResponseEntity<String> handleProfileNotFoundException(ProfileNotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(TokenNotFoundException.class)
+    public final ResponseEntity<String> handleTokenNotFoundException(TokenNotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidAuthorizationHeaderException.class)
+    public final ResponseEntity<String> handleInvalidAuthorizationHeaderException(InvalidAuthorizationHeaderException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(StorifyUserNotFoundException.class)
+    public final ResponseEntity<String> handleInvalidAuthorizationHeaderException(StorifyUserNotFoundException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 }
