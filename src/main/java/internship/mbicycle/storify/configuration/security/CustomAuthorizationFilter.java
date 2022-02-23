@@ -31,6 +31,8 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
         if (!(request.getServletPath().equals("/login") ||
                 request.getServletPath().equals("/sign-up") ||
                 request.getServletPath().equals("/token/refresh") ||
+                request.getServletPath().startsWith("/swagger") ||
+                request.getServletPath().startsWith("/v2") ||
                 request.getServletPath().startsWith("/activate/"))) {
             try {
                 String authorizationHeader = Optional.ofNullable(request.getHeader(AUTHORIZATION))
