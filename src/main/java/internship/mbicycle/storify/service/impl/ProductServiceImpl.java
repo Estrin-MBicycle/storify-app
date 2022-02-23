@@ -2,12 +2,12 @@ package internship.mbicycle.storify.service.impl;
 
 import internship.mbicycle.storify.converter.ProductConverter;
 import internship.mbicycle.storify.dto.ProductDTO;
-import internship.mbicycle.storify.exception.ErrorCode;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.exception.ValidationException;
 import internship.mbicycle.storify.model.Product;
 import internship.mbicycle.storify.repository.ProductRepository;
 import internship.mbicycle.storify.service.ProductService;
+import internship.mbicycle.storify.util.ExceptionMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,7 +85,7 @@ public class ProductServiceImpl implements ProductService {
                 .validate(productDTO);
         if (!violations.isEmpty()) {
             throw new ValidationException(
-                    ErrorCode.VALIDATION_ERROR,
+                    ExceptionMessage.VALIDATION_ERROR,
                     String.join(";\n", violations.stream()
                             .map(it -> String.format("%s : rejected value [%s] - %s",
                                     it.getPropertyPath(), it.getInvalidValue(), it.getMessage()))
