@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -43,12 +44,12 @@ public class StoreController {
     }
 
     @PostMapping("/{profileId}")
-    public StoreDTO saveStore(@RequestBody StoreDTO storeDTO, @PathVariable Long profileId)  {
+    public StoreDTO saveStore(@Valid @RequestBody StoreDTO storeDTO, @PathVariable Long profileId)  {
         return storeService.saveStore(storeDTO, profileId);
     }
 
     @PutMapping("/{id}/{profileId}")
-    public StoreDTO updateStore(@RequestBody StoreDTO storeDTO, @PathVariable Long id, @PathVariable Long profileId) {
+    public StoreDTO updateStore(@Valid @RequestBody StoreDTO storeDTO, @PathVariable Long id, @PathVariable Long profileId) {
         return storeService.updateStore(storeDTO, id, profileId);
     }
 
