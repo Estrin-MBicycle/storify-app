@@ -1,6 +1,7 @@
 package internship.mbicycle.storify.service.impl;
 
 import internship.mbicycle.storify.converter.StoreConverter;
+import internship.mbicycle.storify.dto.IncomePeriodDTO;
 import internship.mbicycle.storify.dto.StoreDTO;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.model.Profile;
@@ -8,11 +9,14 @@ import internship.mbicycle.storify.model.Store;
 import internship.mbicycle.storify.repository.ProfileRepository;
 import internship.mbicycle.storify.repository.StoreRepository;
 import internship.mbicycle.storify.service.StoreService;
+import internship.mbicycle.storify.util.IncomePeriod;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_STORE;
@@ -97,4 +101,28 @@ public class StoreServiceImpl implements StoreService {
     public void deleteAllByProfileId(Long profileId) {
         storeRepository.deleteAllByProfileId(profileId);
     }
+
+    @Override
+    public IncomePeriodDTO getIncome(long profileId) {
+        Map<IncomePeriod, Integer> map = Map.of(
+                IncomePeriod.ALL_TIME, storeRepository.getIncomeForAllTime(profileId),
+                IncomePeriod.YEAR, storeRepository.getIncomeForMonths(profileId, 12),
+                IncomePeriod.HALF_YEAR, storeRepository.getIncomeForMonths(profileId, 6),
+                IncomePeriod.LAST_MONTH, storeRepository.getIncomeForMonths(profileId, 1),
+                IncomePeriod.TODAY, storeRepository.getIncomeForDay(profileId)
+        );
+        return IncomePeriodDTO.builder().income(map).build();
+    }
+
+    @Override
+    public Integer getIncomeForPeriod(IncomePeriod incomePeriod, long profileId) {
+        return Map.of(
+                IncomePeriod.ALL_TIME, storeRepository.getIncomeForAllTime(profileId),
+                IncomePeriod.YEAR, storeRepository.getIncomeForMonths(profileId, 12),
+                IncomePeriod.HALF_YEAR, storeRepository.getIncomeForMonths(profileId, 6),
+                IncomePeriod.LAST_MONTH, storeRepository.getIncomeForMonths(profileId, 1),
+                IncomePeriod.TODAY, storeRepository.getIncomeForDay(profileId)
+        ).get(incomePeriod);
+    }
+
 }
