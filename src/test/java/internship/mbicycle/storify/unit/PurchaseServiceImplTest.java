@@ -6,6 +6,7 @@ import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.model.Purchase;
 import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.repository.PurchaseRepository;
+import internship.mbicycle.storify.service.MailService;
 import internship.mbicycle.storify.service.impl.GeneratorUniqueCodeImpl;
 import internship.mbicycle.storify.service.impl.PurchaseServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +34,8 @@ class PurchaseServiceImplTest {
     private GeneratorUniqueCodeImpl generatorUniqueCode;
     @Mock
     private PurchaseConverter purchaseConverter;
+    @Mock
+    private MailService mailService;
 
     @InjectMocks
     private PurchaseServiceImpl purchaseService;
@@ -79,9 +82,12 @@ class PurchaseServiceImplTest {
     }
 
     @Test
-    void testSaveProduct() {
+    void testSavePurchase() {
         given(purchaseConverter.convertPurchaseDTOToPurchase(purchaseDTO)).willReturn(purchase);
-        purchaseService.savePurchase(user, purchaseDTO);
+        given(generatorUniqueCode.generationUniqueCode()).willReturn("Code");
+        given(purchaseRepository.save(purchase)).willReturn(purchase);
+        given(purchaseConverter.convertPurchaseToPurchaseDTO(purchase)).willReturn(purchaseDTO);
+        assertEquals(purchaseDTO, purchaseService.savePurchase(user, purchaseDTO));
         then(purchaseRepository).should(only()).save(purchase);
         then(generatorUniqueCode).should(only()).generationUniqueCode();
     }

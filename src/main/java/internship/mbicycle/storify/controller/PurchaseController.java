@@ -13,38 +13,41 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
-@RequestMapping("/orders")
+@RequestMapping("/purchases")
 @RequiredArgsConstructor
 public class PurchaseController {
 
     private final PurchaseService purchaseService;
 
     @GetMapping
-    public ResponseEntity<?> getAllOrders() {
+    public ResponseEntity<?> getAllPurchases() {
         return ResponseEntity.ok(purchaseService.getAllPurchases());
     }
 
     @GetMapping("/{uniqueCode}")
-    public ResponseEntity<?> getOrderByUniqueCode(@PathVariable String uniqueCode) {
+    public ResponseEntity<?> getPurchaseByUniqueCode(@PathVariable String uniqueCode) {
         return ResponseEntity.ok(purchaseService.getPurchaseByUniqueCode(uniqueCode));
     }
 
     @PostMapping
-    public ResponseEntity<?> createOrder(@RequestBody PurchaseDTO purchaseDTO,
-                                         @RequestBody StorifyUser user) {
+    public ResponseEntity<?> createPurchase(@Valid @RequestBody PurchaseDTO purchaseDTO,
+                                            @RequestBody StorifyUser user) {
         return ResponseEntity.ok(purchaseService.savePurchase(user, purchaseDTO));
     }
 
-    @PutMapping
-    public ResponseEntity<?> updateOrder(@RequestBody PurchaseDTO purchaseDTO
-            , @RequestBody StorifyUser user) {
-        return ResponseEntity.ok(purchaseService.savePurchase(user, purchaseDTO));
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updatePurchase(@Valid @RequestBody PurchaseDTO purchaseDTO,
+                                            @PathVariable Long id,
+                                            @RequestBody StorifyUser user) {
+        return ResponseEntity.ok(purchaseService.updatePurchase(purchaseDTO, id, user));
     }
 
     @GetMapping("/{profileId}/{isDelivered}")
-    public ResponseEntity<?> getAllDeliveredOrdersByProfileId(@PathVariable Long profileId,
-                                                              @PathVariable boolean isDelivered) {
+    public ResponseEntity<?> getAllDeliveredPurchasesByProfileId(@PathVariable Long profileId,
+                                                                 @PathVariable boolean isDelivered) {
         return ResponseEntity.ok(purchaseService.getAllPurchasesByProfileIdAndDelivered(profileId, isDelivered));
     }
 }
