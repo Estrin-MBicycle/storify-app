@@ -2,6 +2,7 @@ package internship.mbicycle.storify.unit;
 
 
 import internship.mbicycle.storify.converter.StoreConverter;
+import internship.mbicycle.storify.dto.IncomePeriodDTO;
 import internship.mbicycle.storify.dto.StoreDTO;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.model.Profile;
@@ -9,6 +10,7 @@ import internship.mbicycle.storify.model.Store;
 import internship.mbicycle.storify.repository.ProfileRepository;
 import internship.mbicycle.storify.repository.StoreRepository;
 import internship.mbicycle.storify.service.impl.StoreServiceImpl;
+import internship.mbicycle.storify.util.IncomePeriod;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_STORE;
@@ -151,5 +154,58 @@ class StoreServiceTest {
         List<StoreRepository.PurchasedAndNotPaidProduct> actual = storeService.findLestPurchasedProductsInStore(ID, LIMIT);
         assertEquals(expected, actual);
         then(storeRepository).should(only()).findLestPurchasedProductsInStore(ID, LIMIT);
+    }
+
+    @Test
+    void shouldGetIncome() {
+        given(storeRepository.getIncomeForAllTime(PROFILE_ID)).willReturn(10);
+        given(storeRepository.getIncomeForMonths(PROFILE_ID, 12)).willReturn(20);
+        given(storeRepository.getIncomeForMonths(PROFILE_ID, 6)).willReturn(30);
+        given(storeRepository.getIncomeForMonths(PROFILE_ID, 1)).willReturn(40);
+        given(storeRepository.getIncomeForDay(PROFILE_ID)).willReturn(50);
+
+        Map<IncomePeriod, Integer> map = Map.of(
+                IncomePeriod.ALL_TIME, 10,
+                IncomePeriod.YEAR, 20,
+                IncomePeriod.HALF_YEAR, 30,
+                IncomePeriod.LAST_MONTH, 40,
+                IncomePeriod.TODAY, 50
+        );
+        IncomePeriodDTO expected = IncomePeriodDTO.builder().income(map).build();
+        IncomePeriodDTO actual = storeService.getIncome(PROFILE_ID);
+
+        assertEquals(expected, actual);
+
+        then(storeRepository).should(times(1)).getIncomeForAllTime(PROFILE_ID);
+        then(storeRepository).should(times(1)).getIncomeForMonths(PROFILE_ID, 12);
+        then(storeRepository).should(times(1)).getIncomeForMonths(PROFILE_ID, 6);
+        then(storeRepository).should(times(1)).getIncomeForMonths(PROFILE_ID, 1);
+        then(storeRepository).should(times(1)).getIncomeForDay(PROFILE_ID);
+        then(storeRepository).shouldHaveNoMoreInteractions();
+        then(profileRepository).shouldHaveNoInteractions();
+        then(storeConverter).shouldHaveNoInteractions();
+    }
+
+    @Test
+    void shouldGetIncomeForPeriod() {
+        given(storeRepository.getIncomeForAllTime(PROFILE_ID)).willReturn(10);
+        given(storeRepository.getIncomeForMonths(PROFILE_ID, 12)).willReturn(20);
+        given(storeRepository.getIncomeForMonths(PROFILE_ID, 6)).willReturn(30);
+        given(storeRepository.getIncomeForMonths(PROFILE_ID, 1)).willReturn(40);
+        given(storeRepository.getIncomeForDay(PROFILE_ID)).willReturn(50);
+
+        Integer expected = 10;
+        Integer actual = storeService.getIncomeForPeriod(IncomePeriod.ALL_TIME, PROFILE_ID);
+
+        assertEquals(expected, actual);
+
+        then(storeRepository).should(times(1)).getIncomeForAllTime(PROFILE_ID);
+        then(storeRepository).should(times(1)).getIncomeForMonths(PROFILE_ID, 12);
+        then(storeRepository).should(times(1)).getIncomeForMonths(PROFILE_ID, 6);
+        then(storeRepository).should(times(1)).getIncomeForMonths(PROFILE_ID, 1);
+        then(storeRepository).should(times(1)).getIncomeForDay(PROFILE_ID);
+        then(storeRepository).shouldHaveNoMoreInteractions();
+        then(profileRepository).shouldHaveNoInteractions();
+        then(storeConverter).shouldHaveNoInteractions();
     }
 }
