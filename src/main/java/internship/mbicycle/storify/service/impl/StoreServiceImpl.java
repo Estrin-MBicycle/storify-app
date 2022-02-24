@@ -1,6 +1,7 @@
 package internship.mbicycle.storify.service.impl;
 
 import internship.mbicycle.storify.converter.StoreConverter;
+import internship.mbicycle.storify.dto.PeriodOfIncomeDTO;
 import internship.mbicycle.storify.dto.StoreDTO;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.model.Profile;
@@ -8,11 +9,14 @@ import internship.mbicycle.storify.model.Store;
 import internship.mbicycle.storify.repository.ProfileRepository;
 import internship.mbicycle.storify.repository.StoreRepository;
 import internship.mbicycle.storify.service.StoreService;
+import internship.mbicycle.storify.util.PeriodOfIncome;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_STORE;
@@ -97,4 +101,16 @@ public class StoreServiceImpl implements StoreService {
     public void deleteAllByProfileId(Long profileId) {
         storeRepository.deleteAllByProfileId(profileId);
     }
+
+    @Override
+    public PeriodOfIncomeDTO getIncome(long profileId) {
+        Map<PeriodOfIncome, Integer> map = new HashMap<>();
+        map.put(PeriodOfIncome.ALL_TIME, storeRepository.getIncomeForAllTime(profileId));
+        map.put(PeriodOfIncome.YEAR, storeRepository.getIncomeForMonths(profileId, 12));
+        map.put(PeriodOfIncome.HALF_YEAR, storeRepository.getIncomeForMonths(profileId, 6));
+        map.put(PeriodOfIncome.LAST_MONTH, storeRepository.getIncomeForMonths(profileId, 1));
+        map.put(PeriodOfIncome.TODAY, storeRepository.getIncomeForDay(profileId));
+        return PeriodOfIncomeDTO.builder().income(map).build();
+    }
+
 }
