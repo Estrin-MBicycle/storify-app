@@ -48,14 +48,14 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
         String getProfit();
     }
 
-    @Query(value = "SELECT SUM(pr.price * pp.count) " +
+    @Query(value = "SELECT COALESCE(SUM(pr.price * pp.count), 0) " +
             "FROM store s INNER JOIN product pr on s.id = pr.store_id " +
             "INNER JOIN product_purchase pp on pr.id = pp.product " +
             "INNER JOIN purchase pu on pp.purchase = pu.id " +
             "WHERE s.profile_id = :profileId", nativeQuery = true)
     Integer getIncomeForAllTime(@Param("profileId") long profileId);
 
-    @Query(value = "SELECT SUM(pr.price * pp.count) " +
+    @Query(value = "SELECT COALESCE(SUM(pr.price * pp.count), 0) " +
             "FROM store s INNER JOIN product pr on s.id = pr.store_id " +
             "INNER JOIN product_purchase pp on pr.id = pp.product " +
             "INNER JOIN purchase pu on pp.purchase = pu.id " +
@@ -63,7 +63,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
             "pu.purchase_date BETWEEN CURDATE() - INTERVAL :month MONTH AND CURDATE()", nativeQuery = true)
     Integer getIncomeForMonths(@Param("profileId") long profileId, @Param("month") int month);
 
-    @Query(value = "SELECT SUM(pr.price * pp.count) " +
+    @Query(value = "SELECT COALESCE(SUM(pr.price * pp.count), 0) " +
             "FROM store s INNER JOIN product pr on s.id = pr.store_id " +
             "INNER JOIN product_purchase pp on pr.id = pp.product " +
             "INNER JOIN purchase pu on pp.purchase = pu.id " +

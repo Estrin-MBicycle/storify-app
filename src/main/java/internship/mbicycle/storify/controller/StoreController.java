@@ -1,9 +1,10 @@
 package internship.mbicycle.storify.controller;
 
-import internship.mbicycle.storify.dto.PeriodOfIncomeDTO;
+import internship.mbicycle.storify.dto.IncomePeriodDTO;
 import internship.mbicycle.storify.dto.StoreDTO;
 import internship.mbicycle.storify.repository.StoreRepository;
 import internship.mbicycle.storify.service.StoreService;
+import internship.mbicycle.storify.util.IncomePeriod;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -77,8 +78,13 @@ public class StoreController {
     }
 
     @GetMapping("/income/{profileId}")
-    public PeriodOfIncomeDTO getIncome(@PathVariable long profileId) {
+    public IncomePeriodDTO getIncome(@PathVariable long profileId) {
         return storeService.getIncome(profileId);
+    }
+
+    @GetMapping("/income/{incomePeriod}/{profileId}")
+    public Integer getIncomeForPeriod(@PathVariable IncomePeriod incomePeriod, @PathVariable long profileId) {
+        return storeService.getIncomeForPeriod(incomePeriod, profileId);
     }
 
 }

@@ -1,6 +1,6 @@
 package internship.mbicycle.storify.dto;
 
-import internship.mbicycle.storify.util.PeriodOfIncome;
+import internship.mbicycle.storify.util.IncomePeriod;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,8 +12,8 @@ import java.util.Map;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PeriodOfIncomeDTO {
+public class IncomePeriodDTO {
 
-    private Map<PeriodOfIncome, Integer> income;
+    private Map<IncomePeriod, Integer> income;
 
 }

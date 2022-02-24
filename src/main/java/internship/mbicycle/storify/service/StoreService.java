@@ -1,9 +1,9 @@
 package internship.mbicycle.storify.service;
 
-import internship.mbicycle.storify.dto.PeriodOfIncomeDTO;
+import internship.mbicycle.storify.dto.IncomePeriodDTO;
 import internship.mbicycle.storify.dto.StoreDTO;
 import internship.mbicycle.storify.repository.StoreRepository;
-import org.springframework.data.repository.query.Param;
+import internship.mbicycle.storify.util.IncomePeriod;
 
 import java.util.List;
 
@@ -28,6 +28,8 @@ public interface StoreService {
 
     List<StoreRepository.PurchasedAndNotPaidProduct> findLestPurchasedProductsInStore(Long id, Long limit);
 
-    PeriodOfIncomeDTO getIncome(long profileId);
+    IncomePeriodDTO getIncome(long profileId);
+
+    Integer getIncomeForPeriod(IncomePeriod incomePeriod, long profileId);
 
 }
