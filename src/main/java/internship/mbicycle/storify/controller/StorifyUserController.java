@@ -1,5 +1,6 @@
 package internship.mbicycle.storify.controller;
 
+import internship.mbicycle.storify.dto.NewEmailDTO;
 import internship.mbicycle.storify.dto.StorifyUserDTO;
 import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.service.StorifyUserService;
@@ -10,12 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import java.security.Principal;
-
-import static internship.mbicycle.storify.util.ExceptionMessage.EMPTY_EMAIL_EXCEPTION;
-import static internship.mbicycle.storify.util.ExceptionMessage.INVALID_EMAIL_EXCEPTION;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,10 +40,9 @@ public class StorifyUserController {
     }
 
     @PatchMapping("/update/{code}")
-    public void updateEmail(
-            @NotBlank(message = EMPTY_EMAIL_EXCEPTION) @Email(message = INVALID_EMAIL_EXCEPTION) String newEmail,
-            @PathVariable String code, Principal principal) {
-        userService.updateEmail(newEmail, code, principal.getName());
+    public void updateEmail(@Valid @RequestBody NewEmailDTO newEmailDTO,
+                            @PathVariable String code, Principal principal) {
+        userService.updateEmail(newEmailDTO.getEmail(), code, principal.getName());
     }
 
 }
