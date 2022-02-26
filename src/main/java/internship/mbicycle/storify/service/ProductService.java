@@ -10,15 +10,17 @@ public interface ProductService {
 
     ProductDTO getProductByName(String name);
 
+    void removeProductById(Long id);
+
     List<ProductDTO> getAllProductsFromStore(Long storeId);
 
-    void removeProductById(Long id);
+    ProductDTO updateProduct(ProductDTO product, Long id, Long storeId);
 
     void removeProductByStoreIdAndId(Long storeId, Long productId);
 
     void removeAllProductsByStoreId(Long storeId);
 
-    ProductDTO saveProduct(ProductDTO product);
+    ProductDTO saveProduct(ProductDTO product, Long storeId);
 
     List<ProductDTO> getAllProducts();
 

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface StoreRepository extends JpaRepository<Store, Long> {
+
     List<Store> findStoresByProfileId(Long profileId);
 
     Optional<Store> findStoreByIdAndProfileId(Long id, Long profileId);
@@ -47,5 +48,27 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
         String getProfit();
     }
 
+    @Query(value = "SELECT COALESCE(SUM(pr.price * pp.count), 0) " +
+            "FROM store s INNER JOIN product pr on s.id = pr.store_id " +
+            "INNER JOIN product_purchase pp on pr.id = pp.product " +
+            "INNER JOIN purchase pu on pp.purchase = pu.id " +
+            "WHERE s.profile_id = :profileId", nativeQuery = true)
+    Integer getIncomeForAllTime(@Param("profileId") long profileId);
+
+    @Query(value = "SELECT COALESCE(SUM(pr.price * pp.count), 0) " +
+            "FROM store s INNER JOIN product pr on s.id = pr.store_id " +
+            "INNER JOIN product_purchase pp on pr.id = pp.product " +
+            "INNER JOIN purchase pu on pp.purchase = pu.id " +
+            "WHERE s.profile_id = :profileId AND " +
+            "pu.purchase_date BETWEEN CURDATE() - INTERVAL :month MONTH AND CURDATE()", nativeQuery = true)
+    Integer getIncomeForMonths(@Param("profileId") long profileId, @Param("month") int month);
+
+    @Query(value = "SELECT COALESCE(SUM(pr.price * pp.count), 0) " +
+            "FROM store s INNER JOIN product pr on s.id = pr.store_id " +
+            "INNER JOIN product_purchase pp on pr.id = pp.product " +
+            "INNER JOIN purchase pu on pp.purchase = pu.id " +
+            "WHERE s.profile_id = :profileId AND " +
+            "pu.purchase_date = CURDATE()", nativeQuery = true)
+    Integer getIncomeForDay(@Param("profileId") long profileId);
 
 }

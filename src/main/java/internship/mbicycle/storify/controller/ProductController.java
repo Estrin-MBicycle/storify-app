@@ -1,7 +1,5 @@
 package internship.mbicycle.storify.controller;
 
-import java.util.List;
-
 import internship.mbicycle.storify.dto.ProductDTO;
 import internship.mbicycle.storify.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +12,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+import java.util.List;
 
 
 @RestController
@@ -38,14 +39,17 @@ public class ProductController {
         return ResponseEntity.ok(productService.getAllProductsFromStore(id));
     }
 
-    @PostMapping
-    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) {
-        return ResponseEntity.ok(productService.saveProduct(productDTO));
+    @PostMapping("/{storeId}")
+    public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductDTO productDTO,
+                                                    @PathVariable Long storeId) {
+        return ResponseEntity.ok(productService.saveProduct(productDTO, storeId));
     }
 
-    @PutMapping
-    public ResponseEntity<ProductDTO> updateProduct(@RequestBody ProductDTO productDTO) {
-        return ResponseEntity.ok(productService.saveProduct(productDTO));
+    @PutMapping("/{id}/{storeId}")
+    public ResponseEntity<ProductDTO> updateProduct(@Valid @RequestBody ProductDTO productDTO,
+                                                    @PathVariable Long id,
+                                                    @PathVariable Long storeId) {
+        return ResponseEntity.ok(productService.updateProduct(productDTO, id, storeId));
     }
 
     @DeleteMapping("/{storeId}/{productId}")
