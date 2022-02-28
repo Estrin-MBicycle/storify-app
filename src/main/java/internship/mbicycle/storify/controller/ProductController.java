@@ -1,5 +1,8 @@
 package internship.mbicycle.storify.controller;
 
+import javax.validation.Valid;
+import java.util.List;
+
 import internship.mbicycle.storify.dto.ProductDTO;
 import internship.mbicycle.storify.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -13,9 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.util.List;
-
 
 @RestController
 @RequestMapping("/products")
@@ -25,31 +25,31 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
-        return ResponseEntity.ok(productService.getProductById(id));
+    public ProductDTO getProductById(@PathVariable Long id) {
+        return productService.getProductById(id);
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductDTO>> getAllProducts() {
-        return ResponseEntity.ok(productService.getAllProducts());
+    public List<ProductDTO> getAllProducts() {
+        return productService.getAllProducts();
     }
 
     @GetMapping("/stores/{id}")
-    public ResponseEntity<List<ProductDTO>> getAllProductsFromStore(@PathVariable Long id) {
-        return ResponseEntity.ok(productService.getAllProductsFromStore(id));
+    public List<ProductDTO> getAllProductsFromStore(@PathVariable Long id) {
+        return productService.getAllProductsFromStore(id);
     }
 
     @PostMapping("/{storeId}")
-    public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductDTO productDTO,
-                                                    @PathVariable Long storeId) {
-        return ResponseEntity.ok(productService.saveProduct(productDTO, storeId));
+    public ProductDTO createProduct(@Valid @RequestBody ProductDTO productDTO,
+                                    @PathVariable Long storeId) {
+        return productService.saveProduct(productDTO, storeId);
     }
 
     @PutMapping("/{id}/{storeId}")
-    public ResponseEntity<ProductDTO> updateProduct(@Valid @RequestBody ProductDTO productDTO,
-                                                    @PathVariable Long id,
-                                                    @PathVariable Long storeId) {
-        return ResponseEntity.ok(productService.updateProduct(productDTO, id, storeId));
+    public ProductDTO updateProduct(@Valid @RequestBody ProductDTO productDTO,
+                                    @PathVariable Long id,
+                                    @PathVariable Long storeId) {
+        return productService.updateProduct(productDTO, id, storeId);
     }
 
     @DeleteMapping("/{storeId}/{productId}")
