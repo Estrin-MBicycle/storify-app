@@ -1,4 +1,4 @@
-package internship.mbicycle.storify.repository;
+package internship.mbicycle.storify.integration.repository;
 
 import internship.mbicycle.storify.model.Token;
 import org.springframework.data.jpa.repository.JpaRepository;

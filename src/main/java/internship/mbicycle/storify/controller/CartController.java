@@ -2,8 +2,8 @@ package internship.mbicycle.storify.controller;
 
 import internship.mbicycle.storify.model.Product;
 import internship.mbicycle.storify.model.StorifyUser;
-import internship.mbicycle.storify.repository.CartRepository;
-import internship.mbicycle.storify.repository.ProfileRepository;
+import internship.mbicycle.storify.integration.repository.CartRepository;
+import internship.mbicycle.storify.integration.repository.ProfileRepository;
 import internship.mbicycle.storify.service.CartService;
 import internship.mbicycle.storify.service.StorifyUserService;
 import lombok.RequiredArgsConstructor;

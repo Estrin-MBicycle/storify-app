@@ -4,7 +4,7 @@ import internship.mbicycle.storify.converter.ProfileConverter;
 import internship.mbicycle.storify.dto.ProfileDTO;
 import internship.mbicycle.storify.exception.ProfileNotFoundException;
 import internship.mbicycle.storify.model.Profile;
-import internship.mbicycle.storify.repository.ProfileRepository;
+import internship.mbicycle.storify.integration.repository.ProfileRepository;
 import internship.mbicycle.storify.service.impl.ProfileServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

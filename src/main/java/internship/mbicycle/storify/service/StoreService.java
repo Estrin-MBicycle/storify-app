@@ -2,7 +2,7 @@ package internship.mbicycle.storify.service;
 
 import internship.mbicycle.storify.dto.IncomePeriodDTO;
 import internship.mbicycle.storify.dto.StoreDTO;
-import internship.mbicycle.storify.repository.StoreRepository;
+import internship.mbicycle.storify.integration.repository.StoreRepository;
 import internship.mbicycle.storify.util.IncomePeriod;
 
 import java.util.List;

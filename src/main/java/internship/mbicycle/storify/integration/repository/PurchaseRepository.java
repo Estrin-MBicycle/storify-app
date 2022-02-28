@@ -1,4 +1,4 @@
-package internship.mbicycle.storify.repository;
+package internship.mbicycle.storify.integration.repository;
 
 import java.time.LocalDate;
 import java.util.List;

@@ -1,4 +1,4 @@
-package internship.mbicycle.storify.repository;
+package internship.mbicycle.storify.integration.repository;
 
 import internship.mbicycle.storify.model.Cart;
 import org.springframework.data.jpa.repository.JpaRepository;

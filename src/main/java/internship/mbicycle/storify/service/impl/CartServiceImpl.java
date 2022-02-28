@@ -6,7 +6,7 @@ import internship.mbicycle.storify.dto.CartDTO;
 import internship.mbicycle.storify.dto.ProductDTO;
 import internship.mbicycle.storify.model.Cart;
 import internship.mbicycle.storify.model.Product;
-import internship.mbicycle.storify.repository.CartRepository;
+import internship.mbicycle.storify.integration.repository.CartRepository;
 import internship.mbicycle.storify.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

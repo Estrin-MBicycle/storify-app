@@ -6,15 +6,14 @@ import internship.mbicycle.storify.dto.StoreDTO;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.model.Profile;
 import internship.mbicycle.storify.model.Store;
-import internship.mbicycle.storify.repository.ProfileRepository;
-import internship.mbicycle.storify.repository.StoreRepository;
+import internship.mbicycle.storify.integration.repository.ProfileRepository;
+import internship.mbicycle.storify.integration.repository.StoreRepository;
 import internship.mbicycle.storify.service.StoreService;
 import internship.mbicycle.storify.util.IncomePeriod;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
