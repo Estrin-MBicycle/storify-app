@@ -5,14 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CartDTO {
+public class ProductDetailInCartDTO {
 
-    private List<ProductDetailInCartDTO> productDetailInCartDTOList;
-    private int sum;
+    private Long productId;
+    private String product_name;
+    private Integer price;
+    private Integer amount;
+
 }

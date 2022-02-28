@@ -1,18 +1,18 @@
 package internship.mbicycle.storify.service;
 
-import internship.mbicycle.storify.dto.CartDTO;
-import internship.mbicycle.storify.dto.ProductDTO;
-import internship.mbicycle.storify.model.Product;
+import internship.mbicycle.storify.model.Cart;
 
-import java.util.List;
+import java.security.Principal;
 
 public interface CartService {
 
-    void saveProduct(ProductDTO productDTO, Long basket_id);
+    Cart getCartByPrincipal(Principal principal);
 
-    void removeProductFromCart(ProductDTO productDTO, Long basket_id);
+    void deleteProduct(Cart cart, long productId);
 
-    void removeAllProductsFromCart(Product product, Long basket_id);
+    void deleteAllProduct(Cart cart);
 
-    List<CartDTO> getListOfOrders();
+    void changeProductByCount(Cart cart, long productId, int count);
+
+    void addProduct(Cart cart, long productId, int count);
 }

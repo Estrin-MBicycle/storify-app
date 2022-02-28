@@ -31,7 +31,6 @@ public class ProfileConverter {
                 .town(profileDTO.getTown())
                 .address(profileDTO.getAddress())
                 .phone(profileDTO.getPhone())
-                .cart(cartConverter.convertCartDTOToCart(profileDTO.getCartDTO()))
                 .build();
     }
 }

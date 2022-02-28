@@ -2,43 +2,39 @@ package internship.mbicycle.storify.converter;
 
 import internship.mbicycle.storify.dto.CartDTO;
 import internship.mbicycle.storify.dto.ProductDTO;
+import internship.mbicycle.storify.dto.ProductDetailInCartDTO;
 import internship.mbicycle.storify.model.Cart;
-import internship.mbicycle.storify.model.Product;
+import internship.mbicycle.storify.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
 public class CartConverter {
 
-    private final ProductConverter productConverter;
+    private final ProductService productService;
 
     public CartDTO convertCartToCartDTO(Cart cart) {
-        List<ProductDTO> productDTOList = cart.getProductList().stream()
-                .map(productConverter::convertProductToProductDTO)
-                .collect(Collectors.toList());
-
-        return CartDTO.builder()
-                .id(cart.getId())
-                .productList(productDTOList)
-                .build();
-    }
-
-    public Cart convertCartDTOToCart(CartDTO cartDTO) {
-        if (cartDTO == null) {
-            return null;
+        List<ProductDetailInCartDTO> productDetailInCartDTOList = new ArrayList<>();
+        int sum = 0;
+        for (Map.Entry<Long, Integer> entry : cart.getProductsMap().entrySet()) {
+            ProductDTO productDTO = productService.getProductById(entry.getKey());
+            ProductDetailInCartDTO productDetailInCartDTO = ProductDetailInCartDTO.builder()
+                    .productId(productDTO.getId())
+                    .product_name(productDTO.getProductName())
+                    .price(productDTO.getPrice())
+                    .amount(entry.getValue())
+                    .build();
+            productDetailInCartDTOList.add(productDetailInCartDTO);
+            sum += productDTO.getPrice() * entry.getValue();
         }
-        List<Product> productList = cartDTO.getProductList()
-                .stream()
-                .map(productConverter::convertProductDTOToProduct)
-                .collect(Collectors.toList());
-
-        return Cart.builder()
-                .id(cartDTO.getId())
-                .productList(productList)
+        return CartDTO.builder()
+                .productDetailInCartDTOList(productDetailInCartDTOList)
+                .sum(sum)
                 .build();
     }
 }

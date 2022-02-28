@@ -1,56 +1,50 @@
 package internship.mbicycle.storify.service.impl;
 
-import internship.mbicycle.storify.converter.CartConverter;
-import internship.mbicycle.storify.converter.ProductConverter;
-import internship.mbicycle.storify.dto.CartDTO;
-import internship.mbicycle.storify.dto.ProductDTO;
 import internship.mbicycle.storify.model.Cart;
-import internship.mbicycle.storify.model.Product;
+import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.repository.CartRepository;
 import internship.mbicycle.storify.service.CartService;
+import internship.mbicycle.storify.service.StorifyUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.security.Principal;
 
 @Service
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
 
+    private final StorifyUserService userService;
     private final CartRepository cartRepository;
-    private final CartConverter cartConverter;
-    private final ProductConverter productConverter;
-
 
     @Override
-    public void saveProduct(ProductDTO productDTO, Long basketId) {
-        Cart basket = cartRepository.getById(basketId);
-        List<Product> productList = basket.getProductList();
-        productList.add(productConverter.convertProductDTOToProduct(productDTO));
-        basket.setProductList(productList);
+    public Cart getCartByPrincipal(Principal principal) {
+        StorifyUser storifyUser = userService.getUserByEmail(principal.getName());
+        return storifyUser.getProfile().getCart();
     }
 
     @Override
-    public void removeProductFromCart(ProductDTO productDTO, Long basketId) {
-        Cart cart = cartRepository.getById(basketId);
-        List<Product> productList = cart.getProductList();
-        productList.remove(productConverter.convertProductDTOToProduct(productDTO));
-        cart.setProductList(productList);
+    public void deleteProduct(Cart cart, long productId) {
+        cart.getProductsMap().remove(productId);
+        cartRepository.save(cart);
     }
 
     @Override
-    public void removeAllProductsFromCart(Product product, Long basketId) {
-        Cart cart = cartRepository.getById(basketId);
-        List<Product> productList = cart.getProductList();
-        productList.clear();
-        cart.setProductList(productList);
+    public void changeProductByCount(Cart cart, long productId, int count) {
+        cart.getProductsMap().replace(productId, count);
+        cartRepository.save(cart);
     }
 
     @Override
-    public List<CartDTO> getListOfOrders() {
-        return cartRepository.findAll().stream()
-                .map(cartConverter::convertCartToCartDTO)
-                .collect(Collectors.toList());
+    public void deleteAllProduct(Cart cart) {
+        cart.getProductsMap().clear();
+        cartRepository.save(cart);
     }
+
+    @Override
+    public void addProduct(Cart cart, long productId, int count) {
+        cart.getProductsMap().put(productId, count);
+        cartRepository.save(cart);
+    }
+
 }
