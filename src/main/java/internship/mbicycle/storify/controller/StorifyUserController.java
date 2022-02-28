@@ -6,7 +6,6 @@ import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.service.StorifyUserService;
 import internship.mbicycle.storify.service.TokenService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -15,7 +14,6 @@ import java.security.Principal;
 
 @RestController
 @RequiredArgsConstructor
-@Validated
 public class StorifyUserController {
 
     private final StorifyUserService userService;
@@ -41,7 +39,8 @@ public class StorifyUserController {
 
     @PatchMapping("/update/{code}")
     public void updateEmail(@Valid @RequestBody NewEmailDTO newEmailDTO,
-                            @PathVariable String code, Principal principal) {
+                            @PathVariable String code,
+                            Principal principal) {
         userService.updateEmail(newEmailDTO.getEmail(), code, principal.getName());
     }
 

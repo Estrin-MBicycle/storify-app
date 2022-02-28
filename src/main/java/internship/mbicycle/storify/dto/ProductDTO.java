@@ -1,14 +1,14 @@
 package internship.mbicycle.storify.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
@@ -29,11 +29,11 @@ public class ProductDTO {
     private String description;
 
     @NotNull(message = "The field is required")
-    @DecimalMin(value = "0", inclusive = false, message = "Invalid value")
+    @DecimalMin(value = "0", inclusive = false, message = "Value should be > 0. Invalid value")
     private Integer price;
 
     @NotNull(message = "The field is required")
-    @DecimalMin(value = "0", inclusive = false, message = "Invalid value")
+    @DecimalMin(value = "0", inclusive = false, message = "Value should be > 0. Invalid value")
     private Integer count;
 
 }

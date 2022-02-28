@@ -60,9 +60,26 @@ public class PurchaseServiceImpl implements PurchaseService {
     public PurchaseDTO savePurchase(StorifyUser user, PurchaseDTO purchaseDTO) {
         purchaseDTO.setUniqueCode(generatorUniqueCode.generationUniqueCode());
         purchaseDTO.setPurchaseDate(LocalDate.now());
-        purchaseRepository.save(purchaseConverter.convertPurchaseDTOToPurchase(purchaseDTO));
-        mailService.sendPurchaseMessage(user, purchaseDTO);
-        return purchaseDTO;
+        Purchase save = purchaseRepository.save(purchaseConverter.convertPurchaseDTOToPurchase(purchaseDTO));
+        PurchaseDTO saveDTO = purchaseConverter.convertPurchaseToPurchaseDTO(save);
+        mailService.sendPurchaseMessage(user, saveDTO);
+        return saveDTO;
+    }
+
+    @Override
+    public PurchaseDTO updatePurchase(PurchaseDTO purchaseDTO, Long id, StorifyUser user) {
+        Purchase purchase = purchaseRepository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException(NOT_FOUND_PURCHASE));
+        purchase.setPurchaseDate(LocalDate.now());
+        purchase.setPrice(purchaseDTO.getPrice());
+        purchase.setDelivered(purchaseDTO.isDelivered());
+        purchase.setProducts(purchaseDTO.getProductDTOMap());
+        purchase.setProfileId(purchaseDTO.getProfileId());
+        purchase.setUniqueCode(generatorUniqueCode.generationUniqueCode());
+        Purchase save = purchaseRepository.save(purchase);
+        PurchaseDTO saveDTO = purchaseConverter.convertPurchaseToPurchaseDTO(save);
+        mailService.sendPurchaseMessage(user, saveDTO);
+        return saveDTO;
     }
 
     @Override
