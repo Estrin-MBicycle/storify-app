@@ -84,8 +84,10 @@ class ProductServiceImplTest {
     void testSaveProduct() {
         final Long storeId = 9L;
         given(productConverter.convertProductDTOToProduct(productDTO)).willReturn(product);
+        given(productConverter.convertProductToProductDTO(product)).willReturn(productDTO);
         given(storeRepository.getById(storeId)).willReturn(store);
-        productService.saveProduct(productDTO, storeId);
+        given(productRepository.save(product)).willReturn(product);
+        assertEquals(productDTO, productService.saveProduct(productDTO, storeId));
         then(productRepository).should(only()).save(product);
     }
 }
