@@ -4,15 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.service.StorifyUserService;
 import internship.mbicycle.storify.service.TokenService;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
@@ -20,13 +20,18 @@ import javax.servlet.http.HttpServletResponse;
 
 import static org.springframework.http.MediaType.TEXT_HTML_VALUE;
 
-@RequiredArgsConstructor
-@Slf4j
+@Component
+@Lazy
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
     private final StorifyUserService userService;
+
+    public CustomAuthenticationFilter(AuthenticationManager authenticationManager, TokenService tokenService, StorifyUserService userService) {
+        setAuthenticationManager(authenticationManager);
+        this.tokenService = tokenService;
+        this.userService = userService;
+    }
 
     @SneakyThrows
     @Override
@@ -36,7 +41,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
             String email = request.getParameter("email");
             String password = request.getParameter("password");
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
-            authentication = authenticationManager.authenticate(authenticationToken);
+            authentication = getAuthenticationManager().authenticate(authenticationToken);
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.setContentType(TEXT_HTML_VALUE);

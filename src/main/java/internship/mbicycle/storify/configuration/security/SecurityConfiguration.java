@@ -1,9 +1,7 @@
 package internship.mbicycle.storify.configuration.security;
 
-import internship.mbicycle.storify.service.StorifyUserService;
-import internship.mbicycle.storify.service.TokenService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,13 +14,20 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
-    private final TokenService tokenService;
-    private final StorifyUserService userService;
+    private final CustomAuthorizationFilter authorizationFilter;
+    private final CustomAuthenticationFilter authenticationFilter;
+
+    public SecurityConfiguration(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder,
+                                 CustomAuthorizationFilter authorizationFilter, @Lazy CustomAuthenticationFilter authenticationFilter) {
+        this.userDetailsService = userDetailsService;
+        this.passwordEncoder = passwordEncoder;
+        this.authorizationFilter = authorizationFilter;
+        this.authenticationFilter = authenticationFilter;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -35,8 +40,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/swagger-resources/**", "/swagger-ui/**", "/v2/api-docs").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilter(new CustomAuthenticationFilter(authenticationManagerBean(), tokenService, userService))
-                .addFilterBefore(new CustomAuthorizationFilter(tokenService), UsernamePasswordAuthenticationFilter.class);
+                .addFilter(authenticationFilter)
+                .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean
