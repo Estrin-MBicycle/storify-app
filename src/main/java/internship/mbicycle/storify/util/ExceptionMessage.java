@@ -10,4 +10,9 @@ public class ExceptionMessage {
     public static final String NOT_FOUND_PRODUCT = "Product not found.";
     public static final String NOT_FOUND_PROFILE = "Profile with id %d not found.";
     public static final String NOT_FOUND_PURCHASE = "Purchase not found.";
+    public static final String VALIDATION_ERROR = "Validation error.";
+    public static final String EMPTY_EMAIL_EXCEPTION = "The email cannot be empty";
+    public static final String EMPTY_NAME_EXCEPTION = "The name cannot be empty";
+    public static final String INVALID_EMAIL_EXCEPTION = "Please enter the correct email";
+    public static final String INVALID_PASSWORD_EXCEPTION = "The size of password must be more six symbols";
 }

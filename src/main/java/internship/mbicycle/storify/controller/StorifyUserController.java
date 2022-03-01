@@ -1,5 +1,7 @@
 package internship.mbicycle.storify.controller;
 
+import internship.mbicycle.storify.dto.NewEmailDTO;
+import internship.mbicycle.storify.dto.StorifyUserDTO;
 import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.service.StorifyUserService;
 import internship.mbicycle.storify.service.TokenService;
@@ -7,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.security.Principal;
 
 @RestController
@@ -17,8 +20,8 @@ public class StorifyUserController {
     private final TokenService tokenService;
 
     @PostMapping("/sign-up")
-    public void addNewUser(StorifyUser storifyUser) {
-        userService.saveNewUser(storifyUser);
+    public void addNewUser(@Valid @RequestBody StorifyUserDTO storifyUserDTO) {
+        userService.saveNewUser(storifyUserDTO);
     }
 
     @GetMapping("/activate/{code}")
@@ -35,8 +38,10 @@ public class StorifyUserController {
     }
 
     @PatchMapping("/update/{code}")
-    public void updateEmail(String newEmail, @PathVariable String code, Principal principal) {
-        userService.updateEmail(newEmail, code, principal.getName());
+    public void updateEmail(@Valid @RequestBody NewEmailDTO newEmailDTO,
+                            @PathVariable String code,
+                            Principal principal) {
+        userService.updateEmail(newEmailDTO.getEmail(), code, principal.getName());
     }
 
 }
