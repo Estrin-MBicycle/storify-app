@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -20,22 +19,34 @@ public class CartConverter {
 
     public CartDTO convertCartToCartDTO(Cart cart) {
         List<ProductDetailInCartDTO> productDetailInCartDTOList = new ArrayList<>();
-        int sum = 0;
-        for (Map.Entry<Long, Integer> entry : cart.getProductsMap().entrySet()) {
-            ProductDTO productDTO = productService.getProductById(entry.getKey());
-            ProductDetailInCartDTO productDetailInCartDTO =
-                    ProductDetailInCartDTO.builder()
-                            .productId(productDTO.getId())
-                            .name(productDTO.getProductName())
-                            .price(productDTO.getPrice())
-                            .amount(entry.getValue())
-                            .build();
-            productDetailInCartDTOList.add(productDetailInCartDTO);
-            sum += productDTO.getPrice() * entry.getValue();
-        }
+
+        int finalCartPrice = cart.getProductsMap().entrySet()
+                .stream()
+                .map(entry -> {
+                    ProductDTO productDTO = productService.getProductById(entry.getKey());
+                    ProductDetailInCartDTO productDetailInCartDTO = getProductDetailInCartDto(productDTO, entry.getValue());
+                    productDetailInCartDTOList.add(productDetailInCartDTO);
+                    return productDTO.getPrice() * entry.getValue();
+                })
+                .mapToInt(Integer::intValue)
+                .sum();
+
+        return getCartDTO(productDetailInCartDTOList, finalCartPrice);
+    }
+
+    private CartDTO getCartDTO(List<ProductDetailInCartDTO> productDetailInCartDTOList, Integer finalCartPrice) {
         return CartDTO.builder()
                 .productDetailInCartDTOList(productDetailInCartDTOList)
-                .sum(sum)
+                .sum(finalCartPrice)
+                .build();
+    }
+
+    private ProductDetailInCartDTO getProductDetailInCartDto(ProductDTO productDTO, Integer amount) {
+        return ProductDetailInCartDTO.builder()
+                .productId(productDTO.getId())
+                .name(productDTO.getProductName())
+                .price(productDTO.getPrice())
+                .amount(amount)
                 .build();
     }
 }
