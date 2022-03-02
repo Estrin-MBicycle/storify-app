@@ -17,7 +17,7 @@ public class CartController {
     private final CartService cartService;
     private final CartConverter cartConverter;
 
-    @GetMapping()
+    @GetMapping
     public CartDTO getCart(Principal principal) {
         Cart cart = cartService.getCartByPrincipal(principal);
         return cartConverter.convertCartToCartDTO(cart);
@@ -40,7 +40,7 @@ public class CartController {
         return cartConverter.convertCartToCartDTO(cart);
     }
 
-    @DeleteMapping()
+    @DeleteMapping
     public CartDTO deleteAllProduct(Principal principal) {
         Cart cart = cartService.getCartByPrincipal(principal);
         cartService.deleteAllProduct(cart);
