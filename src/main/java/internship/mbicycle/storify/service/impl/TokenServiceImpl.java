@@ -18,7 +18,6 @@ import java.util.Date;
 
 import static internship.mbicycle.storify.util.ExceptionMessage.INVALID_AUTHORIZATION_HEADER;
 import static internship.mbicycle.storify.util.ExceptionMessage.NOT_THE_SAME_TOKENS;
-import static internship.mbicycle.storify.util.TimeConstant.FIVE_MINUTES;
 import static internship.mbicycle.storify.util.TimeConstant.TEN_DAYS;
 
 @Service
@@ -33,7 +32,7 @@ public class TokenServiceImpl implements TokenService {
         StorifyUser userFromDb = userService.getUserByEmail(storifyUser.getEmail());
         return JWT.create()
                 .withSubject(userFromDb.getEmail())
-                .withExpiresAt(new Date(System.currentTimeMillis() + FIVE_MINUTES))
+                .withExpiresAt(new Date(System.currentTimeMillis() + TEN_DAYS))
                 .withClaim("role", userFromDb.getRole())
                 .sign(getEncryptionAlgorithm());
     }

@@ -23,12 +23,13 @@ public class CartConverter {
         int sum = 0;
         for (Map.Entry<Long, Integer> entry : cart.getProductsMap().entrySet()) {
             ProductDTO productDTO = productService.getProductById(entry.getKey());
-            ProductDetailInCartDTO productDetailInCartDTO = ProductDetailInCartDTO.builder()
-                    .productId(productDTO.getId())
-                    .product_name(productDTO.getProductName())
-                    .price(productDTO.getPrice())
-                    .amount(entry.getValue())
-                    .build();
+            ProductDetailInCartDTO productDetailInCartDTO =
+                    ProductDetailInCartDTO.builder()
+                            .productId(productDTO.getId())
+                            .name(productDTO.getProductName())
+                            .price(productDTO.getPrice())
+                            .amount(entry.getValue())
+                            .build();
             productDetailInCartDTOList.add(productDetailInCartDTO);
             sum += productDTO.getPrice() * entry.getValue();
         }

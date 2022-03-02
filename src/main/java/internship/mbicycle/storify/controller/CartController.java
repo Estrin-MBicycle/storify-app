@@ -23,7 +23,7 @@ public class CartController {
         return cartConverter.convertCartToCartDTO(cart);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public CartDTO deleteProduct(@PathVariable(name = "id") long productId,
                                  Principal principal) {
         Cart cart = cartService.getCartByPrincipal(principal);
@@ -31,7 +31,7 @@ public class CartController {
         return cartConverter.convertCartToCartDTO(cart);
     }
 
-    @PutMapping("/deleteByCount/{id}/{count}")
+    @PutMapping("/{id}/{count}")
     public CartDTO deleteProductByCount(@PathVariable(name = "id") long productId,
                                         @PathVariable(name = "count") int count,
                                         Principal principal) {
@@ -40,14 +40,14 @@ public class CartController {
         return cartConverter.convertCartToCartDTO(cart);
     }
 
-    @DeleteMapping("/delete-all")
+    @DeleteMapping()
     public CartDTO deleteAllProduct(Principal principal) {
         Cart cart = cartService.getCartByPrincipal(principal);
         cartService.deleteAllProduct(cart);
         return cartConverter.convertCartToCartDTO(cart);
     }
 
-    @PostMapping("/addProducts/{id}/{count}")
+    @PostMapping("/{id}/{count}")
     public void addProductToCart(@PathVariable(name = "id") long productId,
                                  @PathVariable(name = "count") int count,
                                  Principal principal) {
