@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +32,7 @@ public class StoreRepositoryTest {
 
     @Test
     void shouldFindStoresByProfileId() {
-        Profile profile = Profile.builder()
+        final Profile profile = Profile.builder()
                 .id(1L)
                 .name("name")
                 .surname("surname")
@@ -44,22 +45,21 @@ public class StoreRepositoryTest {
                 .description("description")
                 .address("address")
                 .profile(profile).build();
-        List<Store> expected = new ArrayList<>();
+        final List<Store> expected = new ArrayList<>();
         expected.add(store);
-        List<Store> stores = storeRepository.findStoresByProfileId(1L);
-        assertEquals(expected, stores);
+        final List<Store> actual = storeRepository.findStoresByProfileId(1L);
+        assertEquals(expected, actual);
     }
 
     @Test
     void shouldFindStoresByProfileIdNot() {
-        List<Store> expected = new ArrayList<>();
-        List<Store> stores = storeRepository.findStoresByProfileIdNot(1L);
-        assertEquals(expected, stores);
+        final List<Store> actual = storeRepository.findStoresByProfileIdNot(1L);
+        assertEquals(Collections.emptyList(), actual);
     }
 
     @Test
     void shouldFindStoreByIdAndProfileId() {
-        Profile profile = Profile.builder()
+        final Profile profile = Profile.builder()
                 .id(1L)
                 .name("name")
                 .surname("surname")
@@ -72,20 +72,19 @@ public class StoreRepositoryTest {
                 .description("description")
                 .address("address")
                 .profile(profile).build();
-        Optional<Store> actual = storeRepository.findStoreByIdAndProfileId(1L, 1L);
+        final Optional<Store> actual = storeRepository.findStoreByIdAndProfileId(1L, 1L);
         assertEquals(expected, actual.get());
     }
 
     @Test
     void shouldFindStoreById() {
-        final long storeId = 1;
-        Optional<Store> storeById = storeRepository.findById(storeId);
+        final Optional<Store> storeById = storeRepository.findById(1L);
         assertTrue(storeById.isPresent());
     }
 
     @Test
     void shouldSaveStore() {
-        Profile profile = Profile.builder()
+        final Profile profile = Profile.builder()
                 .id(1L)
                 .name("name")
                 .surname("surname")
@@ -104,28 +103,25 @@ public class StoreRepositoryTest {
                 .description("description1")
                 .address("address1")
                 .profile(profile).build();
-        Store actual = storeRepository.save(store);
+        final Store actual = storeRepository.save(store);
         assertEquals(expected, actual);
     }
 
     @Test
     void shouldGetIncomeForAllTime() {
-        Integer expected = 110;
-        Integer actual = storeRepository.getIncomeForAllTime(1L);
-        assertEquals(expected, actual);
+        final int actual = storeRepository.getIncomeForAllTime(1L);
+        assertEquals(110, actual);
     }
 
     @Test
     void shouldGetIncomeForMonths() {
-        Integer expected = 55;
-        Integer actual = storeRepository.getIncomeForMonths(1L, 1);
-        assertEquals(expected, actual);
+        final int actual = storeRepository.getIncomeForMonths(1L, 1);
+        assertEquals(55, actual);
     }
 
     @Test
     void shouldGetIncomeForDay() {
-        Integer expected = 0;
-        Integer actual = storeRepository.getIncomeForDay(1L);
-        assertEquals(expected, actual);
+        final int actual = storeRepository.getIncomeForDay(1L);
+        assertEquals(0, actual);
     }
 }
