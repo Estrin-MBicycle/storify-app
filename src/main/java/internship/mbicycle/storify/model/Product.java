@@ -1,13 +1,16 @@
 package internship.mbicycle.storify.model;
 
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,5 +42,9 @@ public class Product {
     @ManyToOne(targetEntity=Store.class)
     @JoinColumn(name="store_id")
     private Store store;
+
+    @ManyToMany(mappedBy="product",cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.MERGE})
+    private Set<Profile> profileSet ;
+
 
 }
