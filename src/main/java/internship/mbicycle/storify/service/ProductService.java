@@ -10,6 +10,8 @@ public interface ProductService {
 
     ProductDTO getProductByName(String name);
 
+    ProductDTO addProductToFavorite(Long productId, Long profileId);
+
     void removeProductById(Long id);
 
     List<ProductDTO> getAllProductsFromStore(Long storeId);

@@ -45,6 +45,12 @@ public class ProductController {
         return productService.saveProduct(productDTO, storeId);
     }
 
+    @PostMapping("/{id}/{profileId}")
+    public ProductDTO addProductToFavorite(@PathVariable Long id,
+                                           @PathVariable Long profileId) {
+        return productService.addProductToFavorite(id, profileId);
+    }
+
     @PutMapping("/{id}/{storeId}")
     public ProductDTO updateProduct(@Valid @RequestBody ProductDTO productDTO,
                                     @PathVariable Long id,
