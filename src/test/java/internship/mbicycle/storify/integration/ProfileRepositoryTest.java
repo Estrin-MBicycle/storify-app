@@ -27,14 +27,14 @@ public class ProfileRepositoryTest {
     private ProfileRepository profileRepository;
 
     @Test
-    void shouldFindById() {
+    void shouldFindProfileById() {
         final long id = 1;
-        Optional<Profile> byId = profileRepository.findById(id);
-        assertTrue(byId.isPresent());
+        Optional<Profile> profileById = profileRepository.findById(id);
+        assertTrue(profileById.isPresent());
     }
 
     @Test
-    void shouldGetById() {
+    void shouldGetProfileById() {
         Profile expected = Profile.builder()
                 .id(1L)
                 .name("name")
@@ -43,7 +43,7 @@ public class ProfileRepositoryTest {
                 .address("address")
                 .phone("phone").build();
         final long id = 1;
-        Profile byId = profileRepository.getById(id);
-        assertEquals(expected, byId);
+        Profile profileById = profileRepository.getById(id);
+        assertEquals(expected, profileById);
     }
 }
