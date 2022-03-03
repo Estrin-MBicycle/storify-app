@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Map;
 
 @Entity
 @NoArgsConstructor
@@ -18,9 +18,10 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "product_cart",
-            joinColumns = @JoinColumn(name = "cart_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id"))
-    private List<Product> productList;
+    @ElementCollection
+    @CollectionTable(name = "product_cart",
+            joinColumns = @JoinColumn(name = "cart_id", referencedColumnName = "id"))
+    @MapKeyColumn(name = "product_id")
+    @Column(name = "quantity")
+    private Map<Long, Integer> productsMap;
 }
