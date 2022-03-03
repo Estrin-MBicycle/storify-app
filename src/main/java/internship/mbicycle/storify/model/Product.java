@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import java.util.Set;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,12 +39,13 @@ public class Product {
 
     private Integer count;
 
-    @ManyToOne(targetEntity=Store.class)
-    @JoinColumn(name="store_id")
+    @ManyToOne(targetEntity = Store.class)
+    @JoinColumn(name = "store_id")
     private Store store;
 
-    @ManyToMany(mappedBy="product",cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.MERGE})
-    private Set<Profile> profileSet ;
+    @ManyToMany(mappedBy = "favorite", cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH,
+        CascadeType.MERGE})
+    private List<Profile> profiles;
 
 
 }

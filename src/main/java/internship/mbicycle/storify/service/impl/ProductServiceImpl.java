@@ -4,7 +4,6 @@ import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_PRODUC
 import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_USER;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import internship.mbicycle.storify.converter.ProductConverter;
@@ -105,7 +104,7 @@ public class ProductServiceImpl implements ProductService {
 
     private void sendMessageIfProductOnSaleAgain(Product product, ProductDTO productDTO) {
         if (product.getCount() == 0 && productDTO.getCount() > 0) {
-            Set<Profile> profiles = product.getProfileSet();
+            List<Profile> profiles = product.getProfiles();
             List<String> emails = profiles.stream().map(storifyUserRepository::findByProfile)
                 .map(user -> user.orElseThrow(() -> new StorifyUserNotFoundException(NOT_FOUND_USER)))
                 .map(StorifyUser::getEmail)
