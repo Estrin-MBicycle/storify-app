@@ -1,21 +1,27 @@
 package internship.mbicycle.storify.service.impl;
 
-import internship.mbicycle.storify.converter.ProductConverter;
-import internship.mbicycle.storify.dto.ProductDTO;
-import internship.mbicycle.storify.exception.ResourceNotFoundException;
-import internship.mbicycle.storify.model.Product;
-import internship.mbicycle.storify.model.Store;
-import internship.mbicycle.storify.repository.ProductRepository;
-import internship.mbicycle.storify.repository.StoreRepository;
-import internship.mbicycle.storify.service.ProductService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_PRODUCT;
+import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_USER;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_PRODUCT;
+import internship.mbicycle.storify.converter.ProductConverter;
+import internship.mbicycle.storify.dto.ProductDTO;
+import internship.mbicycle.storify.exception.ResourceNotFoundException;
+import internship.mbicycle.storify.exception.StorifyUserNotFoundException;
+import internship.mbicycle.storify.model.Product;
+import internship.mbicycle.storify.model.Profile;
+import internship.mbicycle.storify.model.Store;
+import internship.mbicycle.storify.model.StorifyUser;
+import internship.mbicycle.storify.repository.ProductRepository;
+import internship.mbicycle.storify.repository.StoreRepository;
+import internship.mbicycle.storify.repository.StorifyUserRepository;
+import internship.mbicycle.storify.service.MailService;
+import internship.mbicycle.storify.service.ProductService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,18 +31,20 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final ProductConverter productConverter;
     private final StoreRepository storeRepository;
+    private final MailService mailService;
+    private final StorifyUserRepository storifyUserRepository;
 
     @Override
     public List<ProductDTO> getAllProductsFromStore(Long storeId) {
         return productRepository.findAllByStoreId(storeId).stream()
-                .map(productConverter::convertProductToProductDTO)
-                .collect(Collectors.toList());
+            .map(productConverter::convertProductToProductDTO)
+            .collect(Collectors.toList());
     }
 
     @Override
     public ProductDTO getProductById(Long id) {
         Product productDb = productRepository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException(NOT_FOUND_PRODUCT));
+            new ResourceNotFoundException(NOT_FOUND_PRODUCT));
         return productConverter.convertProductToProductDTO(productDb);
     }
 
@@ -48,14 +56,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDTO> getAllProducts() {
         return productRepository.findAll().stream()
-                .map(productConverter::convertProductToProductDTO)
-                .collect(Collectors.toList());
+            .map(productConverter::convertProductToProductDTO)
+            .collect(Collectors.toList());
     }
 
     @Override
     public ProductDTO updateProduct(ProductDTO product, Long id, Long storeId) {
         Product productDb = productRepository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException(NOT_FOUND_PRODUCT));
+            new ResourceNotFoundException(NOT_FOUND_PRODUCT));
         productDb.setProductName(product.getProductName());
         productDb.setDescription(product.getDescription());
         productDb.setCount(product.getCount());
@@ -64,6 +72,7 @@ public class ProductServiceImpl implements ProductService {
         Store store = storeRepository.getById(storeId);
         productDb.setStore(store);
         Product save = productRepository.save(productDb);
+        sendMessageIfProductOnSaleAgain(productDb, product);
         return productConverter.convertProductToProductDTO(save);
     }
 
@@ -89,7 +98,18 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDTO getProductByName(String name) {
         Product productDb = productRepository.findProductByProductName(name).orElseThrow(() ->
-                new ResourceNotFoundException(NOT_FOUND_PRODUCT));
+            new ResourceNotFoundException(NOT_FOUND_PRODUCT));
         return productConverter.convertProductToProductDTO(productDb);
+    }
+
+    private void sendMessageIfProductOnSaleAgain(Product product, ProductDTO productDTO) {
+        if (product.getCount() == 0 && productDTO.getCount() > 0) {
+            List<Profile> profiles = product.getProfiles();
+            List<String> emails = profiles.stream().map(storifyUserRepository::findByProfile)
+                .map(user -> user.orElseThrow(() -> new StorifyUserNotFoundException(NOT_FOUND_USER)))
+                .map(StorifyUser::getEmail)
+                .collect(Collectors.toList());
+            mailService.sendFavoriteMessage(emails, productDTO);
+        }
     }
 }

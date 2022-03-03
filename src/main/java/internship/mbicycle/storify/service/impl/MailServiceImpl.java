@@ -1,6 +1,9 @@
 package internship.mbicycle.storify.service.impl;
 
+import java.util.List;
+
 import internship.mbicycle.storify.configuration.properties.MailProperties;
+import internship.mbicycle.storify.dto.ProductDTO;
 import internship.mbicycle.storify.dto.PurchaseDTO;
 import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.service.MailService;
@@ -35,8 +38,24 @@ public class MailServiceImpl implements MailService {
         mailSender.send(message);
     }
 
+    @Override
+    public void sendFavoriteMessage(List<String> emails, ProductDTO productDTO) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(mailProperties.getUsername());
+        emails.forEach(email -> {
+            message.setTo(email);
+            message.setText(createFavoriteMessage(productDTO));
+            mailSender.send(message);
+        });
+
+    }
+
     private String createPurchaseMessage(StorifyUser user, PurchaseDTO purchaseDTO) {
         return String.format("Dear %s your order for the amount %d (%s),you can get by showing your unique code - %s ",
-                user.getUsername(), purchaseDTO.getPrice(), purchaseDTO.getProductDTOMap(), purchaseDTO.getUniqueCode());
+            user.getUsername(), purchaseDTO.getPrice(), purchaseDTO.getProductDTOMap(), purchaseDTO.getUniqueCode());
+    }
+
+    private String createFavoriteMessage(ProductDTO productDTO) {
+        return String.format("Your favorite product  %s is on sale again.", productDTO.getProductName());
     }
 }

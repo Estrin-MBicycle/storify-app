@@ -1,8 +1,8 @@
 package internship.mbicycle.storify.service;
 
-import internship.mbicycle.storify.dto.ProductDTO;
-
 import java.util.List;
+
+import internship.mbicycle.storify.dto.ProductDTO;
 
 public interface ProductService {
 

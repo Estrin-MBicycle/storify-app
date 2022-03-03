@@ -1,13 +1,16 @@
 package internship.mbicycle.storify.model;
 
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,8 +39,13 @@ public class Product {
 
     private Integer count;
 
-    @ManyToOne(targetEntity=Store.class)
-    @JoinColumn(name="store_id")
+    @ManyToOne(targetEntity = Store.class)
+    @JoinColumn(name = "store_id")
     private Store store;
+
+    @ManyToMany(mappedBy = "favorite", cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH,
+        CascadeType.MERGE})
+    private List<Profile> profiles;
+
 
 }
