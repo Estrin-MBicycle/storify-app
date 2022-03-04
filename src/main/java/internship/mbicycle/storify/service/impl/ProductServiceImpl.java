@@ -5,7 +5,6 @@ import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_PROFIL
 import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_USER;
 import static java.lang.String.format;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,9 +71,6 @@ public class ProductServiceImpl implements ProductService {
         Profile profile = profileRepository.findById(profileId).orElseThrow(() ->
             new ResourceNotFoundException(format(NOT_FOUND_PROFILE, profileId)));
         List<Profile> profiles = productDb.getProfiles();
-        if (profiles == null) {
-            profiles = new ArrayList<>();
-        }
         profiles.add(profile);
         productDb.setProfiles(profiles);
         Product save = productRepository.save(productDb);
