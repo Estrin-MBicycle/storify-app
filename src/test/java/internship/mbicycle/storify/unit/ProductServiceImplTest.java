@@ -1,5 +1,13 @@
 package internship.mbicycle.storify.unit;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.only;
+
+import java.util.Optional;
+
 import internship.mbicycle.storify.converter.ProductConverter;
 import internship.mbicycle.storify.dto.ProductDTO;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
@@ -14,14 +22,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.only;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceImplTest {
@@ -68,7 +68,7 @@ class ProductServiceImplTest {
         given(productRepository.findById(id)).willReturn(Optional.empty());
         ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () ->
                 productService.getProductById(id));
-        assertEquals("Product not found.", thrown.getMessage());
+        assertEquals("Product with id 5 not found.", thrown.getMessage());
     }
 
     @Test
