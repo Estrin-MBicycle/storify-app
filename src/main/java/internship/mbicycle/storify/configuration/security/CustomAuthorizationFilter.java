@@ -30,12 +30,12 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (!(request.getServletPath().equals("/login") ||
-                request.getServletPath().equals("/sign-up") ||
-                request.getServletPath().equals("/token/refresh") ||
-                request.getServletPath().startsWith("/swagger") ||
-                request.getServletPath().startsWith("/v2") ||
-                request.getServletPath().startsWith("/activate/"))) {
+        if (!(request.getRequestURI().equals("/login") ||
+                request.getRequestURI().equals("/sign-up") ||
+                request.getRequestURI().equals("/token/refresh") ||
+                request.getRequestURI().startsWith("/swagger") ||
+                request.getRequestURI().startsWith("/v2") ||
+                request.getRequestURI().startsWith("/activate/"))) {
             try {
                 String authorizationHeader = Optional.ofNullable(request.getHeader(AUTHORIZATION))
                         .orElseThrow(() -> new InvalidAuthorizationHeaderException(NOT_FOUND_AUTHORIZATION_HEADER));
