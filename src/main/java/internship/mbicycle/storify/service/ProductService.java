@@ -3,16 +3,16 @@ package internship.mbicycle.storify.service;
 import java.util.List;
 
 import internship.mbicycle.storify.dto.ProductDTO;
+import internship.mbicycle.storify.model.Product;
+import internship.mbicycle.storify.model.Profile;
 
 public interface ProductService {
 
-    ProductDTO getProductById(Long id);
+    ProductDTO getProductDTOById(Long id);
 
-    ProductDTO getProductByName(String name);
+    ProductDTO setProfilesAndSaveProduct(Product product, List<Profile> profiles);
 
-    ProductDTO addProductToFavorite(Long productId, Long profileId);
-
-    void removeProductById(Long id);
+    Product getProductById(Long id);
 
     List<ProductDTO> getAllProductsFromStore(Long storeId);
 

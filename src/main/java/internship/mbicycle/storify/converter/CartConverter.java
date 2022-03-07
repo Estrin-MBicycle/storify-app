@@ -1,5 +1,8 @@
 package internship.mbicycle.storify.converter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import internship.mbicycle.storify.dto.CartDTO;
 import internship.mbicycle.storify.dto.ProductDTO;
 import internship.mbicycle.storify.dto.ProductDetailInCartDTO;
@@ -7,9 +10,6 @@ import internship.mbicycle.storify.model.Cart;
 import internship.mbicycle.storify.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -23,7 +23,7 @@ public class CartConverter {
         int finalCartPrice = cart.getProductsMap().entrySet()
                 .stream()
                 .map(entry -> {
-                    ProductDTO productDTO = productService.getProductById(entry.getKey());
+                    ProductDTO productDTO = productService.getProductDTOById(entry.getKey());
                     ProductDetailInCartDTO productDetailInCartDTO = getProductDetailInCartDto(productDTO, entry.getValue());
                     productDetailInCartDTOList.add(productDetailInCartDTO);
                     return productDTO.getPrice() * entry.getValue();

@@ -1,7 +1,6 @@
 package internship.mbicycle.storify.service.impl;
 
 import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_PRODUCT;
-import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_PROFILE;
 import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_USER;
 import static java.lang.String.format;
 
@@ -17,7 +16,6 @@ import internship.mbicycle.storify.model.Profile;
 import internship.mbicycle.storify.model.Store;
 import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.repository.ProductRepository;
-import internship.mbicycle.storify.repository.ProfileRepository;
 import internship.mbicycle.storify.repository.StoreRepository;
 import internship.mbicycle.storify.repository.StorifyUserRepository;
 import internship.mbicycle.storify.service.MailService;
@@ -36,7 +34,6 @@ public class ProductServiceImpl implements ProductService {
     private final StoreRepository storeRepository;
     private final MailService mailService;
     private final StorifyUserRepository storifyUserRepository;
-    private final ProfileRepository profileRepository;
 
     @Override
     public List<ProductDTO> getAllProductsFromStore(Long storeId) {
@@ -46,15 +43,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO getProductById(Long id) {
+    public ProductDTO getProductDTOById(Long id) {
         Product productDb = productRepository.findById(id).orElseThrow(() ->
             new ResourceNotFoundException(format(NOT_FOUND_PRODUCT, id)));
         return productConverter.convertProductToProductDTO(productDb);
-    }
-
-    @Override
-    public void removeProductById(Long id) {
-        productRepository.removeProductById(id);
     }
 
     @Override
@@ -62,19 +54,6 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findAll().stream()
             .map(productConverter::convertProductToProductDTO)
             .collect(Collectors.toList());
-    }
-
-    @Override
-    public ProductDTO addProductToFavorite(Long productId, Long profileId) {
-        Product productDb = productRepository.findById(productId).orElseThrow(() ->
-            new ResourceNotFoundException(format(NOT_FOUND_PRODUCT, productId)));
-        Profile profile = profileRepository.findById(profileId).orElseThrow(() ->
-            new ResourceNotFoundException(format(NOT_FOUND_PROFILE, profileId)));
-        List<Profile> profiles = productDb.getProfiles();
-        profiles.add(profile);
-        productDb.setProfiles(profiles);
-        Product save = productRepository.save(productDb);
-        return productConverter.convertProductToProductDTO(save);
     }
 
     @Override
@@ -91,6 +70,12 @@ public class ProductServiceImpl implements ProductService {
         productDb.setStore(store);
         Product save = productRepository.save(productDb);
         return productConverter.convertProductToProductDTO(save);
+    }
+
+    @Override
+    public Product getProductById(Long id) {
+        return productRepository.findById(id).orElseThrow(() ->
+            new ResourceNotFoundException(format(NOT_FOUND_PRODUCT, id)));
     }
 
     @Override
@@ -113,10 +98,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO getProductByName(String name) {
-        Product productDb = productRepository.findProductByProductName(name).orElseThrow(() ->
-            new ResourceNotFoundException(NOT_FOUND_PRODUCT));
-        return productConverter.convertProductToProductDTO(productDb);
+    public ProductDTO setProfilesAndSaveProduct(Product product, List<Profile> profiles) {
+        product.setProfiles(profiles);
+        Product save = productRepository.save(product);
+        return productConverter.convertProductToProductDTO(save);
     }
 
     private void sendMessageIfProductOnSaleAgain(Product product, ProductDTO productDTO) {

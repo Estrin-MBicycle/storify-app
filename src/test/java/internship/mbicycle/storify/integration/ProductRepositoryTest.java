@@ -1,7 +1,6 @@
 package internship.mbicycle.storify.integration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
@@ -29,12 +28,5 @@ public class ProductRepositoryTest {
         final String name = "TestProduct";
         Optional<Product> productByName = productRepository.findProductByProductName(name);
         assertEquals(name, productByName.get().getProductName());
-    }
-
-    @Test
-    void shouldGetProfilesNotNull() {
-        final String name = "TestProduct";
-        Optional<Product> productByName = productRepository.findProductByProductName(name);
-        assertNotNull(productByName.get().getProfiles());
     }
 }

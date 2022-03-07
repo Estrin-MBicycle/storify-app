@@ -1,5 +1,7 @@
 package internship.mbicycle.storify.unit;
 
+import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_PRODUCT;
+import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
@@ -42,24 +44,24 @@ class ProductServiceImplTest {
     @BeforeEach
     void setUp() {
         product = Product.builder()
-                .productName("Car")
-                .price(1000)
-                .id(89L)
-                .count(57)
-                .build();
+            .productName("Car")
+            .price(1000)
+            .id(89L)
+            .count(57)
+            .build();
 
         productDTO = ProductDTO.builder()
-                .productName("Car")
-                .price(1000)
-                .id(89L)
-                .count(57)
-                .build();
+            .productName("Car")
+            .price(1000)
+            .id(89L)
+            .count(57)
+            .build();
 
         store = Store.builder()
-                .id(9L)
-                .address("Test")
-                .description("Store Test")
-                .build();
+            .id(9L)
+            .address("Test")
+            .description("Store Test")
+            .build();
     }
 
     @Test
@@ -67,8 +69,8 @@ class ProductServiceImplTest {
         final Long id = 5L;
         given(productRepository.findById(id)).willReturn(Optional.empty());
         ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () ->
-                productService.getProductById(id));
-        assertEquals("Product with id 5 not found.", thrown.getMessage());
+            productService.getProductDTOById(id));
+        assertEquals(format(NOT_FOUND_PRODUCT, id), thrown.getMessage());
     }
 
     @Test
@@ -76,7 +78,7 @@ class ProductServiceImplTest {
         final Long id = 89L;
         given(productConverter.convertProductToProductDTO(product)).willReturn(productDTO);
         given(productRepository.findById(id)).willReturn(Optional.of(product));
-        ProductDTO actual = productService.getProductById(id);
+        ProductDTO actual = productService.getProductDTOById(id);
         assertEquals(productDTO, actual);
     }
 

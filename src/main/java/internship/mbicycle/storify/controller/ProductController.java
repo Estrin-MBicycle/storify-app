@@ -26,7 +26,7 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ProductDTO getProductById(@PathVariable Long id) {
-        return productService.getProductById(id);
+        return productService.getProductDTOById(id);
     }
 
     @GetMapping
@@ -43,12 +43,6 @@ public class ProductController {
     public ProductDTO createProduct(@Valid @RequestBody ProductDTO productDTO,
                                     @PathVariable Long storeId) {
         return productService.saveProduct(productDTO, storeId);
-    }
-
-    @PostMapping("/{id}/{profileId}")
-    public ProductDTO addProductToFavorite(@PathVariable Long id,
-                                           @PathVariable Long profileId) {
-        return productService.addProductToFavorite(id, profileId);
     }
 
     @PutMapping("/{id}/{storeId}")
