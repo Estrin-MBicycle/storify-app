@@ -4,13 +4,10 @@ import java.util.List;
 
 import internship.mbicycle.storify.dto.ProductDTO;
 import internship.mbicycle.storify.model.Product;
-import internship.mbicycle.storify.model.Profile;
 
 public interface ProductService {
 
     ProductDTO getProductDTOById(Long id);
-
-    ProductDTO setProfilesAndSaveProduct(Product product, List<Profile> profiles);
 
     Product getProductById(Long id);
 

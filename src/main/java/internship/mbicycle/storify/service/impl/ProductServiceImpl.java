@@ -97,13 +97,6 @@ public class ProductServiceImpl implements ProductService {
         productRepository.removeProductByStoreIdAndId(storeId, productId);
     }
 
-    @Override
-    public ProductDTO setProfilesAndSaveProduct(Product product, List<Profile> profiles) {
-        product.setProfiles(profiles);
-        Product save = productRepository.save(product);
-        return productConverter.convertProductToProductDTO(save);
-    }
-
     private void sendMessageIfProductOnSaleAgain(Product product, ProductDTO productDTO) {
         if (product.getCount() == 0 && productDTO.getCount() > 0) {
             List<Profile> profiles = product.getProfiles();
