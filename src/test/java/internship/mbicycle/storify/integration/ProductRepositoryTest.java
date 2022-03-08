@@ -6,6 +6,7 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TE
 
 import java.util.Optional;
 
+import internship.mbicycle.storify.TestMariaDbContainer;
 import internship.mbicycle.storify.model.Product;
 import internship.mbicycle.storify.repository.ProductRepository;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import org.springframework.test.context.jdbc.Sql;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Sql(scripts = "/sql/insert-product.sql", executionPhase = BEFORE_TEST_METHOD)
 @Sql(scripts = "/sql/delete-product.sql", executionPhase = AFTER_TEST_METHOD)
+@TestMariaDbContainer
 public class ProductRepositoryTest {
 
     @Autowired

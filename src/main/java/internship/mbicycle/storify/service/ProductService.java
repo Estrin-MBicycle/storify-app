@@ -3,6 +3,7 @@ package internship.mbicycle.storify.service;
 import java.util.List;
 
 import internship.mbicycle.storify.dto.ProductDTO;
+import internship.mbicycle.storify.dto.PurchaseDTO;
 import internship.mbicycle.storify.model.Product;
 
 public interface ProductService {
@@ -22,5 +23,7 @@ public interface ProductService {
     ProductDTO saveProduct(ProductDTO product, Long storeId);
 
     List<ProductDTO> getAllProducts();
+
+    void changeProductCountAfterThePurchase(PurchaseDTO purchaseDTO);
 
 }

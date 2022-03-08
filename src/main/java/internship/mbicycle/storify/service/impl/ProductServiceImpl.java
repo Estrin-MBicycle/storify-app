@@ -5,10 +5,12 @@ import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_USER;
 import static java.lang.String.format;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import internship.mbicycle.storify.converter.ProductConverter;
 import internship.mbicycle.storify.dto.ProductDTO;
+import internship.mbicycle.storify.dto.PurchaseDTO;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.exception.StorifyUserNotFoundException;
 import internship.mbicycle.storify.model.Product;
@@ -105,6 +107,16 @@ public class ProductServiceImpl implements ProductService {
                 .map(StorifyUser::getEmail)
                 .collect(Collectors.toList());
             mailService.sendFavoriteMessage(emails, productDTO);
+        }
+    }
+
+    @Override
+    public void changeProductCountAfterThePurchase(PurchaseDTO purchaseDTO) {
+        Map<Long, Integer> productDTOMap = purchaseDTO.getProductDTOMap();
+        for (Map.Entry<Long, Integer> entry : productDTOMap.entrySet()) {
+            Product product = getProductById(entry.getKey());
+            product.setCount(product.getCount() - entry.getValue());
+            productRepository.save(product);
         }
     }
 }
