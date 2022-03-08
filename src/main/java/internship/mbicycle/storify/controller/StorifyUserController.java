@@ -9,6 +9,7 @@ import internship.mbicycle.storify.service.TokenService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -43,7 +44,7 @@ public class StorifyUserController {
 
     @ApiOperation("Send confirmation to email")
     @GetMapping("/update/email")
-    public void sendConfirmationEmail(Principal principal) {
+    public void sendConfirmationEmail(@ApiIgnore Principal principal) {
         userService.sendConfirmationEmail(principal.getName());
     }
 
@@ -51,8 +52,12 @@ public class StorifyUserController {
     @PatchMapping("/update/{code}")
     public void updateEmail(@Valid @RequestBody NewEmailDTO newEmailDTO,
                             @PathVariable String code,
-                            Principal principal) {
-        userService.updateEmail(newEmailDTO.getEmail(), code, principal.getName());
+                            @ApiIgnore Principal principal,
+                            HttpServletResponse response) {
+        StorifyUser storifyUser = userService.updateEmail(newEmailDTO.getEmail(), code, principal.getName());
+        tokenService.setTokenPairAfterActivation(storifyUser);
+        response.setHeader("access_token", storifyUser.getToken().getAccessToken());
+        response.setHeader("refresh_token", storifyUser.getToken().getRefreshToken());
     }
 
 }

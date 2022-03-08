@@ -17,7 +17,7 @@ public interface StorifyUserService {
 
     StorifyUser activateUserByEmail(String code);
 
-    void updateEmail(String newEmail, String code, String email);
+    StorifyUser updateEmail(String newEmail, String code, String email);
 
     void sendConfirmationEmail(String name);
 }
