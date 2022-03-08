@@ -1,6 +1,7 @@
 package internship.mbicycle.storify.configuration.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import internship.mbicycle.storify.dto.LoginDTO;
 import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.service.StorifyUserService;
 import internship.mbicycle.storify.service.TokenService;
@@ -38,9 +39,9 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         Authentication authentication = null;
         try {
-            String email = request.getParameter("email");
-            String password = request.getParameter("password");
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
+            LoginDTO loginDTO = new ObjectMapper().readValue(request.getInputStream(), LoginDTO.class);
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword());
             authentication = getAuthenticationManager().authenticate(authenticationToken);
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
