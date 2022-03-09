@@ -1,13 +1,17 @@
 package internship.mbicycle.storify.controller;
 
 import internship.mbicycle.storify.converter.CartConverter;
+import internship.mbicycle.storify.converter.PurchaseConverter;
 import internship.mbicycle.storify.dto.CartDTO;
+import internship.mbicycle.storify.dto.PurchaseDTO;
 import internship.mbicycle.storify.model.Cart;
 import internship.mbicycle.storify.service.CartService;
+import internship.mbicycle.storify.service.PurchaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @RequestMapping("/user/cart")
 @RestController
@@ -16,6 +20,8 @@ public class CartController {
 
     private final CartService cartService;
     private final CartConverter cartConverter;
+    private final PurchaseService purchaseService;
+    private final PurchaseConverter purchaseConverter;
 
     @GetMapping
     public CartDTO getCart(Principal principal) {
@@ -53,5 +59,12 @@ public class CartController {
                                  Principal principal) {
         Cart cart = cartService.getCartByPrincipal(principal);
         cartService.addProduct(cart, productId, count);
+    }
+
+    @GetMapping("/getAllPurchase")
+    public List<PurchaseDTO> getAllPurchasesByProfile(Principal principal) {
+        List<PurchaseDTO> f = purchaseService.getAllPurchasesByProfile(principal);
+        System.out.println(f);
+        return purchaseService.getAllPurchasesByProfile(principal);
     }
 }
