@@ -4,7 +4,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 import internship.mbicycle.storify.dto.PurchaseDTO;
-import internship.mbicycle.storify.model.StorifyUser;
+import internship.mbicycle.storify.dto.StorifyUserDTO;
 import internship.mbicycle.storify.service.PurchaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,14 +34,14 @@ public class PurchaseController {
 
     @PostMapping
     public PurchaseDTO createPurchase(@Valid @RequestBody PurchaseDTO purchaseDTO,
-                                      @RequestBody StorifyUser user) {
+                                      @RequestBody StorifyUserDTO user) {
         return purchaseService.savePurchase(user, purchaseDTO);
     }
 
     @PutMapping("/{id}")
     public PurchaseDTO updatePurchase(@Valid @RequestBody PurchaseDTO purchaseDTO,
                                       @PathVariable Long id,
-                                      @RequestBody StorifyUser user) {
+                                      @RequestBody StorifyUserDTO user) {
         return purchaseService.updatePurchase(purchaseDTO, id, user);
     }
 

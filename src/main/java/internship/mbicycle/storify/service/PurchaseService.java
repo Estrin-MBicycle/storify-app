@@ -1,9 +1,9 @@
 package internship.mbicycle.storify.service;
 
-import internship.mbicycle.storify.dto.PurchaseDTO;
-import internship.mbicycle.storify.model.StorifyUser;
-
 import java.util.List;
+
+import internship.mbicycle.storify.dto.PurchaseDTO;
+import internship.mbicycle.storify.dto.StorifyUserDTO;
 
 public interface PurchaseService {
 
@@ -13,11 +13,11 @@ public interface PurchaseService {
 
     List<PurchaseDTO> getAllPurchasesByProfileId(Long profileId);
 
-    PurchaseDTO updatePurchase(PurchaseDTO purchaseDTO, Long id, StorifyUser user);
+    PurchaseDTO updatePurchase(PurchaseDTO purchaseDTO, Long id, StorifyUserDTO user);
 
     List<PurchaseDTO> getAllPurchases();
 
-    PurchaseDTO savePurchase(StorifyUser user, PurchaseDTO purchase);
+    PurchaseDTO savePurchase(StorifyUserDTO user, PurchaseDTO purchase);
 
     List<PurchaseDTO> getAllPurchasesByProfileIdAndDelivered(Long profileId, boolean isDelivered);
 }
