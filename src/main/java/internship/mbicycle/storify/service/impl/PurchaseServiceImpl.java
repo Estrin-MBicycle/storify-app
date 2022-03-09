@@ -1,5 +1,11 @@
 package internship.mbicycle.storify.service.impl;
 
+import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_PURCHASE;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import internship.mbicycle.storify.converter.PurchaseConverter;
 import internship.mbicycle.storify.dto.PurchaseDTO;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
@@ -7,16 +13,11 @@ import internship.mbicycle.storify.model.Purchase;
 import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.repository.PurchaseRepository;
 import internship.mbicycle.storify.service.MailService;
+import internship.mbicycle.storify.service.ProductService;
 import internship.mbicycle.storify.service.PurchaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_PURCHASE;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +28,7 @@ public class PurchaseServiceImpl implements PurchaseService {
     private final GeneratorUniqueCodeImpl generatorUniqueCode;
     private final PurchaseConverter purchaseConverter;
     private final MailService mailService;
+    private final ProductService productService;
 
     @Override
     public List<PurchaseDTO> getAllPurchasesByProfileIdAndDelivered(Long profileId, boolean isDelivered) {
@@ -62,6 +64,7 @@ public class PurchaseServiceImpl implements PurchaseService {
         purchaseDTO.setPurchaseDate(LocalDate.now());
         Purchase save = purchaseRepository.save(purchaseConverter.convertPurchaseDTOToPurchase(purchaseDTO));
         PurchaseDTO saveDTO = purchaseConverter.convertPurchaseToPurchaseDTO(save);
+        productService.changeProductCountAfterThePurchase(saveDTO);
         mailService.sendPurchaseMessage(user, saveDTO);
         return saveDTO;
     }

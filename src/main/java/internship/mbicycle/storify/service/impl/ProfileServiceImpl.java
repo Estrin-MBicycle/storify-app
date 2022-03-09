@@ -3,10 +3,13 @@ package internship.mbicycle.storify.service.impl;
 import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_PROFILE;
 import static java.lang.String.format;
 
+import java.util.List;
+
 import internship.mbicycle.storify.converter.ProfileConverter;
 import internship.mbicycle.storify.dto.ProfileDTO;
 import internship.mbicycle.storify.exception.ProfileNotFoundException;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
+import internship.mbicycle.storify.model.Product;
 import internship.mbicycle.storify.model.Profile;
 import internship.mbicycle.storify.repository.ProfileRepository;
 import internship.mbicycle.storify.service.ProfileService;
@@ -45,5 +48,12 @@ public class ProfileServiceImpl implements ProfileService {
         profile.setPhone(profileDTO.getPhone());
         Profile result = profileRepository.save(profile);
         return profileConverter.convertProfileToProfileDTO(result);
+    }
+
+    @Override
+    public ProfileDTO setFavoriteProductAndSaveProfile(Profile profile, List<Product> products) {
+        profile.setFavorite(products);
+        Profile save = profileRepository.save(profile);
+        return profileConverter.convertProfileToProfileDTO(save);
     }
 }
