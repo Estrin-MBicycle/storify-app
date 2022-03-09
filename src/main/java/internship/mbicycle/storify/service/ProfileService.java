@@ -10,10 +10,14 @@ public interface ProfileService {
 
     ProfileDTO getById(long id);
 
-    ProfileDTO updateProfile(long id, ProfileDTO profileDTO);
+    ProfileDTO updateProfileById(long id, ProfileDTO profileDTO);
 
     Profile getProfileById(Long id);
 
     ProfileDTO setFavoriteProductAndSaveProfile(Profile profile, List<Product> products);
+
+    ProfileDTO getByEmail(String email);
+
+    ProfileDTO updateProfileByEmail(String email, ProfileDTO profileDTO);
 
 }
