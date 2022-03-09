@@ -5,7 +5,7 @@ import java.util.List;
 import internship.mbicycle.storify.configuration.properties.MailProperties;
 import internship.mbicycle.storify.dto.ProductDTO;
 import internship.mbicycle.storify.dto.PurchaseDTO;
-import internship.mbicycle.storify.dto.StorifyUserDTO;
+import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.service.MailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
@@ -30,7 +30,7 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public void sendPurchaseMessage(StorifyUserDTO user, PurchaseDTO purchaseDTO) {
+    public void sendPurchaseMessage(StorifyUser user, PurchaseDTO purchaseDTO) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(mailProperties.getUsername());
         message.setTo(user.getEmail());
@@ -50,7 +50,7 @@ public class MailServiceImpl implements MailService {
 
     }
 
-    private String createPurchaseMessage(StorifyUserDTO user, PurchaseDTO purchaseDTO) {
+    private String createPurchaseMessage(StorifyUser user, PurchaseDTO purchaseDTO) {
         return String.format("Dear %s your order for the amount %d (%s),you can get by showing your unique code - %s ",
             user.getName(), purchaseDTO.getPrice(), purchaseDTO.getProductDTOMap(), purchaseDTO.getUniqueCode());
     }

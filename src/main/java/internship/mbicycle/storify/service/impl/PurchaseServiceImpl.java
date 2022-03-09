@@ -8,9 +8,9 @@ import java.util.stream.Collectors;
 
 import internship.mbicycle.storify.converter.PurchaseConverter;
 import internship.mbicycle.storify.dto.PurchaseDTO;
-import internship.mbicycle.storify.dto.StorifyUserDTO;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.model.Purchase;
+import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.repository.PurchaseRepository;
 import internship.mbicycle.storify.service.MailService;
 import internship.mbicycle.storify.service.ProductService;
@@ -59,7 +59,7 @@ public class PurchaseServiceImpl implements PurchaseService {
     }
 
     @Override
-    public PurchaseDTO savePurchase(StorifyUserDTO user, PurchaseDTO purchaseDTO) {
+    public PurchaseDTO savePurchase(StorifyUser user, PurchaseDTO purchaseDTO) {
         purchaseDTO.setUniqueCode(generatorUniqueCode.generationUniqueCode());
         purchaseDTO.setPurchaseDate(LocalDate.now());
         Purchase save = purchaseRepository.save(purchaseConverter.convertPurchaseDTOToPurchase(purchaseDTO));
@@ -70,7 +70,7 @@ public class PurchaseServiceImpl implements PurchaseService {
     }
 
     @Override
-    public PurchaseDTO updatePurchase(PurchaseDTO purchaseDTO, Long id, StorifyUserDTO user) {
+    public PurchaseDTO updatePurchase(PurchaseDTO purchaseDTO, Long id, StorifyUser user) {
         Purchase purchase = purchaseRepository.findById(id).orElseThrow(() ->
             new ResourceNotFoundException(NOT_FOUND_PURCHASE));
         purchase.setPurchaseDate(LocalDate.now());

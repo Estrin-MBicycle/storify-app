@@ -11,9 +11,9 @@ import java.util.Optional;
 
 import internship.mbicycle.storify.converter.PurchaseConverter;
 import internship.mbicycle.storify.dto.PurchaseDTO;
-import internship.mbicycle.storify.dto.StorifyUserDTO;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.model.Purchase;
+import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.repository.PurchaseRepository;
 import internship.mbicycle.storify.service.MailService;
 import internship.mbicycle.storify.service.ProductService;
@@ -44,7 +44,7 @@ class PurchaseServiceImplTest {
     private PurchaseServiceImpl purchaseService;
     private Purchase purchase;
     private PurchaseDTO purchaseDTO;
-    private StorifyUserDTO user;
+    private StorifyUser user;
 
     @BeforeEach
     void setUp() {
@@ -60,7 +60,7 @@ class PurchaseServiceImplTest {
             .purchaseDate(LocalDate.now())
             .build();
 
-        user = new StorifyUserDTO();
+        user = new StorifyUser();
         user.setName("Vasili");
         user.setPassword("123456");
         user.setEmail("vasili@gmail.com");
