@@ -8,10 +8,6 @@ import internship.mbicycle.storify.model.Profile;
 
 public interface ProfileService {
 
-    ProfileDTO getById(long id);
-
-    ProfileDTO updateProfileById(long id, ProfileDTO profileDTO);
-
     Profile getProfileById(Long id);
 
     ProfileDTO setFavoriteProductAndSaveProfile(Profile profile, List<Product> products);

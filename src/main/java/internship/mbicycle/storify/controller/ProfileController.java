@@ -16,12 +16,12 @@ public class ProfileController {
 
     private final ProfileService profileService;
 
-    @GetMapping("")
+    @GetMapping
     public ProfileDTO getProfile(@ApiIgnore Principal principal) {
         return profileService.getByEmail(principal.getName());
     }
 
-    @PutMapping("")
+    @PutMapping
     public ProfileDTO updateProfile(@Valid @RequestBody ProfileDTO profileDTO, @ApiIgnore Principal principal) {
         return profileService.updateProfileByEmail(principal.getName(), profileDTO);
     }

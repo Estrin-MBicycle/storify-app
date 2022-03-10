@@ -15,6 +15,8 @@ import javax.validation.constraints.Size;
 @Builder
 public class ProfileDTO {
 
+    private Long id;
+
     @NotBlank(message = "name is required field")
     @Size(max = 50, message = "name must be max 50 symbols")
     private String name;
