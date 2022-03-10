@@ -2,6 +2,7 @@ package internship.mbicycle.storify.service.impl;
 
 import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_PURCHASE;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,6 +16,7 @@ import internship.mbicycle.storify.repository.PurchaseRepository;
 import internship.mbicycle.storify.service.MailService;
 import internship.mbicycle.storify.service.ProductService;
 import internship.mbicycle.storify.service.PurchaseService;
+import internship.mbicycle.storify.service.StorifyUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +31,7 @@ public class PurchaseServiceImpl implements PurchaseService {
     private final PurchaseConverter purchaseConverter;
     private final MailService mailService;
     private final ProductService productService;
+    private final StorifyUserService userService;
 
     @Override
     public List<PurchaseDTO> getAllPurchasesByProfileIdAndDelivered(Long profileId, boolean isDelivered) {
@@ -56,6 +59,14 @@ public class PurchaseServiceImpl implements PurchaseService {
         return purchaseRepository.findAllByProfileId(profileId).stream()
             .map(purchaseConverter::convertPurchaseToPurchaseDTO)
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PurchaseDTO> getAllPurchasesByProfile(Principal principal) {
+        StorifyUser storifyUser = userService.getUserByEmail(principal.getName());
+        return purchaseRepository.findAllByProfileId(storifyUser.getId()).stream()
+                .map(purchaseConverter::convertPurchaseToPurchaseDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
