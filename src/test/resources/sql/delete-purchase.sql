@@ -1,0 +1,1 @@
+delete from purchase where id=222;

@@ -1,8 +1,32 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-                   xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
 
-    <!--migrations here-->
+    <include file="db/changelog/db.changelog-grigorovich-createTableStore.xml"/>
+    <include file="db/changelog/db.changelog-zaiceva-createTableProfile.xml"/>
+    <include file="db/changelog/db.changelog-shkurko-createTableStorifyUser.xml"/>
+    <include file="db/changelog/db.changelog-grigorovich-createTableOrder.xml"/>
+    <include file="db/changelog/db.changelog-grigorovich-createTableProduct.xml"/>
+    <include file="db/changelog/db.changelog-grigorovich-createTableProductOrder.xml"/>
+    <include file="db/changelog/db.changelog-harbachou-createTableFavorite.xml"/>
+    <include file="db/changelog/db.changelog-harbachou-createTableBasket.xml"/>
+    <include file="db/changelog/db.changelog-createTableProductBasket.xml"/>
+    <include file="db/changelog/db.changelog-addColumnToProduct.xml"/>
+    <include file="db/changelog/db.changelog-addFkToOrder.xml"/>
+    <include file="db/changelog/db.changelog-addFkToStore.xml"/>
+    <include file="db/changelog/db.changelog-addFkToFavorite.xml"/>
+    <include file="db/changelog/db.changelog-addFkToProfile.xml"/>
+    <include file="db/changelog/db.changelog-addFkToProduct.xml"/>
+    <include file="db/changelog/db.changelog-createTableToken.xml"/>
+    <include file="db/changelog/db.changelog-addFkToStorifyUser.xml"/>
+    <include file="db/changelog/db.changelog-deleteColumnAndConstraintProfile.xml"/>
+    <include file="db/changelog/db.changelog-addColumnToOrderAndConstraint.xml"/>
+    <include file="db/changelog/db.changelog-deleteColumnProfitFromTableStore.xml"/>
+    <include file="db/changelog/db.changelog-renameTableOrderAndColumns.xml"/>
+    <include file="db/changelog/db.changelog-createNewTableProductPurchase.xml"/>
+    <include file="db/changelog/db.changelog-changedConnectionBasketAndProfile.xml"/>
+    <include file="db/changelog/db.changelog-renameTableBasketAndColumns.xml"/>
+    <include file="db/changelog/db.changelog-dropConstrainUniqueProductName.xml"/>
+    <include file="db/changelog/db.changelog-addColumnCountToProductCart.xml"/>
 
 </databaseChangeLog>

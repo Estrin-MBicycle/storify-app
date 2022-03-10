@@ -1,0 +1,26 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+
+    <changeSet id="add_fk_to_storify_user" author="shkurko">
+        <addColumn tableName="storify_user">
+            <column name="token_id"
+                    type="bigint"/>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="storify_user" baseColumnNames="token_id"
+                                 constraintName="fk_storify_user_token"
+                                 referencedTableName="token"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="add_storify_user_constraint"
+               author="zaiceva">
+        <addForeignKeyConstraint  baseColumnNames="profile_id"
+                                  baseTableName="storify_user"
+                                  constraintName="fk_storify_user_profile"
+                                  referencedColumnNames="id"
+                                  referencedTableName="profile" />
+    </changeSet>
+
+</databaseChangeLog>

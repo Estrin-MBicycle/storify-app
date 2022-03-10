@@ -1,0 +1,41 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+
+    <changeSet id="create_table_profile"
+               author="zaiceva">
+        <createTable tableName="profile">
+            <column name="id"
+                    type="bigint"
+                    autoIncrement="true">
+                <constraints primaryKey="true"
+                             nullable="false"/>
+            </column>
+            <column name="name"
+                    type="varchar(30)"/>
+            <column name="surname"
+                    type="varchar(30)"/>
+            <column name="town"
+                    type="varchar(30)"/>
+            <column name="address"
+                    type="varchar(30)"/>
+            <column name="phone"
+                    type="varchar(20)">
+                <constraints nullable="false"
+                             unique="true"/>
+            </column>
+            <column name="basket_id"
+                    type="int">
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="modify_data_type_basket_id_profile"
+               author="zaiceva" >
+        <modifyDataType columnName="basket_id"
+                         newDataType="bigint"
+                         tableName="profile" />
+    </changeSet>
+
+</databaseChangeLog>
