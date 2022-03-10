@@ -2,8 +2,10 @@ package internship.mbicycle.storify.service.impl;
 
 import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_PRODUCT;
 import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_USER;
+import static internship.mbicycle.storify.util.ExceptionMessage.NOT_PERMISSIONS_EXCEPTION;
 import static java.lang.String.format;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -11,6 +13,7 @@ import java.util.stream.Collectors;
 import internship.mbicycle.storify.converter.ProductConverter;
 import internship.mbicycle.storify.dto.ProductDTO;
 import internship.mbicycle.storify.dto.PurchaseDTO;
+import internship.mbicycle.storify.exception.NotPermissionsException;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.exception.StorifyUserNotFoundException;
 import internship.mbicycle.storify.model.Product;
@@ -20,6 +23,7 @@ import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.repository.ProductRepository;
 import internship.mbicycle.storify.repository.StoreRepository;
 import internship.mbicycle.storify.repository.StorifyUserRepository;
+import internship.mbicycle.storify.service.CheckPermission;
 import internship.mbicycle.storify.service.MailService;
 import internship.mbicycle.storify.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +40,7 @@ public class ProductServiceImpl implements ProductService {
     private final StoreRepository storeRepository;
     private final MailService mailService;
     private final StorifyUserRepository storifyUserRepository;
+    private final CheckPermission checkPermission;
 
     @Override
     public List<ProductDTO> getAllProductsFromStore(Long storeId) {
@@ -59,7 +64,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO updateProduct(ProductDTO product, Long id, Long storeId) {
+    public ProductDTO updateProduct(ProductDTO product, Long id, Long storeId, Principal principal) {
+        boolean isPermissions = checkPermission.checkPermissionByStoreId(principal, storeId);
+        if (!isPermissions) {
+            throw new NotPermissionsException(NOT_PERMISSIONS_EXCEPTION);
+        }
         Product productDb = productRepository.findById(id).orElseThrow(() ->
             new ResourceNotFoundException(format(NOT_FOUND_PRODUCT, id)));
         sendMessageIfProductOnSaleAgain(productDb, product);
@@ -81,7 +90,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO saveProduct(ProductDTO productDto, Long storeId) {
+    public ProductDTO saveProduct(ProductDTO productDto, Long storeId, Principal principal) {
+        boolean isPermissions = checkPermission.checkPermissionByStoreId(principal, storeId);
+        if (!isPermissions) {
+            throw new NotPermissionsException(NOT_PERMISSIONS_EXCEPTION);
+        }
         Product product = productConverter.convertProductDTOToProduct(productDto);
         Store store = storeRepository.getById(storeId);
         product.setStore(store);
@@ -90,13 +103,22 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void removeAllProductsByStoreId(Long storeId) {
+    public void removeAllProductsByStoreId(Principal principal, Long storeId) {
+        boolean isPermissions = checkPermission.checkPermissionByStoreId(principal, storeId);
+        if (!isPermissions) {
+            throw new NotPermissionsException(NOT_PERMISSIONS_EXCEPTION);
+        }
         productRepository.removeAllByStoreId(storeId);
     }
 
     @Override
-    public void removeProductByStoreIdAndId(Long storeId, Long productId) {
+    public void removeProductByStoreIdAndId(Long storeId, Long productId, Principal principal) {
+        boolean isPermissions = checkPermission.checkPermissionByStoreId(principal, storeId);
+        if (!isPermissions) {
+            throw new NotPermissionsException(NOT_PERMISSIONS_EXCEPTION);
+        }
         productRepository.removeProductByStoreIdAndId(storeId, productId);
+
     }
 
     private void sendMessageIfProductOnSaleAgain(Product product, ProductDTO productDTO) {

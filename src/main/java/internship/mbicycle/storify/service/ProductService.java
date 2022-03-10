@@ -1,5 +1,6 @@
 package internship.mbicycle.storify.service;
 
+import java.security.Principal;
 import java.util.List;
 
 import internship.mbicycle.storify.dto.ProductDTO;
@@ -14,13 +15,13 @@ public interface ProductService {
 
     List<ProductDTO> getAllProductsFromStore(Long storeId);
 
-    ProductDTO updateProduct(ProductDTO product, Long id, Long storeId);
+    ProductDTO updateProduct(ProductDTO product, Long id, Long storeId, Principal principal);
 
-    void removeProductByStoreIdAndId(Long storeId, Long productId);
+    void removeProductByStoreIdAndId(Long storeId, Long productId, Principal principal);
 
-    void removeAllProductsByStoreId(Long storeId);
+    void removeAllProductsByStoreId(Principal principal, Long storeId);
 
-    ProductDTO saveProduct(ProductDTO product, Long storeId);
+    ProductDTO saveProduct(ProductDTO product, Long storeId, Principal principal);
 
     List<ProductDTO> getAllProducts();
 

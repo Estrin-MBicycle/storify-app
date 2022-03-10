@@ -18,4 +18,5 @@ public class ExceptionMessage {
     public static final String INVALID_EMAIL_EXCEPTION = "Please enter the correct email";
     public static final String INVALID_PASSWORD_EXCEPTION = "The size of password must be more six symbols";
     public static final String USER_ALREADY_EXIST = "Mail %s is already taken";
+    public static final String NOT_PERMISSIONS_EXCEPTION = "You do not have permission to perform this operation";
 }

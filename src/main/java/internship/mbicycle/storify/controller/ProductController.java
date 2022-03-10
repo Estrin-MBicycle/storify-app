@@ -1,6 +1,7 @@
 package internship.mbicycle.storify.controller;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 
 import internship.mbicycle.storify.dto.ProductDTO;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 
 @RestController
@@ -41,27 +43,31 @@ public class ProductController {
 
     @PostMapping("/{storeId}")
     public ProductDTO createProduct(@Valid @RequestBody ProductDTO productDTO,
-                                    @PathVariable Long storeId) {
-        return productService.saveProduct(productDTO, storeId);
+                                    @PathVariable Long storeId,
+                                    @ApiIgnore Principal principal) {
+        return productService.saveProduct(productDTO, storeId, principal);
     }
 
     @PutMapping("/{id}/{storeId}")
     public ProductDTO updateProduct(@Valid @RequestBody ProductDTO productDTO,
                                     @PathVariable Long id,
-                                    @PathVariable Long storeId) {
-        return productService.updateProduct(productDTO, id, storeId);
+                                    @PathVariable Long storeId,
+                                    @ApiIgnore Principal principal) {
+        return productService.updateProduct(productDTO, id, storeId, principal);
     }
 
     @DeleteMapping("/{storeId}/{productId}")
     public ResponseEntity<?> deleteProductFromStore(@PathVariable Long storeId,
-                                                    @PathVariable Long productId) {
-        productService.removeProductByStoreIdAndId(storeId, productId);
+                                                    @PathVariable Long productId,
+                                                    @ApiIgnore Principal principal) {
+        productService.removeProductByStoreIdAndId(storeId, productId, principal);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{storeId}")
-    public ResponseEntity<?> deleteAllProductsFromStore(@PathVariable Long storeId) {
-        productService.removeAllProductsByStoreId(storeId);
+    public ResponseEntity<?> deleteAllProductsFromStore(@PathVariable Long storeId,
+                                                        @ApiIgnore Principal principal) {
+        productService.removeAllProductsByStoreId(principal, storeId);
         return ResponseEntity.noContent().build();
     }
 }
