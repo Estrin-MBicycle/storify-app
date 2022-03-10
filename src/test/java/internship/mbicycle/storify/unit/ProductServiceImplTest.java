@@ -62,6 +62,7 @@ class ProductServiceImplTest {
             .price(1000)
             .id(89L)
             .count(57)
+            .store(store)
             .build();
 
         productDTO = ProductDTO.builder()
@@ -69,6 +70,7 @@ class ProductServiceImplTest {
             .price(1000)
             .id(89L)
             .count(57)
+            .storeId(9L)
             .build();
 
     }
@@ -96,10 +98,10 @@ class ProductServiceImplTest {
         final Long storeId = 9L;
         given(productConverter.convertProductDTOToProduct(productDTO)).willReturn(product);
         given(productConverter.convertProductToProductDTO(product)).willReturn(productDTO);
-        given(checkPermission.checkPermissionByStoreId(principal, storeId)).willReturn(true);
+        given(checkPermission.checkPermissionByStoreId(principal, storeId)).willReturn(storeId);
         given(storeRepository.getById(storeId)).willReturn(store);
         given(productRepository.save(product)).willReturn(product);
-        assertEquals(productDTO, productService.saveProduct(productDTO, storeId, principal));
+        assertEquals(productDTO, productService.saveProduct(productDTO, principal));
         then(productRepository).should(only()).save(product);
     }
 }

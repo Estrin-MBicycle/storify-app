@@ -15,13 +15,13 @@ public interface ProductService {
 
     List<ProductDTO> getAllProductsFromStore(Long storeId);
 
-    ProductDTO updateProduct(ProductDTO product, Long id, Long storeId, Principal principal);
+    ProductDTO updateProduct(ProductDTO product, Principal principal);
 
-    void removeProductByStoreIdAndId(Long storeId, Long productId, Principal principal);
+    void removeProductByStoreIdAndId(ProductDTO productDTO, Principal principal, Long productId);
 
     void removeAllProductsByStoreId(Principal principal, Long storeId);
 
-    ProductDTO saveProduct(ProductDTO product, Long storeId, Principal principal);
+    ProductDTO saveProduct(ProductDTO product, Principal principal);
 
     List<ProductDTO> getAllProducts();
 

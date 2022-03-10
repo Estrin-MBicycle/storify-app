@@ -2,7 +2,6 @@ package internship.mbicycle.storify.service.impl;
 
 import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_PRODUCT;
 import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_USER;
-import static internship.mbicycle.storify.util.ExceptionMessage.NOT_PERMISSIONS_EXCEPTION;
 import static java.lang.String.format;
 
 import java.security.Principal;
@@ -13,7 +12,6 @@ import java.util.stream.Collectors;
 import internship.mbicycle.storify.converter.ProductConverter;
 import internship.mbicycle.storify.dto.ProductDTO;
 import internship.mbicycle.storify.dto.PurchaseDTO;
-import internship.mbicycle.storify.exception.NotPermissionsException;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.exception.StorifyUserNotFoundException;
 import internship.mbicycle.storify.model.Product;
@@ -21,11 +19,11 @@ import internship.mbicycle.storify.model.Profile;
 import internship.mbicycle.storify.model.Store;
 import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.repository.ProductRepository;
-import internship.mbicycle.storify.repository.StoreRepository;
 import internship.mbicycle.storify.repository.StorifyUserRepository;
 import internship.mbicycle.storify.service.CheckPermission;
 import internship.mbicycle.storify.service.MailService;
 import internship.mbicycle.storify.service.ProductService;
+import internship.mbicycle.storify.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +35,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductConverter productConverter;
-    private final StoreRepository storeRepository;
+    private final StoreService storeService;
     private final MailService mailService;
     private final StorifyUserRepository storifyUserRepository;
     private final CheckPermission checkPermission;
@@ -64,20 +62,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO updateProduct(ProductDTO product, Long id, Long storeId, Principal principal) {
-        boolean isPermissions = checkPermission.checkPermissionByStoreId(principal, storeId);
-        if (!isPermissions) {
-            throw new NotPermissionsException(NOT_PERMISSIONS_EXCEPTION);
-        }
-        Product productDb = productRepository.findById(id).orElseThrow(() ->
-            new ResourceNotFoundException(format(NOT_FOUND_PRODUCT, id)));
+    public ProductDTO updateProduct(ProductDTO product, Principal principal) {
+        Long storeId = checkPermission.checkPermissionByStoreId(principal, product.getStoreId());
+        Product productDb = getProductById(product.getId());
         sendMessageIfProductOnSaleAgain(productDb, product);
         productDb.setProductName(product.getProductName());
         productDb.setDescription(product.getDescription());
         productDb.setCount(product.getCount());
         productDb.setPrice(product.getPrice());
         productDb.setImage(product.getImage());
-        Store store = storeRepository.getById(storeId);
+        Store store = storeService.getStoreById(storeId);
         productDb.setStore(store);
         Product save = productRepository.save(productDb);
         return productConverter.convertProductToProductDTO(save);
@@ -90,13 +84,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO saveProduct(ProductDTO productDto, Long storeId, Principal principal) {
-        boolean isPermissions = checkPermission.checkPermissionByStoreId(principal, storeId);
-        if (!isPermissions) {
-            throw new NotPermissionsException(NOT_PERMISSIONS_EXCEPTION);
-        }
-        Product product = productConverter.convertProductDTOToProduct(productDto);
-        Store store = storeRepository.getById(storeId);
+    public ProductDTO saveProduct(ProductDTO productDTO, Principal principal) {
+        Long storeId = checkPermission.checkPermissionByStoreId(principal, productDTO.getStoreId());
+        Product product = productConverter.convertProductDTOToProduct(productDTO);
+        Store store = storeService.getStoreById(storeId);
         product.setStore(store);
         Product save = productRepository.save(product);
         return productConverter.convertProductToProductDTO(save);
@@ -104,19 +95,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void removeAllProductsByStoreId(Principal principal, Long storeId) {
-        boolean isPermissions = checkPermission.checkPermissionByStoreId(principal, storeId);
-        if (!isPermissions) {
-            throw new NotPermissionsException(NOT_PERMISSIONS_EXCEPTION);
-        }
-        productRepository.removeAllByStoreId(storeId);
+        Long id = checkPermission.checkPermissionByStoreId(principal, storeId);
+        productRepository.removeAllByStoreId(id);
     }
 
     @Override
-    public void removeProductByStoreIdAndId(Long storeId, Long productId, Principal principal) {
-        boolean isPermissions = checkPermission.checkPermissionByStoreId(principal, storeId);
-        if (!isPermissions) {
-            throw new NotPermissionsException(NOT_PERMISSIONS_EXCEPTION);
-        }
+    public void removeProductByStoreIdAndId(ProductDTO productDTO, Principal principal, Long productId) {
+        Long storeId = checkPermission.checkPermissionByStoreId(principal, productDTO.getStoreId());
         productRepository.removeProductByStoreIdAndId(storeId, productId);
 
     }

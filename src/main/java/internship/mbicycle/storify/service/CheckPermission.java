@@ -4,5 +4,5 @@ import java.security.Principal;
 
 public interface CheckPermission {
 
-    boolean checkPermissionByStoreId(Principal principal, Long storeId);
+    Long checkPermissionByStoreId(Principal principal, Long storeId);
 }
