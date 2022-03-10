@@ -37,6 +37,4 @@ public class ProfileDTO {
             message = "phone number is not valid (+375(25|29|33|44)222-33-44)")
     private String phone;
 
-    private CartDTO cartDTO;
-
 }

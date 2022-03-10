@@ -52,7 +52,7 @@ public class MailServiceImpl implements MailService {
 
     private String createPurchaseMessage(StorifyUser user, PurchaseDTO purchaseDTO) {
         return String.format("Dear %s your order for the amount %d (%s),you can get by showing your unique code - %s ",
-            user.getUsername(), purchaseDTO.getPrice(), purchaseDTO.getProductDTOMap(), purchaseDTO.getUniqueCode());
+            user.getName(), purchaseDTO.getPrice(), purchaseDTO.getProductDTOMap(), purchaseDTO.getUniqueCode());
     }
 
     private String createFavoriteMessage(ProductDTO productDTO) {
