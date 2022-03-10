@@ -33,29 +33,29 @@ public class PurchaseServiceImpl implements PurchaseService {
     @Override
     public List<PurchaseDTO> getAllPurchasesByProfileIdAndDelivered(Long profileId, boolean isDelivered) {
         return purchaseRepository.findAllByProfileIdAndDelivered(profileId, isDelivered).stream()
-                .map(purchaseConverter::convertPurchaseToPurchaseDTO)
-                .collect(Collectors.toList());
+            .map(purchaseConverter::convertPurchaseToPurchaseDTO)
+            .collect(Collectors.toList());
     }
 
     @Override
     public PurchaseDTO getPurchaseById(Long id) {
         Purchase purchase = purchaseRepository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException(NOT_FOUND_PURCHASE));
+            new ResourceNotFoundException(NOT_FOUND_PURCHASE));
         return purchaseConverter.convertPurchaseToPurchaseDTO(purchase);
     }
 
     @Override
     public PurchaseDTO getPurchaseByUniqueCode(String uniqueCode) {
         Purchase purchase = purchaseRepository.findPurchaseByUniqueCode(uniqueCode).orElseThrow(() ->
-                new ResourceNotFoundException(NOT_FOUND_PURCHASE));
+            new ResourceNotFoundException(NOT_FOUND_PURCHASE));
         return purchaseConverter.convertPurchaseToPurchaseDTO(purchase);
     }
 
     @Override
     public List<PurchaseDTO> getAllPurchasesByProfileId(Long profileId) {
         return purchaseRepository.findAllByProfileId(profileId).stream()
-                .map(purchaseConverter::convertPurchaseToPurchaseDTO)
-                .collect(Collectors.toList());
+            .map(purchaseConverter::convertPurchaseToPurchaseDTO)
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -72,7 +72,7 @@ public class PurchaseServiceImpl implements PurchaseService {
     @Override
     public PurchaseDTO updatePurchase(PurchaseDTO purchaseDTO, Long id, StorifyUser user) {
         Purchase purchase = purchaseRepository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException(NOT_FOUND_PURCHASE));
+            new ResourceNotFoundException(NOT_FOUND_PURCHASE));
         purchase.setPurchaseDate(LocalDate.now());
         purchase.setPrice(purchaseDTO.getPrice());
         purchase.setDelivered(purchaseDTO.isDelivered());
@@ -88,7 +88,7 @@ public class PurchaseServiceImpl implements PurchaseService {
     @Override
     public List<PurchaseDTO> getAllPurchases() {
         return purchaseRepository.findAll().stream()
-                .map(purchaseConverter::convertPurchaseToPurchaseDTO)
-                .collect(Collectors.toList());
+            .map(purchaseConverter::convertPurchaseToPurchaseDTO)
+            .collect(Collectors.toList());
     }
 }

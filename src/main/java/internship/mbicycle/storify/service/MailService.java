@@ -9,6 +9,8 @@ import internship.mbicycle.storify.model.StorifyUser;
 public interface MailService {
 
     void send(String emailTo, String subject, String message);
+
     void sendPurchaseMessage(StorifyUser user, PurchaseDTO purchaseDTO);
+
     void sendFavoriteMessage(List<String> emails, ProductDTO productDTO);
 }
