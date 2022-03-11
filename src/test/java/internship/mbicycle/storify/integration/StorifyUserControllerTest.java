@@ -30,7 +30,6 @@ import java.util.Optional;
 import static org.mockito.BDDMockito.given;
 
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
 @TestMariaDbContainer
