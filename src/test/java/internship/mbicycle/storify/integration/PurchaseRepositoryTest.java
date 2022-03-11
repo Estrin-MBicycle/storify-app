@@ -6,6 +6,7 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TE
 
 import java.util.Optional;
 
+import internship.mbicycle.storify.TestMariaDbContainer;
 import internship.mbicycle.storify.model.Purchase;
 import internship.mbicycle.storify.repository.PurchaseRepository;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import org.springframework.test.context.jdbc.Sql;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Sql(scripts = "/sql/insert-purchase.sql", executionPhase = BEFORE_TEST_METHOD)
 @Sql(scripts = "/sql/delete-purchase.sql", executionPhase = AFTER_TEST_METHOD)
+@TestMariaDbContainer
 public class PurchaseRepositoryTest {
 
     @Autowired
@@ -27,6 +29,6 @@ public class PurchaseRepositoryTest {
     void shouldGetPurchaseByUniqueCode() {
         final String code = "uniqueCode";
         Optional<Purchase> purchase = purchaseRepository.findPurchaseByUniqueCode(code);
-        assertEquals(code,purchase.get().getUniqueCode());
+        assertEquals(code, purchase.get().getUniqueCode());
     }
 }

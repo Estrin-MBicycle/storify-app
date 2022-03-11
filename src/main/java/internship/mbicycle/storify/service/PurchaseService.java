@@ -1,8 +1,10 @@
 package internship.mbicycle.storify.service;
 
+import java.util.List;
+
 import internship.mbicycle.storify.dto.PurchaseDTO;
 import internship.mbicycle.storify.model.StorifyUser;
-
+import java.security.Principal;
 import java.util.List;
 
 public interface PurchaseService {
@@ -12,6 +14,8 @@ public interface PurchaseService {
     PurchaseDTO getPurchaseByUniqueCode(String uniqueCode);
 
     List<PurchaseDTO> getAllPurchasesByProfileId(Long profileId);
+
+    List<PurchaseDTO> getAllPurchasesByProfile(Principal principal);
 
     PurchaseDTO updatePurchase(PurchaseDTO purchaseDTO, Long id, StorifyUser user);
 

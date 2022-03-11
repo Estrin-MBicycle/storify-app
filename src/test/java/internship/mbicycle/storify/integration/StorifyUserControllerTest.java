@@ -114,6 +114,9 @@ class StorifyUserControllerTest {
     @SneakyThrows
     @Test
     void updateEmail() {
+        given(userRepository.findByEmail("qwe@mail.ru"))
+                .willReturn(Optional.empty())
+                .willReturn(Optional.ofNullable(principalUser));
         String newEmailDTOAsString = FileReaderUtil.readFromJson("json/NewEmailDTO.json");
         webTestClient.patch()
                 .uri("/update/" + CODE)

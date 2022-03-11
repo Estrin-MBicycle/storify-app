@@ -3,6 +3,7 @@ package internship.mbicycle.storify.service.impl;
 import internship.mbicycle.storify.converter.StorifyUserConverter;
 import internship.mbicycle.storify.dto.StorifyUserDTO;
 import internship.mbicycle.storify.exception.StorifyUserNotFoundException;
+import internship.mbicycle.storify.exception.UserAlreadyExistsException;
 import internship.mbicycle.storify.model.Cart;
 import internship.mbicycle.storify.model.Profile;
 import internship.mbicycle.storify.model.StorifyUser;
@@ -11,6 +12,7 @@ import internship.mbicycle.storify.repository.CartRepository;
 import internship.mbicycle.storify.repository.StorifyUserRepository;
 import internship.mbicycle.storify.service.MailService;
 import internship.mbicycle.storify.service.StorifyUserService;
+import internship.mbicycle.storify.util.EmailMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import java.util.UUID;
 import static internship.mbicycle.storify.util.Constants.ROLE_USER;
 import static internship.mbicycle.storify.util.EmailMessage.*;
 import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_USER;
+import static internship.mbicycle.storify.util.ExceptionMessage.USER_ALREADY_EXIST;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +43,9 @@ public class StorifyUserServiceImpl implements StorifyUserService {
 
     @Override
     public StorifyUser saveNewUser(StorifyUserDTO storifyUserDTO) {
+        userRepository.findByEmail(storifyUserDTO.getEmail()).ifPresent(user -> {
+            throw new UserAlreadyExistsException(String.format(USER_ALREADY_EXIST, storifyUserDTO.getEmail()));
+        });
         StorifyUser storifyUser = userConverter.convertStorifyUserDTOToStorifyUser(storifyUserDTO);
         storifyUser.setRole(ROLE_USER);
         storifyUser.setPassword(passwordEncoder.encode(storifyUser.getPassword()));
@@ -75,12 +81,17 @@ public class StorifyUserServiceImpl implements StorifyUserService {
     }
 
     @Override
-    public void updateEmail(String newEmail, String code, String email) {
+    public StorifyUser updateEmail(String newEmail, String code, String email) {
+        userRepository.findByEmail(newEmail).ifPresent(user -> {
+            throw new UserAlreadyExistsException(String.format(USER_ALREADY_EXIST, newEmail));
+        });
         StorifyUser storifyUser = getUserByEmail(email);
         if (!storifyUser.getTempConfirmCode().equals(code)) {
             throw new StorifyUserNotFoundException(String.format(NOT_FOUND_USER, code));
         }
+        storifyUser.setTempConfirmCode(null);
         storifyUser.setEmail(newEmail);
+        return storifyUser;
     }
 
     @Override

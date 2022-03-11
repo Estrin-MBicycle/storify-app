@@ -4,24 +4,26 @@ import internship.mbicycle.storify.dto.ProfileDTO;
 import internship.mbicycle.storify.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
+import java.security.Principal;
 
-@RequestMapping("/profiles")
+@RequestMapping("/profile")
 @RestController
 @RequiredArgsConstructor
 public class ProfileController {
 
     private final ProfileService profileService;
 
-    @GetMapping("/{id}")
-    public ProfileDTO getProfileById(@PathVariable Long id) {
-        return profileService.getById(id);
+    @GetMapping
+    public ProfileDTO getProfile(@ApiIgnore Principal principal) {
+        return profileService.getByEmail(principal.getName());
     }
 
-    @PutMapping("/{id}")
-    public ProfileDTO updateProfile(@PathVariable Long id, @Valid @RequestBody ProfileDTO profileDTO) {
-        return profileService.updateProfile(id, profileDTO);
+    @PutMapping
+    public ProfileDTO updateProfile(@Valid @RequestBody ProfileDTO profileDTO, @ApiIgnore Principal principal) {
+        return profileService.updateProfileByEmail(principal.getName(), profileDTO);
     }
 
 }
