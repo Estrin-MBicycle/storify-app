@@ -1,7 +1,8 @@
 package internship.mbicycle.storify.configuration.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import internship.mbicycle.storify.exception.InvalidAuthorizationHeaderException;
+import internship.mbicycle.storify.configuration.security.parser.JwtParser;
+import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,10 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Optional;
 
-import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_AUTHORIZATION_HEADER;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.TEXT_HTML_VALUE;
 
 @Component
@@ -27,29 +25,29 @@ import static org.springframework.http.MediaType.TEXT_HTML_VALUE;
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;
+    private final JwtParser jwtParser;
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (!(request.getRequestURI().equals("/login") ||
-                request.getRequestURI().equals("/sign-up") ||
-                request.getRequestURI().equals("/token/refresh") ||
-                request.getRequestURI().startsWith("/swagger") ||
-                request.getRequestURI().startsWith("/v2") ||
-                request.getRequestURI().startsWith("/activate/"))) {
-            try {
-                String authorizationHeader = Optional.ofNullable(request.getHeader(AUTHORIZATION))
-                        .orElseThrow(() -> new InvalidAuthorizationHeaderException(NOT_FOUND_AUTHORIZATION_HEADER));
-                UsernamePasswordAuthenticationToken authenticationToken =
-                        tokenService.getAuthenticationToken(authorizationHeader);
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                filterChain.doFilter(request, response);
-            } catch (Exception e) {
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                response.setContentType(TEXT_HTML_VALUE);
-                new ObjectMapper().writeValue(response.getWriter(), e.getMessage());
+        try {
+            if (!request.getRequestURI().equals("/token/refresh")) {
+                jwtParser
+                        .parseJwt(request)
+                        .ifPresent(this::setJwtAuthentication);
             }
-        } else {
-            filterChain.doFilter(request, response);
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setContentType(TEXT_HTML_VALUE);
+            new ObjectMapper().writeValue(response.getWriter(), e.getMessage());
         }
+        filterChain.doFilter(request, response);
+    }
+
+    private void setJwtAuthentication(String token) {
+        StorifyUser user = tokenService.getUserByAccessToken(token);
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(user.getEmail(), null, user.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
     }
 }

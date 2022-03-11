@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-
 @RestController()
 @RequestMapping("/token")
 @RequiredArgsConstructor
@@ -23,9 +21,7 @@ public class AuthenticationController {
 
     @GetMapping("/refresh")
     public void refreshAccessToken(HttpServletRequest request, HttpServletResponse response) {
-        String authorizationHeader = request.getHeader(AUTHORIZATION);
-        String refreshToken = tokenService.parseTokenByAuthorizationHeader(authorizationHeader);
-        StorifyUser storifyUser = tokenService.getStorifyUserByRefreshToken(refreshToken);
+        StorifyUser storifyUser = tokenService.getStorifyUserByRefreshToken(request);
         response.setHeader("access_token", storifyUser.getToken().getAccessToken());
         response.setHeader("refresh_token", storifyUser.getToken().getRefreshToken());
     }

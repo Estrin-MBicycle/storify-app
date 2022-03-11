@@ -1,7 +1,8 @@
 package internship.mbicycle.storify.service;
 
 import internship.mbicycle.storify.model.StorifyUser;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+
+import javax.servlet.http.HttpServletRequest;
 
 public interface TokenService {
 
@@ -9,13 +10,11 @@ public interface TokenService {
 
     String createRefreshToken(StorifyUser storifyUser);
 
-    UsernamePasswordAuthenticationToken getAuthenticationToken(String authorizationHeader);
+    StorifyUser getUserByAccessToken(String token);
 
-    StorifyUser getStorifyUserByRefreshToken(String refreshToken);
+    StorifyUser getStorifyUserByRefreshToken(HttpServletRequest refreshToken);
 
     void saveTokenPair(StorifyUser user, String accessToken, String refreshToken);
 
     void setTokenPairAfterActivation(StorifyUser storifyUser);
-
-    String parseTokenByAuthorizationHeader(String authorizationHeader);
 }
