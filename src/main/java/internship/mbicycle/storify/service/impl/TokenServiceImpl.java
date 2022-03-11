@@ -5,21 +5,22 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import internship.mbicycle.storify.configuration.properties.SecurityProperties;
+import internship.mbicycle.storify.configuration.security.parser.JwtParser;
 import internship.mbicycle.storify.exception.InvalidAuthorizationHeaderException;
 import internship.mbicycle.storify.exception.TokenNotFoundException;
 import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.service.StorifyUserService;
 import internship.mbicycle.storify.service.TokenService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 import static internship.mbicycle.storify.util.ExceptionMessage.INVALID_AUTHORIZATION_HEADER;
 import static internship.mbicycle.storify.util.ExceptionMessage.NOT_THE_SAME_TOKENS;
-import static internship.mbicycle.storify.util.TimeConstant.FIVE_MINUTES;
 import static internship.mbicycle.storify.util.TimeConstant.TEN_DAYS;
+import static internship.mbicycle.storify.util.TimeConstant.THIRTY_MINUTES;
 
 @Service
 @RequiredArgsConstructor
@@ -27,13 +28,14 @@ public class TokenServiceImpl implements TokenService {
 
     private final SecurityProperties securityProperties;
     private final StorifyUserService userService;
+    private final JwtParser jwtParser;
 
     @Override
     public String createAccessToken(StorifyUser storifyUser) {
         StorifyUser userFromDb = userService.getUserByEmail(storifyUser.getEmail());
         return JWT.create()
                 .withSubject(userFromDb.getEmail())
-                .withExpiresAt(new Date(System.currentTimeMillis() + FIVE_MINUTES))
+                .withExpiresAt(new Date(System.currentTimeMillis() + THIRTY_MINUTES))
                 .withClaim("role", userFromDb.getRole())
                 .sign(getEncryptionAlgorithm());
     }
@@ -47,17 +49,18 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public UsernamePasswordAuthenticationToken getAuthenticationToken(String authorizationHeader) {
-        String token = parseTokenByAuthorizationHeader(authorizationHeader);
+    public StorifyUser getUserByAccessToken(String token) {
         StorifyUser storifyUser = getStorifyUserByToken(token);
         if (!isValidAccessToken(storifyUser, token)) {
             throw new TokenNotFoundException(String.format(NOT_THE_SAME_TOKENS, token));
         }
-        return new UsernamePasswordAuthenticationToken(storifyUser.getEmail(), null, storifyUser.getAuthorities());
+        return storifyUser;
     }
 
     @Override
-    public StorifyUser getStorifyUserByRefreshToken(String refreshToken) {
+    public StorifyUser getStorifyUserByRefreshToken(HttpServletRequest request) {
+        String refreshToken = jwtParser.parseJwt(request)
+                .orElseThrow(() -> new InvalidAuthorizationHeaderException(INVALID_AUTHORIZATION_HEADER));
         StorifyUser storifyUser = getStorifyUserByToken(refreshToken);
         if (!storifyUser.getToken().getRefreshToken().equals(refreshToken)) {
             throw new TokenNotFoundException(String.format(NOT_THE_SAME_TOKENS, refreshToken));
@@ -84,20 +87,10 @@ public class TokenServiceImpl implements TokenService {
 
     private boolean isValidAccessToken(StorifyUser storifyUser, String token) {
         if (securityProperties.isCheckAccess()) {
-            if (storifyUser.getToken().getAccessToken().equals(token)) {
-                return true;
-            }
+            return storifyUser.getToken().getAccessToken().equals(token);
         } else {
             return true;
         }
-        return false;
-    }
-
-    public String parseTokenByAuthorizationHeader(String authorizationHeader) {
-        if (!authorizationHeader.startsWith("Bearer ")) {
-            throw new InvalidAuthorizationHeaderException(String.format(INVALID_AUTHORIZATION_HEADER, authorizationHeader));
-        }
-        return authorizationHeader.substring("Bearer ".length());
     }
 
     private StorifyUser getStorifyUserByToken(String token) {

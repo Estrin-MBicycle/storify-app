@@ -1,28 +1,21 @@
 package internship.mbicycle.storify.integration;
 
 import internship.mbicycle.storify.TestMariaDbContainer;
-import internship.mbicycle.storify.configuration.properties.SecurityProperties;
 import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.model.Token;
 import internship.mbicycle.storify.repository.StorifyUserRepository;
-import internship.mbicycle.storify.service.TokenService;
 import internship.mbicycle.storify.util.Constants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -35,11 +28,11 @@ class AuthenticationControllerTest {
     private static final String PASSWORD = "123456";
     private static final String CODE = "randomCode";
 
-    @Autowired
-    private WebTestClient webTestClient;
+    @Value("${jwt.token.refresh}")
+    private String refreshToken;
 
     @Autowired
-    private TokenService tokenService;
+    private WebTestClient webTestClient;
 
     @MockBean
     private StorifyUserRepository userRepository;
@@ -55,15 +48,14 @@ class AuthenticationControllerTest {
                 .token(new Token())
                 .tempConfirmCode(CODE)
                 .build();
+        storifyUser.getToken().setRefreshToken(refreshToken);
     }
 
     @Test
     void refreshAccessToken() {
         given(userRepository.findByEmail(EMAIL)).willReturn(Optional.of(storifyUser));
         given(userRepository.save(any())).willReturn(storifyUser);
-        String refreshToken = tokenService.createRefreshToken(storifyUser);
-        storifyUser.getToken().setRefreshToken(refreshToken);
-        String header = "Bearer " + storifyUser.getToken().getRefreshToken();
+        String header = "Bearer " + refreshToken;
         webTestClient.get()
                 .uri("/token/refresh")
                 .header("Authorization", header)
