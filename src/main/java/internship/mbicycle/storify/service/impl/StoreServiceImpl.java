@@ -6,15 +6,16 @@ import internship.mbicycle.storify.dto.StoreDTO;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.model.Profile;
 import internship.mbicycle.storify.model.Store;
+import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.repository.ProfileRepository;
 import internship.mbicycle.storify.repository.StoreRepository;
 import internship.mbicycle.storify.service.StoreService;
+import internship.mbicycle.storify.service.StorifyUserService;
 import internship.mbicycle.storify.util.IncomePeriod;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,27 +30,30 @@ public class StoreServiceImpl implements StoreService {
     private final StoreRepository storeRepository;
     private final ProfileRepository profileRepository;
     private final StoreConverter storeConverter;
-
+    private final StorifyUserService userService;
 
     @Override
-    public List<StoreDTO> findStoresByProfileId(Long profileId) {
-        return storeRepository.findStoresByProfileId(profileId)
+    public List<StoreDTO> findStoresByEmail(String email) {
+        StorifyUser user = userService.getUserByEmail(email);
+        return storeRepository.findStoresByProfileId(user.getProfile().getId())
                 .stream()
                 .map(storeConverter::fromStoreToStoreDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<StoreDTO> findStoresByProfileIdNot(Long profileId) {
-        return storeRepository.findStoresByProfileIdNot(profileId)
+    public List<StoreDTO> findStoresByEmailNot(String email) {
+        StorifyUser user = userService.getUserByEmail(email);
+        return storeRepository.findStoresByProfileIdNot(user.getProfile().getId())
                 .stream()
                 .map(storeConverter::fromStoreToStoreDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public StoreDTO findStoreByIdAndProfileId(Long id, Long profileId) {
-        Store store = storeRepository.findStoreByIdAndProfileId(id, profileId)
+    public StoreDTO findStoreByIdAndEmail(Long id, String email) {
+        StorifyUser user = userService.getUserByEmail(email);
+        Store store = storeRepository.findStoreByIdAndProfileId(id, user.getProfile().getId())
                 .orElseThrow(() -> new ResourceNotFoundException(String.format(NOT_FOUND_STORE, id)));
         return storeConverter.fromStoreToStoreDTO(store);
     }
@@ -62,29 +66,33 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public StoreDTO saveStore(StoreDTO storeDTO, Long profileId) {
+    public StoreDTO saveStore(StoreDTO storeDTO, String email) {
+        StorifyUser user = userService.getUserByEmail(email);
         Store store = storeConverter.fromStoreDTOToStore(storeDTO);
-        Profile profile = profileRepository.getById(profileId);
+        Profile profile = profileRepository.getById(user.getProfile().getId());
         store.setProfile(profile);
         Store save = storeRepository.save(store);
         return storeConverter.fromStoreToStoreDTO(save);
     }
 
     @Override
-    public StoreDTO updateStore(StoreDTO storeDTO, Long id, Long profileId) {
-        Store store = storeRepository.findStoreByIdAndProfileId(id,profileId).orElseThrow(() -> new ResourceNotFoundException(String.format(NOT_FOUND_STORE, id)));
+    public StoreDTO updateStore(StoreDTO storeDTO, Long id, String email) {
+        StorifyUser user = userService.getUserByEmail(email);
+        Store store = storeRepository.findStoreByIdAndProfileId(id, user.getProfile().getId())
+                .orElseThrow(() -> new ResourceNotFoundException(String.format(NOT_FOUND_STORE, id)));
         store.setStoreName(storeDTO.getStoreName());
         store.setDescription(storeDTO.getDescription());
         store.setAddress(storeDTO.getAddress());
-        Profile profile = profileRepository.getById(profileId);
+        Profile profile = profileRepository.getById(user.getProfile().getId());
         store.setProfile(profile);
         Store save = storeRepository.save(store);
         return storeConverter.fromStoreToStoreDTO(save);
     }
 
     @Override
-    public void deleteByIdAndProfileId(Long id, Long profileId) {
-        storeRepository.deleteByIdAndProfileId(id, profileId);
+    public void deleteByIdAndEmail(Long id, String email) {
+        StorifyUser user = userService.getUserByEmail(email);
+        storeRepository.deleteByIdAndProfileId(id, user.getProfile().getId());
     }
 
     @Override
@@ -98,8 +106,9 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public void deleteAllByProfileId(Long profileId) {
-        storeRepository.deleteAllByProfileId(profileId);
+    public void deleteAllByEmail(String email) {
+        StorifyUser user = userService.getUserByEmail(email);
+        storeRepository.deleteAllByProfileId(user.getProfile().getId());
     }
 
     @Override

@@ -7,8 +7,10 @@ import internship.mbicycle.storify.dto.StoreDTO;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.model.Profile;
 import internship.mbicycle.storify.model.Store;
+import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.repository.ProfileRepository;
 import internship.mbicycle.storify.repository.StoreRepository;
+import internship.mbicycle.storify.service.StorifyUserService;
 import internship.mbicycle.storify.service.impl.StoreServiceImpl;
 import internship.mbicycle.storify.util.IncomePeriod;
 import org.junit.jupiter.api.Test;
@@ -35,6 +37,7 @@ class StoreServiceTest {
 
     public static final Long ID = 2L;
     public static final Long PROFILE_ID = 1L;
+    public static final String PROFILE_EMAIL = "m@mail.com";
     public static final Long LIMIT = 1L;
 
     @Mock
@@ -43,40 +46,62 @@ class StoreServiceTest {
     private ProfileRepository profileRepository;
     @Mock
     private StoreConverter storeConverter;
+    @Mock
+    private StorifyUserService userService;
 
     @InjectMocks
     private StoreServiceImpl storeService;
 
     @Test
-    void shouldFindStoresByProfileId() {
+    void shouldFindStoresByEmail() {
+        final List<StoreDTO> expected = new ArrayList<>();
+        final Profile profile = Profile.builder().id(PROFILE_ID).build();
+        final StorifyUser storifyUser = StorifyUser.builder().id(1L).profile(profile).build();
+
         given(storeRepository.findStoresByProfileId(PROFILE_ID)).willReturn(new ArrayList<>());
-        List<StoreDTO> expected = new ArrayList<>();
-        List<StoreDTO> actual = storeService.findStoresByProfileId(PROFILE_ID);
+        given(userService.getUserByEmail(PROFILE_EMAIL)).willReturn(storifyUser);
+
+        final List<StoreDTO> actual = storeService.findStoresByEmail(PROFILE_EMAIL);
         assertEquals(expected, actual);
+
         then(storeRepository).should(only()).findStoresByProfileId(PROFILE_ID);
+        then(userService).should(only()).getUserByEmail(PROFILE_EMAIL);
         then(profileRepository).shouldHaveNoInteractions();
+        then(storeConverter).shouldHaveNoInteractions();
     }
 
     @Test
-    void shouldFindStoresByProfileIdNot() {
+    void shouldFindStoresByEmailNot() {
+        final List<StoreDTO> expected = new ArrayList<>();
+        final Profile profile = Profile.builder().id(PROFILE_ID).build();
+        final StorifyUser storifyUser = StorifyUser.builder().id(1L).profile(profile).build();
+
+        given(userService.getUserByEmail(PROFILE_EMAIL)).willReturn(storifyUser);
         given(storeRepository.findStoresByProfileIdNot(PROFILE_ID)).willReturn(new ArrayList<>());
-        List<StoreDTO> expected = new ArrayList<>();
-        List<StoreDTO> actual = storeService.findStoresByProfileIdNot(PROFILE_ID);
+
+        final List<StoreDTO> actual = storeService.findStoresByEmailNot(PROFILE_EMAIL);
         assertEquals(expected, actual);
+
         then(storeRepository).should(only()).findStoresByProfileIdNot(PROFILE_ID);
+        then(userService).should(only()).getUserByEmail(PROFILE_EMAIL);
         then(profileRepository).shouldHaveNoInteractions();
     }
 
     @Test
-    void shouldFindStoreByIdAndProfileId() {
+    void shouldFindStoreByIdAndEmail() {
+        final Profile profile = Profile.builder().id(PROFILE_ID).build();
+        final StorifyUser storifyUser = StorifyUser.builder().id(1L).profile(profile).build();
+
+        given(userService.getUserByEmail(PROFILE_EMAIL)).willReturn(storifyUser);
         given(storeRepository.findStoreByIdAndProfileId(ID, PROFILE_ID)).willReturn(Optional.empty());
 
         final ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
-                () -> storeService.findStoreByIdAndProfileId(ID, PROFILE_ID));
+                () -> storeService.findStoreByIdAndEmail(ID, PROFILE_EMAIL));
 
         assertEquals(String.format(NOT_FOUND_STORE, ID), exception.getMessage());
 
         then(storeRepository).should(only()).findStoreByIdAndProfileId(ID, PROFILE_ID);
+        then(userService).should(only()).getUserByEmail(PROFILE_EMAIL);
         then(profileRepository).shouldHaveNoInteractions();
     }
 
@@ -96,19 +121,21 @@ class StoreServiceTest {
     @Test
     void shouldSaveStore() {
         final Profile profile = Profile.builder().id(PROFILE_ID).build();
+        final StorifyUser storifyUser = StorifyUser.builder().id(1L).profile(profile).build();
         final Store store = Store.builder().id(ID).build();
         final StoreDTO expected = StoreDTO.builder().id(ID).build();
 
-
+        given(userService.getUserByEmail(PROFILE_EMAIL)).willReturn(storifyUser);
         given(storeConverter.fromStoreToStoreDTO(store)).willReturn(expected);
         given(storeConverter.fromStoreDTOToStore(expected)).willReturn(store);
         given(profileRepository.getById(PROFILE_ID)).willReturn(profile);
         given(storeRepository.save(store)).willReturn(store);
 
-        final StoreDTO actual = storeService.saveStore(expected, PROFILE_ID);
+        final StoreDTO actual = storeService.saveStore(expected, PROFILE_EMAIL);
         assertEquals(expected, actual);
 
         then(storeRepository).should(only()).save(store);
+        then(userService).should(only()).getUserByEmail(PROFILE_EMAIL);
         then(profileRepository).should(only()).getById(PROFILE_ID);
         then(storeConverter).should(times(1)).fromStoreDTOToStore(expected);
         then(storeConverter).should(times(1)).fromStoreToStoreDTO(store);
@@ -118,21 +145,23 @@ class StoreServiceTest {
     @Test
     void shouldUpdateStore() {
         final Profile profile = Profile.builder().id(PROFILE_ID).build();
+        final StorifyUser storifyUser = StorifyUser.builder().id(1L).profile(profile).build();
         final Store store = Store.builder().id(ID).profile(profile).build();
         final StoreDTO expected = StoreDTO.builder().id(ID).build();
 
+        given(userService.getUserByEmail(PROFILE_EMAIL)).willReturn(storifyUser);
         given(storeRepository.findStoreByIdAndProfileId(ID, PROFILE_ID)).willReturn(Optional.ofNullable(store));
         given(profileRepository.getById(PROFILE_ID)).willReturn(profile);
         assert store != null;
         given(storeConverter.fromStoreToStoreDTO(store)).willReturn(expected);
         given(storeRepository.save(store)).willReturn(store);
 
-
-        final StoreDTO actual = storeService.updateStore(expected, ID, PROFILE_ID);
+        final StoreDTO actual = storeService.updateStore(expected, ID, PROFILE_EMAIL);
         assertEquals(expected, actual);
 
         then(storeRepository).should(times(1)).findStoreByIdAndProfileId(ID, PROFILE_ID);
         then(storeRepository).should(times(1)).save(store);
+        then(userService).should(only()).getUserByEmail(PROFILE_EMAIL);
         then(storeRepository).shouldHaveNoMoreInteractions();
         then(profileRepository).should(only()).getById(PROFILE_ID);
         then(storeConverter).should(only()).fromStoreToStoreDTO(store);
