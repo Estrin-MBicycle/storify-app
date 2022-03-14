@@ -1,17 +1,18 @@
 package internship.mbicycle.storify.controller;
 
-import java.util.List;
-
 import internship.mbicycle.storify.dto.ProductDTO;
 import internship.mbicycle.storify.dto.ProfileDTO;
+import internship.mbicycle.storify.model.Product;
+import internship.mbicycle.storify.model.Profile;
 import internship.mbicycle.storify.service.FavoriteService;
+import internship.mbicycle.storify.service.StorifyUserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
+
+import java.security.Principal;
+import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/favorite")
@@ -19,21 +20,36 @@ import org.springframework.web.bind.annotation.RestController;
 public class FavoriteController {
 
     private final FavoriteService favoriteService;
+    private final StorifyUserService userService;
 
-    @PutMapping("/{id}/{profileId}")
-    public ProfileDTO addProfileToFavoriteProduct(@PathVariable Long id,
-                                                  @PathVariable Long profileId) {
-        return favoriteService.addProfileToFavoriteProduct(id, profileId);
+    @PatchMapping("/{id}")
+    public ProfileDTO addProductByFavorite(@PathVariable Long id,
+                                           @ApiIgnore Principal principal) {
+        return favoriteService.addProductToFavorite(id, getProductsFromFavorite(principal), getProfile(principal));
     }
 
-    @DeleteMapping("/{id}/{profileId}")
-    public ProfileDTO removeProfileFromFavoriteProduct(@PathVariable Long id,
-                                                       @PathVariable Long profileId) {
-        return favoriteService.removeProfileFromFavoriteProduct(id, profileId);
+    @DeleteMapping("/{id}")
+    public ProfileDTO removeProductFromFavorite(@PathVariable Long id,
+                                                @ApiIgnore Principal principal) {
+        return favoriteService.removeProductFromFavorite(id, getProductsFromFavorite(principal), getProfile(principal));
     }
 
-    @GetMapping("/{profileId}")
-    public List<ProductDTO> getFavoritesProducts(@PathVariable Long profileId) {
-        return favoriteService.getFavoritesProducts(profileId);
+    @DeleteMapping()
+    public ProfileDTO removeAllProductsFromFavorite(@ApiIgnore Principal principal) {
+        return favoriteService.removeAllProductFromFavorite(getProductsFromFavorite(principal), getProfile(principal));
+    }
+
+    @GetMapping()
+    public List<ProductDTO> getFavorite(@ApiIgnore Principal principal) {
+        return favoriteService.getFavoriteByPrincipal(principal);
+    }
+
+    private Set<Product> getProductsFromFavorite(@ApiIgnore Principal principal) {
+        return userService.getUserByEmail(principal.getName()).getProfile().getFavorite();
+    }
+
+    private Profile getProfile(Principal principal) {
+        return userService.getUserByEmail(principal.getName()).getProfile();
     }
 }
+

@@ -7,6 +7,7 @@ import internship.mbicycle.storify.service.CartService;
 import internship.mbicycle.storify.service.StorifyUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.security.Principal;
 
@@ -18,7 +19,7 @@ public class CartServiceImpl implements CartService {
     private final CartRepository cartRepository;
 
     @Override
-    public Cart getCartByPrincipal(Principal principal) {
+    public Cart getCartByPrincipal(@ApiIgnore Principal principal) {
         StorifyUser storifyUser = userService.getUserByEmail(principal.getName());
         return storifyUser.getProfile().getCart();
     }
@@ -46,5 +47,4 @@ public class CartServiceImpl implements CartService {
         cart.getProductsMap().put(productId, count);
         cartRepository.save(cart);
     }
-
 }

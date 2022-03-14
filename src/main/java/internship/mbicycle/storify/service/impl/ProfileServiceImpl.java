@@ -1,10 +1,5 @@
 package internship.mbicycle.storify.service.impl;
 
-import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_PROFILE;
-import static java.lang.String.format;
-
-import java.util.List;
-
 import internship.mbicycle.storify.converter.ProfileConverter;
 import internship.mbicycle.storify.dto.ProfileDTO;
 import internship.mbicycle.storify.exception.ProfileNotFoundException;
@@ -17,6 +12,11 @@ import internship.mbicycle.storify.service.StorifyUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Set;
+
+import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_PROFILE;
+import static java.lang.String.format;
 
 @Service
 @Transactional
@@ -34,7 +34,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public ProfileDTO setFavoriteProductAndSaveProfile(Profile profile, List<Product> products) {
+    public ProfileDTO setFavoriteProductAndSaveProfile(Set<Product> products, Profile profile) {
         profile.setFavorite(products);
         Profile save = profileRepository.save(profile);
         return profileConverter.convertProfileToProfileDTO(save);
