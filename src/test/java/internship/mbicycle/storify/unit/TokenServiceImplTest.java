@@ -2,7 +2,6 @@ package internship.mbicycle.storify.unit;
 
 import internship.mbicycle.storify.configuration.properties.SecurityProperties;
 import internship.mbicycle.storify.model.StorifyUser;
-import internship.mbicycle.storify.model.Token;
 import internship.mbicycle.storify.service.StorifyUserService;
 import internship.mbicycle.storify.service.impl.TokenServiceImpl;
 import internship.mbicycle.storify.util.Constants;
@@ -12,6 +11,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockHttpServletResponse;
+
+import javax.servlet.http.HttpServletResponse;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -37,14 +39,13 @@ class TokenServiceImplTest {
     private static final StorifyUser storifyUser = StorifyUser.builder()
             .email(EMAIL)
             .role(Constants.ROLE_USER)
-            .token(new Token())
             .build();
 
     @Test
-    void shouldCreateAccessToken() {
+    void shouldCreateJwtToken() {
         given(userService.getUserByEmail(EMAIL)).willReturn(storifyUser);
         given(securityProperties.getJwtSecret()).willReturn("secret");
-        String actual = tokenService.createAccessToken(storifyUser);
+        String actual = tokenService.createJwtToken(storifyUser);
         assertNotNull(actual);
         then(userService).should(only()).getUserByEmail(EMAIL);
         then(securityProperties).should(only()).getJwtSecret();
@@ -52,21 +53,14 @@ class TokenServiceImplTest {
     }
 
     @Test
-    void shouldCreateRefreshToken() {
-        given(securityProperties.getJwtSecret()).willReturn("storify");
-        String actual = tokenService.createRefreshToken(storifyUser);
-        assertNotNull(actual);
-        then(securityProperties).should(only()).getJwtSecret();
-    }
-
-    @Test
-    void shouldGetUserByAccessToken() {
+    void shouldGetUserByJwtToken() {
         given(userService.getUserByEmail(EMAIL)).willReturn(storifyUser);
         given(securityProperties.getJwtSecret()).willReturn("storify");
-        StorifyUser actual = tokenService.getUserByAccessToken(token);
+        String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36";
+        HttpServletResponse response = new MockHttpServletResponse();
+        StorifyUser actual = tokenService.getUserByJwtToken(token, userAgent, response);
         assertEquals(storifyUser, actual);
         then(userService).should(only()).getUserByEmail(EMAIL);
         then(securityProperties).should(times(1)).getJwtSecret();
-        then(securityProperties).should(times(1)).isCheckAccess();
     }
 }

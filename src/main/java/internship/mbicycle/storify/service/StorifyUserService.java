@@ -20,4 +20,8 @@ public interface StorifyUserService {
     StorifyUser updateEmail(String newEmail, String code, String email);
 
     void sendConfirmationEmail(String name);
+
+    void saveJwtToken(StorifyUser storifyUser, String jwtToken, String userAgent);
+
+    StorifyUser getStorifyUserByTokenAndUserAgent(String token, String userAgent);
 }

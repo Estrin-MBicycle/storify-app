@@ -11,9 +11,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.security.Principal;
+
+import static org.springframework.http.HttpHeaders.USER_AGENT;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,11 +38,10 @@ public class StorifyUserController {
 
     @ApiOperation("Confirmation of registration")
     @GetMapping("/activate/{code}")
-    public void activateEmail(@PathVariable String code, HttpServletResponse response) {
+    public void activateEmail(@PathVariable String code, HttpServletRequest request, HttpServletResponse response) {
         StorifyUser storifyUser = userService.activateUserByEmail(code);
-        tokenService.setTokenPairAfterActivation(storifyUser);
-        response.setHeader("access_token", storifyUser.getToken().getAccessToken());
-        response.setHeader("refresh_token", storifyUser.getToken().getRefreshToken());
+        String userAgent = request.getHeader(USER_AGENT);
+        tokenService.setTokenPairAfterActivation(storifyUser, userAgent, response);
     }
 
     @ApiOperation("Send confirmation to email")
@@ -53,11 +55,11 @@ public class StorifyUserController {
     public void updateEmail(@Valid @RequestBody NewEmailDTO newEmailDTO,
                             @PathVariable String code,
                             @ApiIgnore Principal principal,
+                            HttpServletRequest request,
                             HttpServletResponse response) {
         StorifyUser storifyUser = userService.updateEmail(newEmailDTO.getEmail(), code, principal.getName());
-        tokenService.setTokenPairAfterActivation(storifyUser);
-        response.setHeader("access_token", storifyUser.getToken().getAccessToken());
-        response.setHeader("refresh_token", storifyUser.getToken().getRefreshToken());
+        String userAgent = request.getHeader(USER_AGENT);
+        tokenService.setTokenPairAfterActivation(storifyUser, userAgent, response);
     }
 
 }

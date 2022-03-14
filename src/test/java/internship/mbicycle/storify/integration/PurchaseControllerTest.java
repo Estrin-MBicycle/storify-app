@@ -11,7 +11,6 @@ import java.util.Optional;
 import internship.mbicycle.storify.TestMariaDbContainer;
 import internship.mbicycle.storify.model.Purchase;
 import internship.mbicycle.storify.model.StorifyUser;
-import internship.mbicycle.storify.model.Token;
 import internship.mbicycle.storify.repository.PurchaseRepository;
 import internship.mbicycle.storify.repository.StorifyUserRepository;
 import internship.mbicycle.storify.service.TokenService;
@@ -72,18 +71,16 @@ class PurchaseControllerTest {
             .email(EMAIL)
             .password(PASSWORD)
             .role(Constants.ROLE_USER)
-            .token(new Token())
             .tempConfirmCode(CODE)
             .build();
         given(userRepository.findByEmail(EMAIL)).willReturn(Optional.of(principalUser));
-        String token = tokenService.createAccessToken(principalUser);
-        principalUser.getToken().setAccessToken(token);
+        String token = tokenService.createJwtToken(principalUser);
+        header = "Bearer " + token;
         Authentication auth = new UsernamePasswordAuthenticationToken(
             principalUser.getEmail(),
             principalUser.getPassword(),
             principalUser.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
-        header = "Bearer " + principalUser.getToken().getAccessToken();
     }
 
     @Test

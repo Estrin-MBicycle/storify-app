@@ -6,6 +6,7 @@ import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.service.StorifyUserService;
 import internship.mbicycle.storify.service.TokenService;
 import lombok.SneakyThrows;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +20,9 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static internship.mbicycle.storify.util.Constants.BEARER;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpHeaders.USER_AGENT;
 import static org.springframework.http.MediaType.TEXT_HTML_VALUE;
 
 @Component
@@ -55,10 +59,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         StorifyUser storifyUser = userService.getUserByEmail(user.getUsername());
-        String accessToken = tokenService.createAccessToken(storifyUser);
-        String refreshToken = tokenService.createRefreshToken(storifyUser);
-        tokenService.saveTokenPair(storifyUser, accessToken, refreshToken);
-        response.setHeader("access_token", accessToken);
-        response.setHeader("refresh_token", refreshToken);
+        String jwtToken = tokenService.createJwtToken(storifyUser);
+        userService.saveJwtToken(storifyUser, jwtToken, request.getHeader(USER_AGENT));
+        response.setHeader(AUTHORIZATION, Strings.concat(BEARER, jwtToken));
     }
 }
