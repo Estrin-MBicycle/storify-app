@@ -2,13 +2,18 @@ package internship.mbicycle.storify.service;
 
 import internship.mbicycle.storify.model.StorifyUser;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public interface TokenService {
 
-    String createJwtToken(StorifyUser storifyUser);
+    String createAccessToken(StorifyUser storifyUser);
 
-    StorifyUser getUserByJwtToken(String token, String userAgent, HttpServletResponse response);
+    String createRefreshToken(StorifyUser storifyUser);
 
-    void setTokenPairAfterActivation(StorifyUser storifyUser, String userAgent, HttpServletResponse response);
+    StorifyUser getUserByAccessToken(String token);
+
+    void setTokenPair(StorifyUser storifyUser, String userAgent, HttpServletResponse response);
+
+    void setTokenPairByRefreshToken(HttpServletRequest request, HttpServletResponse response);
 }

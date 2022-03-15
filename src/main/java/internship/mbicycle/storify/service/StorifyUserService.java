@@ -9,8 +9,6 @@ public interface StorifyUserService {
 
     StorifyUser saveNewUser(StorifyUserDTO storifyUserDTO);
 
-    void updateStorifyUser(StorifyUser storifyUser);
-
     StorifyUser getUserByEmail(String email);
 
     StorifyUser getUserByActivationCode(String code);
@@ -21,7 +19,7 @@ public interface StorifyUserService {
 
     void sendConfirmationEmail(String name);
 
-    void saveJwtToken(StorifyUser storifyUser, String jwtToken, String userAgent);
+    void saveRefreshToken(StorifyUser storifyUser, String jwtToken, String userAgent);
 
     StorifyUser getStorifyUserByTokenAndUserAgent(String token, String userAgent);
 }

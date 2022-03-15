@@ -41,7 +41,7 @@ public class StorifyUserController {
     public void activateEmail(@PathVariable String code, HttpServletRequest request, HttpServletResponse response) {
         StorifyUser storifyUser = userService.activateUserByEmail(code);
         String userAgent = request.getHeader(USER_AGENT);
-        tokenService.setTokenPairAfterActivation(storifyUser, userAgent, response);
+        tokenService.setTokenPair(storifyUser, userAgent, response);
     }
 
     @ApiOperation("Send confirmation to email")
@@ -59,7 +59,7 @@ public class StorifyUserController {
                             HttpServletResponse response) {
         StorifyUser storifyUser = userService.updateEmail(newEmailDTO.getEmail(), code, principal.getName());
         String userAgent = request.getHeader(USER_AGENT);
-        tokenService.setTokenPairAfterActivation(storifyUser, userAgent, response);
+        tokenService.setTokenPair(storifyUser, userAgent, response);
     }
 
 }

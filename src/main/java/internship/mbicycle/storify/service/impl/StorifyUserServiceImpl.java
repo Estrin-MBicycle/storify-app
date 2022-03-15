@@ -35,11 +35,6 @@ public class StorifyUserServiceImpl implements StorifyUserService {
     private final StorifyUserConverter userConverter;
 
     @Override
-    public void updateStorifyUser(StorifyUser storifyUser) {
-        userRepository.save(storifyUser);
-    }
-
-    @Override
     public StorifyUser saveNewUser(StorifyUserDTO storifyUserDTO) {
         userRepository.findByEmail(storifyUserDTO.getEmail()).ifPresent(user -> {
             throw new UserAlreadyExistsException(String.format(USER_ALREADY_EXIST, storifyUserDTO.getEmail()));
@@ -100,8 +95,8 @@ public class StorifyUserServiceImpl implements StorifyUserService {
     }
 
     @Override
-    public void saveJwtToken(StorifyUser storifyUser, String jwtToken, String userAgent) {
-        storifyUser.getTokenMap().put(userAgent, jwtToken);
+    public void saveRefreshToken(StorifyUser storifyUser, String refresh, String userAgent) {
+        storifyUser.getTokenMap().put(userAgent, refresh);
         userRepository.save(storifyUser);
     }
 

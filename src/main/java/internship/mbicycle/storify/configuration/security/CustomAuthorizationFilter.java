@@ -1,5 +1,6 @@
 package internship.mbicycle.storify.configuration.security;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import internship.mbicycle.storify.configuration.security.parser.JwtParser;
 import internship.mbicycle.storify.model.StorifyUser;
@@ -17,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static org.springframework.http.HttpHeaders.USER_AGENT;
 import static org.springframework.http.MediaType.TEXT_HTML_VALUE;
 
 @Component
@@ -32,19 +32,25 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            jwtParser
-                    .parseJwt(request)
-                    .ifPresent(token -> setJwtAuthentication(token, request.getHeader(USER_AGENT), response));
-            filterChain.doFilter(request, response);
+            if (!request.getRequestURI().equals("/token/refresh")) {
+                jwtParser
+                        .parseJwt(request)
+                        .ifPresent(this::setJwtAuthentication);
+            }
+        } catch (JWTVerificationException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType(TEXT_HTML_VALUE);
+            new ObjectMapper().writeValue(response.getWriter(), e.getMessage());
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.setContentType(TEXT_HTML_VALUE);
             new ObjectMapper().writeValue(response.getWriter(), e.getMessage());
         }
+        filterChain.doFilter(request, response);
     }
 
-    private void setJwtAuthentication(String token, String userAgent, HttpServletResponse response) {
-        StorifyUser user = tokenService.getUserByJwtToken(token, userAgent, response);
+    private void setJwtAuthentication(String token) {
+        StorifyUser user = tokenService.getUserByAccessToken(token);
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(user.getEmail(), null, user.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);

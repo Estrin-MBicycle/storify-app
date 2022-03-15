@@ -1,13 +1,6 @@
 package internship.mbicycle.storify.integration;
 
 
-import static org.mockito.BDDMockito.given;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import internship.mbicycle.storify.TestMariaDbContainer;
 import internship.mbicycle.storify.model.Purchase;
 import internship.mbicycle.storify.model.StorifyUser;
@@ -27,6 +20,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.mockito.BDDMockito.given;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -57,29 +57,29 @@ class PurchaseControllerTest {
     @BeforeEach
     void setUp() {
         purchase = Purchase.builder()
-            .id(55L)
-            .price(5555)
-            .uniqueCode("uniqueCode")
-            .delivered(true)
-            .profileId(69L)
-            .purchaseDate(LocalDate.now())
-            .build();
+                .id(55L)
+                .price(5555)
+                .uniqueCode("uniqueCode")
+                .delivered(true)
+                .profileId(69L)
+                .purchaseDate(LocalDate.now())
+                .build();
 
         purchaseList = List.of(purchase);
 
         StorifyUser principalUser = StorifyUser.builder()
-            .email(EMAIL)
-            .password(PASSWORD)
-            .role(Constants.ROLE_USER)
-            .tempConfirmCode(CODE)
-            .build();
+                .email(EMAIL)
+                .password(PASSWORD)
+                .role(Constants.ROLE_USER)
+                .tempConfirmCode(CODE)
+                .build();
         given(userRepository.findByEmail(EMAIL)).willReturn(Optional.of(principalUser));
-        String token = tokenService.createJwtToken(principalUser);
+        String token = tokenService.createAccessToken(principalUser);
         header = "Bearer " + token;
         Authentication auth = new UsernamePasswordAuthenticationToken(
-            principalUser.getEmail(),
-            principalUser.getPassword(),
-            principalUser.getAuthorities());
+                principalUser.getEmail(),
+                principalUser.getPassword(),
+                principalUser.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
 
@@ -88,11 +88,11 @@ class PurchaseControllerTest {
         final String code = "uniqueCode";
         given(purchaseRepository.findPurchaseByUniqueCode(code)).willReturn(Optional.of(purchase));
         webTestClient.get()
-            .uri("/purchases/" + code)
-            .header("Authorization", header)
-            .exchange()
-            .expectStatus()
-            .is2xxSuccessful();
+                .uri("/purchases/" + code)
+                .header("Authorization", header)
+                .exchange()
+                .expectStatus()
+                .is2xxSuccessful();
     }
 
     @Test
@@ -100,12 +100,12 @@ class PurchaseControllerTest {
         final boolean isDelivered = true;
         final long profileId = 69L;
         given(purchaseRepository.findAllByProfileIdAndDelivered(profileId, isDelivered))
-            .willReturn(purchaseList);
+                .willReturn(purchaseList);
         webTestClient.get()
-            .uri("/purchases/" + profileId + "/" + isDelivered)
-            .header("Authorization", header)
-            .exchange()
-            .expectStatus()
-            .is2xxSuccessful();
+                .uri("/purchases/" + profileId + "/" + isDelivered)
+                .header("Authorization", header)
+                .exchange()
+                .expectStatus()
+                .is2xxSuccessful();
     }
 }

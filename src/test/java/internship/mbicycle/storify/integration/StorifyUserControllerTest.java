@@ -25,7 +25,6 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import java.util.HashMap;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
@@ -71,7 +70,7 @@ class StorifyUserControllerTest {
                 principalUser.getPassword(),
                 principalUser.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
-        token = tokenService.createJwtToken(principalUser);
+        token = tokenService.createAccessToken(principalUser);
         header = "Bearer " + token;
     }
 
