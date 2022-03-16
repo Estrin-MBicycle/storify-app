@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface StoreService {
 
-    List<StoreDTO> getStoresByEmail(String email);
+    List<StoreDTO> getStoresByUserEmail(String email);
 
     List<StoreDTO> getStores();
 
@@ -19,7 +19,7 @@ public interface StoreService {
 
     StoreDTO updateStore(StoreDTO storeDTO, Long id, String email);
 
-    void deleteByIdAndEmail(Long id, String email);
+    void deleteByIdAndUserEmail(Long id, String email);
 
     List<StoreRepository.PurchasedAndNotPaidProduct> findMostPurchasedProductsInStore(Long id, Long limit);
 

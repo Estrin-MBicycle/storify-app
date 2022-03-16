@@ -30,7 +30,7 @@ public class StoreController {
 
     @GetMapping("/my")
     public List<StoreDTO> getStoresByProfile(@ApiIgnore Principal principal) {
-        return storeService.getStoresByEmail(principal.getName());
+        return storeService.getStoresByUserEmail(principal.getName());
     }
 
     @GetMapping
@@ -55,7 +55,7 @@ public class StoreController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteStore(@PathVariable Long id, @ApiIgnore Principal principal) {
-        storeService.deleteByIdAndEmail(id, principal.getName());
+        storeService.deleteByIdAndUserEmail(id, principal.getName());
         return ResponseEntity.ok().build();
     }
 

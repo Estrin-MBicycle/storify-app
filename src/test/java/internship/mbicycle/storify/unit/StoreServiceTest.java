@@ -61,7 +61,7 @@ class StoreServiceTest {
         given(storeRepository.findStoresByProfileId(PROFILE_ID)).willReturn(new ArrayList<>());
         given(userService.getUserByEmail(PROFILE_EMAIL)).willReturn(storifyUser);
 
-        final List<StoreDTO> actual = storeService.getStoresByEmail(PROFILE_EMAIL);
+        final List<StoreDTO> actual = storeService.getStoresByUserEmail(PROFILE_EMAIL);
         assertEquals(expected, actual);
 
         then(storeRepository).should(only()).findStoresByProfileId(PROFILE_ID);

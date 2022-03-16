@@ -33,7 +33,7 @@ public class StoreServiceImpl implements StoreService {
     private final StorifyUserService userService;
 
     @Override
-    public List<StoreDTO> getStoresByEmail(String email) {
+    public List<StoreDTO> getStoresByUserEmail(String email) {
         StorifyUser user = userService.getUserByEmail(email);
         return storeRepository.findStoresByProfileId(user.getProfile().getId())
                 .stream()
@@ -81,7 +81,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public void deleteByIdAndEmail(Long id, String email) {
+    public void deleteByIdAndUserEmail(Long id, String email) {
         StorifyUser user = userService.getUserByEmail(email);
         storeRepository.deleteByIdAndProfileId(id, user.getProfile().getId());
     }
