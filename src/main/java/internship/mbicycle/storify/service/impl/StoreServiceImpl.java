@@ -1,5 +1,11 @@
 package internship.mbicycle.storify.service.impl;
 
+import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_STORE;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import internship.mbicycle.storify.converter.StoreConverter;
 import internship.mbicycle.storify.dto.IncomePeriodDTO;
 import internship.mbicycle.storify.dto.StoreDTO;
@@ -15,12 +21,6 @@ import internship.mbicycle.storify.util.IncomePeriod;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_STORE;
 
 @Service
 @RequiredArgsConstructor
@@ -64,6 +64,12 @@ public class StoreServiceImpl implements StoreService {
         store.setProfile(profile);
         Store save = storeRepository.save(store);
         return storeConverter.fromStoreToStoreDTO(save);
+    }
+
+    @Override
+    public Store getStoreFromDbById(Long storeId) {
+        return storeRepository.findStoreById(storeId)
+            .orElseThrow(() -> new ResourceNotFoundException(String.format(NOT_FOUND_STORE, storeId)));
     }
 
     @Override

@@ -30,6 +30,6 @@ public interface StoreService {
 
     Integer getIncomeForPeriod(IncomePeriod incomePeriod, long profileId);
 
-    Store getStoreById(Long storeId);
+    Store getStoreFromDbById(Long storeId);
 
 }

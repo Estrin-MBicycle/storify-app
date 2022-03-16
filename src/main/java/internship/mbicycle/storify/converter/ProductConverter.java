@@ -23,7 +23,7 @@ public class ProductConverter {
             .id(productDTO.getId())
             .image(productDTO.getImage())
             .productName(productDTO.getProductName())
-            .store(storeService.getStoreById(productDTO.getStoreId()))
+            .store(storeService.getStoreFromDbById(productDTO.getStoreId()))
             .price(productDTO.getPrice())
             .build();
     }

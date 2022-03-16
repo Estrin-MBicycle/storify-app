@@ -2,7 +2,7 @@ package internship.mbicycle.storify.service;
 
 import java.security.Principal;
 
-public interface CheckPermission {
+public interface PermissionsCheckService {
 
     Long checkPermissionByStoreId(Principal principal, Long storeId);
 }

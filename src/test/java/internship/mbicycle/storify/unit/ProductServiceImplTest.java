@@ -18,7 +18,7 @@ import internship.mbicycle.storify.model.Product;
 import internship.mbicycle.storify.model.Store;
 import internship.mbicycle.storify.repository.ProductRepository;
 import internship.mbicycle.storify.repository.StoreRepository;
-import internship.mbicycle.storify.service.CheckPermission;
+import internship.mbicycle.storify.service.PermissionsCheckService;
 import internship.mbicycle.storify.service.impl.ProductServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ class ProductServiceImplTest {
     @Mock
     private StoreRepository storeRepository;
     @Mock
-    private CheckPermission checkPermission;
+    private PermissionsCheckService permissionsCheckService;
 
     @InjectMocks
     private ProductServiceImpl productService;
@@ -98,7 +98,7 @@ class ProductServiceImplTest {
         final Long storeId = 9L;
         given(productConverter.convertProductDTOToProduct(productDTO)).willReturn(product);
         given(productConverter.convertProductToProductDTO(product)).willReturn(productDTO);
-        given(checkPermission.checkPermissionByStoreId(principal, storeId)).willReturn(storeId);
+        given(permissionsCheckService.checkPermissionByStoreId(principal, storeId)).willReturn(storeId);
         given(storeRepository.getById(storeId)).willReturn(store);
         given(productRepository.save(product)).willReturn(product);
         assertEquals(productDTO, productService.saveProduct(productDTO, principal));

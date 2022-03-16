@@ -20,8 +20,8 @@ import internship.mbicycle.storify.model.Store;
 import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.repository.ProductRepository;
 import internship.mbicycle.storify.repository.StorifyUserRepository;
-import internship.mbicycle.storify.service.CheckPermission;
 import internship.mbicycle.storify.service.MailService;
+import internship.mbicycle.storify.service.PermissionsCheckService;
 import internship.mbicycle.storify.service.ProductService;
 import internship.mbicycle.storify.service.StoreService;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +38,7 @@ public class ProductServiceImpl implements ProductService {
     private final StoreService storeService;
     private final MailService mailService;
     private final StorifyUserRepository storifyUserRepository;
-    private final CheckPermission checkPermission;
+    private final PermissionsCheckService permissionsCheckService;
 
     @Override
     public List<ProductDTO> getAllProductsFromStore(Long storeId) {
@@ -63,7 +63,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDTO updateProduct(ProductDTO product, Principal principal) {
-        Long storeId = checkPermission.checkPermissionByStoreId(principal, product.getStoreId());
+        Long storeId = permissionsCheckService.checkPermissionByStoreId(principal, product.getStoreId());
         Product productDb = getProductById(product.getId());
         sendMessageIfProductOnSaleAgain(productDb, product);
         productDb.setProductName(product.getProductName());
@@ -71,7 +71,7 @@ public class ProductServiceImpl implements ProductService {
         productDb.setCount(product.getCount());
         productDb.setPrice(product.getPrice());
         productDb.setImage(product.getImage());
-        Store store = storeService.getStoreById(storeId);
+        Store store = storeService.getStoreFromDbById(storeId);
         productDb.setStore(store);
         Product save = productRepository.save(productDb);
         return productConverter.convertProductToProductDTO(save);
@@ -85,9 +85,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDTO saveProduct(ProductDTO productDTO, Principal principal) {
-        Long storeId = checkPermission.checkPermissionByStoreId(principal, productDTO.getStoreId());
+        Long storeId = permissionsCheckService.checkPermissionByStoreId(principal, productDTO.getStoreId());
         Product product = productConverter.convertProductDTOToProduct(productDTO);
-        Store store = storeService.getStoreById(storeId);
+        Store store = storeService.getStoreFromDbById(storeId);
         product.setStore(store);
         Product save = productRepository.save(product);
         return productConverter.convertProductToProductDTO(save);
@@ -95,13 +95,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void removeAllProductsByStoreId(Principal principal, Long storeId) {
-        Long id = checkPermission.checkPermissionByStoreId(principal, storeId);
+        Long id = permissionsCheckService.checkPermissionByStoreId(principal, storeId);
         productRepository.removeAllByStoreId(id);
     }
 
     @Override
     public void removeProductByStoreIdAndId(ProductDTO productDTO, Principal principal, Long productId) {
-        Long storeId = checkPermission.checkPermissionByStoreId(principal, productDTO.getStoreId());
+        Long storeId = permissionsCheckService.checkPermissionByStoreId(principal, productDTO.getStoreId());
         productRepository.removeProductByStoreIdAndId(storeId, productId);
 
     }

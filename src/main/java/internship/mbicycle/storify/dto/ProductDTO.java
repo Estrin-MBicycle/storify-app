@@ -33,11 +33,11 @@ public class ProductDTO {
     private Integer price;
 
     @NotNull(message = "The field is required")
-    @DecimalMin(value = "0", message = "Value should be >= 0. Invalid value")
+    @DecimalMin(value = "0", message = "Value must be greater than or equal to 0. Invalid value")
     private Integer count;
 
     @NotNull
-    @DecimalMin(value = "0", inclusive = false, message = "Value should be > 0. Invalid value")
+    @DecimalMin(value = "0", inclusive = false, message = "Value should be more than 0. Invalid value")
     private Long storeId;
 
 }
