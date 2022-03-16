@@ -8,21 +8,18 @@ import internship.mbicycle.storify.util.IncomePeriod;
 import java.util.List;
 
 public interface StoreService {
-    List<StoreDTO> findStoresByProfileId(Long profileId);
 
-    List<StoreDTO> findStoresByProfileIdNot(Long profileId);
+    List<StoreDTO> getStoresByUserEmail(String email);
 
-    StoreDTO findStoreByIdAndProfileId(Long id, Long profileId);
+    List<StoreDTO> getStores();
 
-    StoreDTO findStoreById(Long id);
+    StoreDTO getStoreById(Long id);
 
-    StoreDTO saveStore(StoreDTO storeDTO, Long profileId);
+    StoreDTO saveStore(StoreDTO storeDTO, String email);
 
-    StoreDTO updateStore(StoreDTO storeDTO, Long id, Long profileId);
+    StoreDTO updateStore(StoreDTO storeDTO, Long id, String email);
 
-    void deleteAllByProfileId(Long profileId);
-
-    void deleteByIdAndProfileId(Long id, Long profileId);
+    void deleteByIdAndUserEmail(Long id, String email);
 
     List<StoreRepository.PurchasedAndNotPaidProduct> findMostPurchasedProductsInStore(Long id, Long limit);
 

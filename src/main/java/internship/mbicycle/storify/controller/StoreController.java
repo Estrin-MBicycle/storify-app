@@ -15,55 +15,47 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/stores")
 public class StoreController {
+
     private final StoreService storeService;
 
-    @GetMapping("/{profileId}")
-    public List<StoreDTO> getAllProfileStores(@PathVariable Long profileId) {
-        return storeService.findStoresByProfileId(profileId);
+    @GetMapping("/my")
+    public List<StoreDTO> getStoresByProfile(@ApiIgnore Principal principal) {
+        return storeService.getStoresByUserEmail(principal.getName());
     }
 
-    @GetMapping("/all/{profileId}")
-    public List<StoreDTO> getAllStores(@PathVariable Long profileId) {
-        return storeService.findStoresByProfileIdNot(profileId);
+    @GetMapping
+    public List<StoreDTO> getStores() {
+        return storeService.getStores();
     }
 
-    @GetMapping("/{id}/{profileId}")
-    public StoreDTO findProfileStore(@PathVariable Long id, @PathVariable Long profileId) {
-        return storeService.findStoreByIdAndProfileId(id, profileId);
+    @GetMapping("/{id}")
+    public StoreDTO getStore(@PathVariable Long id) {
+        return storeService.getStoreById(id);
     }
 
-    @GetMapping("/store/{id}")
-    public StoreDTO findStore(@PathVariable Long id) {
-        return storeService.findStoreById(id);
+    @PostMapping
+    public StoreDTO saveStore(@Valid @RequestBody StoreDTO storeDTO, @ApiIgnore Principal principal)  {
+        return storeService.saveStore(storeDTO, principal.getName());
     }
 
-    @PostMapping("/{profileId}")
-    public StoreDTO saveStore(@Valid @RequestBody StoreDTO storeDTO, @PathVariable Long profileId)  {
-        return storeService.saveStore(storeDTO, profileId);
+    @PutMapping("/{id}")
+    public StoreDTO updateStore(@Valid @RequestBody StoreDTO storeDTO, @PathVariable Long id, @ApiIgnore Principal principal) {
+        return storeService.updateStore(storeDTO, id, principal.getName());
     }
 
-    @PutMapping("/{id}/{profileId}")
-    public StoreDTO updateStore(@Valid @RequestBody StoreDTO storeDTO, @PathVariable Long id, @PathVariable Long profileId) {
-        return storeService.updateStore(storeDTO, id, profileId);
-    }
-
-    @DeleteMapping("/{profileId}")
-    public ResponseEntity<?> deleteAllStoresByProfileId(@PathVariable Long profileId) {
-        storeService.deleteAllByProfileId(profileId);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/{id}/{profileId}")
-    public ResponseEntity<?> deleteStoreByProfileId(@PathVariable Long id, @PathVariable Long profileId) {
-        storeService.deleteByIdAndProfileId(id, profileId);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteStore(@PathVariable Long id, @ApiIgnore Principal principal) {
+        storeService.deleteByIdAndUserEmail(id, principal.getName());
         return ResponseEntity.ok().build();
     }
 
