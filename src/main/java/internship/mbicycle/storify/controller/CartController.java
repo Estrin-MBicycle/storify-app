@@ -25,24 +25,24 @@ public class CartController {
     }
 
     @DeleteMapping("/{id}")
-    public CartDTO deleteProduct(@PathVariable(name = "id") long productId,
-                                 @ApiIgnore Principal principal) {
+    public CartDTO deleteProductFromCart(@PathVariable(name = "id") long productId,
+                                         @ApiIgnore Principal principal) {
         Cart cart = cartService.getCartByPrincipal(principal);
         cartService.deleteProduct(cart, productId);
         return cartConverter.convertCartToCartDTO(cart);
     }
 
     @PutMapping("/{id}/{count}")
-    public CartDTO deleteProductByCount(@PathVariable(name = "id") long productId,
-                                        @PathVariable(name = "count") int count,
-                                        @ApiIgnore Principal principal) {
+    public CartDTO deleteProductByCountFromCart(@PathVariable(name = "id") long productId,
+                                                @PathVariable(name = "count") int count,
+                                                @ApiIgnore Principal principal) {
         Cart cart = cartService.getCartByPrincipal(principal);
         cartService.changeProductByCount(cart, productId, count);
         return cartConverter.convertCartToCartDTO(cart);
     }
 
     @DeleteMapping
-    public CartDTO deleteAllProduct(@ApiIgnore Principal principal) {
+    public CartDTO deleteAllProductFromCart(@ApiIgnore Principal principal) {
         Cart cart = cartService.getCartByPrincipal(principal);
         cartService.deleteAllProduct(cart);
         return cartConverter.convertCartToCartDTO(cart);
