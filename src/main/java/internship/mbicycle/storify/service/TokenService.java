@@ -3,6 +3,7 @@ package internship.mbicycle.storify.service;
 import internship.mbicycle.storify.model.StorifyUser;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public interface TokenService {
 
@@ -12,9 +13,7 @@ public interface TokenService {
 
     StorifyUser getUserByAccessToken(String token);
 
-    StorifyUser getStorifyUserByRefreshToken(HttpServletRequest refreshToken);
+    void setTokenPair(StorifyUser storifyUser, String userAgent, HttpServletResponse response);
 
-    void saveTokenPair(StorifyUser user, String accessToken, String refreshToken);
-
-    void setTokenPairAfterActivation(StorifyUser storifyUser);
+    void setTokenPairByRefreshToken(HttpServletRequest request, HttpServletResponse response);
 }

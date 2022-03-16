@@ -2,7 +2,6 @@ package internship.mbicycle.storify.unit;
 
 import internship.mbicycle.storify.configuration.properties.SecurityProperties;
 import internship.mbicycle.storify.model.StorifyUser;
-import internship.mbicycle.storify.model.Token;
 import internship.mbicycle.storify.service.StorifyUserService;
 import internship.mbicycle.storify.service.impl.TokenServiceImpl;
 import internship.mbicycle.storify.util.Constants;
@@ -37,36 +36,30 @@ class TokenServiceImplTest {
     private static final StorifyUser storifyUser = StorifyUser.builder()
             .email(EMAIL)
             .role(Constants.ROLE_USER)
-            .token(new Token())
             .build();
 
     @Test
     void shouldCreateAccessToken() {
-        given(userService.getUserByEmail(EMAIL)).willReturn(storifyUser);
         given(securityProperties.getJwtSecret()).willReturn("secret");
         String actual = tokenService.createAccessToken(storifyUser);
         assertNotNull(actual);
-        then(userService).should(only()).getUserByEmail(EMAIL);
         then(securityProperties).should(only()).getJwtSecret();
 
     }
 
     @Test
     void shouldCreateRefreshToken() {
-        given(securityProperties.getJwtSecret()).willReturn("storify");
+        given(securityProperties.getJwtSecret()).willReturn("secret");
         String actual = tokenService.createRefreshToken(storifyUser);
         assertNotNull(actual);
         then(securityProperties).should(only()).getJwtSecret();
     }
 
     @Test
-    void shouldGetUserByAccessToken() {
-        given(userService.getUserByEmail(EMAIL)).willReturn(storifyUser);
+    void shouldUserByAccessToken() {
         given(securityProperties.getJwtSecret()).willReturn("storify");
         StorifyUser actual = tokenService.getUserByAccessToken(token);
         assertEquals(storifyUser, actual);
-        then(userService).should(only()).getUserByEmail(EMAIL);
-        then(securityProperties).should(times(1)).getJwtSecret();
-        then(securityProperties).should(times(1)).isCheckAccess();
+        then(securityProperties).should(times(2)).getJwtSecret();
     }
 }

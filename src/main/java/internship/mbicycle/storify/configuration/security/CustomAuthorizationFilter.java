@@ -1,5 +1,6 @@
 package internship.mbicycle.storify.configuration.security;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import internship.mbicycle.storify.configuration.security.parser.JwtParser;
 import internship.mbicycle.storify.model.StorifyUser;
@@ -36,6 +37,10 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                         .parseJwt(request)
                         .ifPresent(this::setJwtAuthentication);
             }
+        } catch (JWTVerificationException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType(TEXT_HTML_VALUE);
+            new ObjectMapper().writeValue(response.getWriter(), e.getMessage());
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.setContentType(TEXT_HTML_VALUE);

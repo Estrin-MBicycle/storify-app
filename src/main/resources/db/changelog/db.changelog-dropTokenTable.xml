@@ -1,0 +1,14 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+
+    <changeSet author="shkrko"
+               id="delete_token_table">
+        <dropForeignKeyConstraint baseTableName="storify_user"
+                                  constraintName="fk_storify_user_token"/>
+        <dropColumn tableName="storify_user"
+                    columnName="token_id"/>
+        <dropTable tableName="token"/>
+    </changeSet>
+</databaseChangeLog>

@@ -28,5 +28,7 @@
     <include file="db/changelog/db.changelog-renameTableBasketAndColumns.xml"/>
     <include file="db/changelog/db.changelog-dropConstrainUniqueProductName.xml"/>
     <include file="db/changelog/db.changelog-addColumnCountToProductCart.xml"/>
+    <include file="db/changelog/db.changelog-dropTokenTable.xml"/>
+    <include file="db/changelog/db.changelog-createTableUserToken.xml"/>
 
 </databaseChangeLog>
