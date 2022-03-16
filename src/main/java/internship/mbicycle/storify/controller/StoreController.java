@@ -28,24 +28,19 @@ public class StoreController {
 
     private final StoreService storeService;
 
-    @GetMapping
-    public List<StoreDTO> getAllProfileStores(@ApiIgnore Principal principal) {
-        return storeService.findStoresByEmail(principal.getName());
+    @GetMapping("/my")
+    public List<StoreDTO> getStoresByProfile(@ApiIgnore Principal principal) {
+        return storeService.getStoresByEmail(principal.getName());
     }
 
-    @GetMapping("/all")
-    public List<StoreDTO> getAllStores(@ApiIgnore Principal principal) {
-        return storeService.findStoresByEmailNot(principal.getName());
+    @GetMapping
+    public List<StoreDTO> getStores() {
+        return storeService.getStores();
     }
 
     @GetMapping("/{id}")
-    public StoreDTO findProfileStore(@PathVariable Long id, @ApiIgnore Principal principal) {
-        return storeService.findStoreByIdAndEmail(id, principal.getName());
-    }
-
-    @GetMapping("/store/{id}")
-    public StoreDTO findStore(@PathVariable Long id) {
-        return storeService.findStoreById(id);
+    public StoreDTO getStore(@PathVariable Long id) {
+        return storeService.getStoreById(id);
     }
 
     @PostMapping
@@ -58,14 +53,8 @@ public class StoreController {
         return storeService.updateStore(storeDTO, id, principal.getName());
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> deleteAllStoresByProfileId(@ApiIgnore Principal principal) {
-        storeService.deleteAllByEmail(principal.getName());
-        return ResponseEntity.ok().build();
-    }
-
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteStoreByProfileId(@PathVariable Long id, @ApiIgnore Principal principal) {
+    public ResponseEntity<?> deleteStore(@PathVariable Long id, @ApiIgnore Principal principal) {
         storeService.deleteByIdAndEmail(id, principal.getName());
         return ResponseEntity.ok().build();
     }

@@ -9,19 +9,15 @@ import java.util.List;
 
 public interface StoreService {
 
-    List<StoreDTO> findStoresByEmail(String email);
+    List<StoreDTO> getStoresByEmail(String email);
 
-    List<StoreDTO> findStoresByEmailNot(String email);
+    List<StoreDTO> getStores();
 
-    StoreDTO findStoreByIdAndEmail(Long id, String email);
-
-    StoreDTO findStoreById(Long id);
+    StoreDTO getStoreById(Long id);
 
     StoreDTO saveStore(StoreDTO storeDTO, String email);
 
     StoreDTO updateStore(StoreDTO storeDTO, Long id, String email);
-
-    void deleteAllByEmail(String email);
 
     void deleteByIdAndEmail(Long id, String email);
 

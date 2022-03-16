@@ -33,7 +33,7 @@ public class StoreServiceImpl implements StoreService {
     private final StorifyUserService userService;
 
     @Override
-    public List<StoreDTO> findStoresByEmail(String email) {
+    public List<StoreDTO> getStoresByEmail(String email) {
         StorifyUser user = userService.getUserByEmail(email);
         return storeRepository.findStoresByProfileId(user.getProfile().getId())
                 .stream()
@@ -42,24 +42,15 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public List<StoreDTO> findStoresByEmailNot(String email) {
-        StorifyUser user = userService.getUserByEmail(email);
-        return storeRepository.findStoresByProfileIdNot(user.getProfile().getId())
+    public List<StoreDTO> getStores() {
+        return storeRepository.findAll()
                 .stream()
                 .map(storeConverter::fromStoreToStoreDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public StoreDTO findStoreByIdAndEmail(Long id, String email) {
-        StorifyUser user = userService.getUserByEmail(email);
-        Store store = storeRepository.findStoreByIdAndProfileId(id, user.getProfile().getId())
-                .orElseThrow(() -> new ResourceNotFoundException(String.format(NOT_FOUND_STORE, id)));
-        return storeConverter.fromStoreToStoreDTO(store);
-    }
-
-    @Override
-    public StoreDTO findStoreById(Long id) {
+    public StoreDTO getStoreById(Long id) {
         Store store = storeRepository.findStoreById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format(NOT_FOUND_STORE, id)));
         return storeConverter.fromStoreToStoreDTO(store);
@@ -103,12 +94,6 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public List<StoreRepository.PurchasedAndNotPaidProduct> findLestPurchasedProductsInStore(Long id, Long limit) {
         return storeRepository.findLestPurchasedProductsInStore(id, limit);
-    }
-
-    @Override
-    public void deleteAllByEmail(String email) {
-        StorifyUser user = userService.getUserByEmail(email);
-        storeRepository.deleteAllByProfileId(user.getProfile().getId());
     }
 
     @Override

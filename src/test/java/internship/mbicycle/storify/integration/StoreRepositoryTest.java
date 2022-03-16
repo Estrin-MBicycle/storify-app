@@ -52,12 +52,6 @@ public class StoreRepositoryTest {
     }
 
     @Test
-    void shouldFindStoresByProfileIdNot() {
-        final List<Store> actual = storeRepository.findStoresByProfileIdNot(1L);
-        assertEquals(Collections.emptyList(), actual);
-    }
-
-    @Test
     void shouldFindStoreByIdAndProfileId() {
         final Profile profile = Profile.builder()
                 .id(1L)
