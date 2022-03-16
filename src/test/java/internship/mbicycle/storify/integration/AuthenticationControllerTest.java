@@ -2,7 +2,6 @@ package internship.mbicycle.storify.integration;
 
 import internship.mbicycle.storify.TestMariaDbContainer;
 import internship.mbicycle.storify.model.StorifyUser;
-import internship.mbicycle.storify.model.Token;
 import internship.mbicycle.storify.repository.StorifyUserRepository;
 import internship.mbicycle.storify.util.Constants;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,9 +13,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import java.util.HashMap;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -45,15 +46,15 @@ class AuthenticationControllerTest {
                 .email(EMAIL)
                 .password(PASSWORD)
                 .role(Constants.ROLE_USER)
-                .token(new Token())
+                .tokenMap(new HashMap<>())
                 .tempConfirmCode(CODE)
                 .build();
-        storifyUser.getToken().setRefreshToken(refreshToken);
     }
 
     @Test
     void refreshAccessToken() {
-        given(userRepository.findByEmail(EMAIL)).willReturn(Optional.of(storifyUser));
+        given(userRepository.findStorifyUserByJwtTokenAndUserAgent(anyString(), anyString()))
+                .willReturn(Optional.of(storifyUser));
         given(userRepository.save(any())).willReturn(storifyUser);
         String header = "Bearer " + refreshToken;
         webTestClient.get()

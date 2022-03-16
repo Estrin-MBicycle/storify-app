@@ -7,12 +7,10 @@ import internship.mbicycle.storify.exception.UserAlreadyExistsException;
 import internship.mbicycle.storify.model.Cart;
 import internship.mbicycle.storify.model.Profile;
 import internship.mbicycle.storify.model.StorifyUser;
-import internship.mbicycle.storify.model.Token;
 import internship.mbicycle.storify.repository.CartRepository;
 import internship.mbicycle.storify.repository.StorifyUserRepository;
 import internship.mbicycle.storify.service.MailService;
 import internship.mbicycle.storify.service.StorifyUserService;
-import internship.mbicycle.storify.util.EmailMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -37,11 +35,6 @@ public class StorifyUserServiceImpl implements StorifyUserService {
     private final StorifyUserConverter userConverter;
 
     @Override
-    public void updateStorifyUser(StorifyUser storifyUser) {
-        userRepository.save(storifyUser);
-    }
-
-    @Override
     public StorifyUser saveNewUser(StorifyUserDTO storifyUserDTO) {
         userRepository.findByEmail(storifyUserDTO.getEmail()).ifPresent(user -> {
             throw new UserAlreadyExistsException(String.format(USER_ALREADY_EXIST, storifyUserDTO.getEmail()));
@@ -50,7 +43,6 @@ public class StorifyUserServiceImpl implements StorifyUserService {
         storifyUser.setRole(ROLE_USER);
         storifyUser.setPassword(passwordEncoder.encode(storifyUser.getPassword()));
         storifyUser.setActivationCode(UUID.randomUUID().toString());
-        storifyUser.setToken(new Token());
         storifyUser.setProfile(new Profile());
         storifyUser.getProfile().setName(storifyUser.getName());
         Cart cart = new Cart();
@@ -101,4 +93,17 @@ public class StorifyUserServiceImpl implements StorifyUserService {
         String message = String.format(CONFIRMATION_EMAIL, storifyUser.getName(), storifyUser.getTempConfirmCode());
         mailService.send(storifyUser.getEmail(), CONFIRMATION_CODE, message);
     }
+
+    @Override
+    public void saveRefreshToken(StorifyUser storifyUser, String refresh, String userAgent) {
+        storifyUser.getTokenMap().put(userAgent, refresh);
+        userRepository.save(storifyUser);
+    }
+
+    public StorifyUser getStorifyUserByTokenAndUserAgent(String token, String userAgent) {
+        return userRepository.findStorifyUserByJwtTokenAndUserAgent(token, userAgent)
+                .orElseThrow(() -> new StorifyUserNotFoundException(String.format(NOT_FOUND_USER, token)));
+    }
+
+
 }

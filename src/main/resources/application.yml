@@ -25,7 +25,6 @@ spring:
 jwt:
   token:
     jwt-secret: storify
-    check-access: true
 
 ---
 

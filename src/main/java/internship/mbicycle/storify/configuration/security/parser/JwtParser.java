@@ -6,11 +6,11 @@ import org.springframework.util.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
+import static internship.mbicycle.storify.util.Constants.BEARER;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 @Component
 public class JwtParser {
-
-    private static final String AUTHORIZATION = "Authorization";
-    private static final String BEARER = "Bearer ";
 
     public Optional<String> parseJwt(HttpServletRequest request) {
         String headerAuth = request.getHeader(AUTHORIZATION);

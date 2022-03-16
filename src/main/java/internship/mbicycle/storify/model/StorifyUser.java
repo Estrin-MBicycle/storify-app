@@ -5,23 +5,22 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "storify_user")
 public class StorifyUser implements UserDetails {
 
     @Id
@@ -35,12 +34,13 @@ public class StorifyUser implements UserDetails {
     private String name;
     private String tempConfirmCode;
 
-    @JsonIgnore
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "token_id", referencedColumnName = "id")
-    private Token token;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_token",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
+    @MapKeyColumn(name = "user_agent")
+    @Column(name = "token")
+    private Map<String, String> tokenMap = new HashMap<>();
 
-    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new ArrayList<>();

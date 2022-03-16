@@ -6,21 +6,25 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import internship.mbicycle.storify.configuration.properties.SecurityProperties;
 import internship.mbicycle.storify.configuration.security.parser.JwtParser;
-import internship.mbicycle.storify.exception.InvalidAuthorizationHeaderException;
 import internship.mbicycle.storify.exception.TokenNotFoundException;
 import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.service.StorifyUserService;
 import internship.mbicycle.storify.service.TokenService;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 
-import static internship.mbicycle.storify.util.ExceptionMessage.INVALID_AUTHORIZATION_HEADER;
+import static internship.mbicycle.storify.util.Constants.BEARER;
+import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_TOKEN;
 import static internship.mbicycle.storify.util.ExceptionMessage.NOT_THE_SAME_TOKENS;
 import static internship.mbicycle.storify.util.TimeConstant.TEN_DAYS;
 import static internship.mbicycle.storify.util.TimeConstant.THIRTY_MINUTES;
+import static org.springframework.http.HttpHeaders.USER_AGENT;
+
 
 @Service
 @RequiredArgsConstructor
@@ -32,11 +36,10 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public String createAccessToken(StorifyUser storifyUser) {
-        StorifyUser userFromDb = userService.getUserByEmail(storifyUser.getEmail());
         return JWT.create()
-                .withSubject(userFromDb.getEmail())
+                .withSubject(storifyUser.getEmail())
                 .withExpiresAt(new Date(System.currentTimeMillis() + THIRTY_MINUTES))
-                .withClaim("role", userFromDb.getRole())
+                .withClaim("role", storifyUser.getRole())
                 .sign(getEncryptionAlgorithm());
     }
 
@@ -50,54 +53,46 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public StorifyUser getUserByAccessToken(String token) {
-        StorifyUser storifyUser = getStorifyUserByToken(token);
-        if (!isValidAccessToken(storifyUser, token)) {
-            throw new TokenNotFoundException(String.format(NOT_THE_SAME_TOKENS, token));
-        }
-        return storifyUser;
+        return StorifyUser.builder()
+                .email(getEmailByToken(token))
+                .role(getRoleByToken(token))
+                .build();
     }
 
     @Override
-    public StorifyUser getStorifyUserByRefreshToken(HttpServletRequest request) {
-        String refreshToken = jwtParser.parseJwt(request)
-                .orElseThrow(() -> new InvalidAuthorizationHeaderException(INVALID_AUTHORIZATION_HEADER));
-        StorifyUser storifyUser = getStorifyUserByToken(refreshToken);
-        if (!storifyUser.getToken().getRefreshToken().equals(refreshToken)) {
-            throw new TokenNotFoundException(String.format(NOT_THE_SAME_TOKENS, refreshToken));
-        }
-        storifyUser.getToken().setAccessToken(createAccessToken(storifyUser));
-        storifyUser.getToken().setRefreshToken(createRefreshToken(storifyUser));
-        userService.updateStorifyUser(storifyUser);
-        return storifyUser;
-    }
-
-    @Override
-    public void saveTokenPair(StorifyUser storifyUser, String accessToken, String refreshToken) {
-        storifyUser.getToken().setAccessToken(accessToken);
-        storifyUser.getToken().setRefreshToken(refreshToken);
-        userService.updateStorifyUser(storifyUser);
-    }
-
-    @Override
-    public void setTokenPairAfterActivation(StorifyUser storifyUser) {
+    public void setTokenPair(StorifyUser storifyUser, String userAgent, HttpServletResponse response) {
         String accessToken = createAccessToken(storifyUser);
         String refreshToken = createRefreshToken(storifyUser);
-        saveTokenPair(storifyUser, accessToken, refreshToken);
+        userService.saveRefreshToken(storifyUser, refreshToken, userAgent);
+        response.setHeader("access_token", Strings.concat(BEARER, accessToken));
+        response.setHeader("refresh_token", Strings.concat(BEARER, refreshToken));
     }
 
-    private boolean isValidAccessToken(StorifyUser storifyUser, String token) {
-        if (securityProperties.isCheckAccess()) {
-            return storifyUser.getToken().getAccessToken().equals(token);
-        } else {
-            return true;
-        }
+    @Override
+    public void setTokenPairByRefreshToken(HttpServletRequest request, HttpServletResponse response) {
+        jwtParser.parseJwt(request).ifPresentOrElse(token -> {
+            String userAgent = request.getHeader(USER_AGENT);
+            StorifyUser user = userService.getStorifyUserByTokenAndUserAgent(token, userAgent);
+            if (getEmailByToken(token).equals(user.getEmail())) {
+                setTokenPair(user, userAgent, response);
+            } else {
+                throw new TokenNotFoundException(String.format(NOT_THE_SAME_TOKENS, token));
+            }
+        }, () -> {
+            throw new TokenNotFoundException(NOT_FOUND_TOKEN);
+        });
     }
 
-    private StorifyUser getStorifyUserByToken(String token) {
+    private String getEmailByToken(String token) {
         JWTVerifier verifier = JWT.require(getEncryptionAlgorithm()).build();
         DecodedJWT decodedJWT = verifier.verify(token);
-        String email = decodedJWT.getSubject();
-        return userService.getUserByEmail(email);
+        return decodedJWT.getSubject();
+    }
+
+    private String getRoleByToken(String token) {
+        JWTVerifier verifier = JWT.require(getEncryptionAlgorithm()).build();
+        DecodedJWT decodedJWT = verifier.verify(token);
+        return decodedJWT.getClaim("role").asString();
     }
 
     private Algorithm getEncryptionAlgorithm() {

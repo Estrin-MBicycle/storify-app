@@ -15,11 +15,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     Optional<Store> findStoreByIdAndProfileId(Long id, Long profileId);
 
-    List<Store> findStoresByProfileIdNot(Long profileId);
-
     Optional<Store> findStoreById(Long id);
-
-    void deleteAllByProfileId(Long profileId);
 
     void deleteByIdAndProfileId(Long id, Long profileId);
 
