@@ -4,9 +4,11 @@ import internship.mbicycle.storify.converter.StoreConverter;
 import internship.mbicycle.storify.dto.IncomePeriodDTO;
 import internship.mbicycle.storify.dto.StoreDTO;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
+import internship.mbicycle.storify.exception.StoreNameExistsException;
 import internship.mbicycle.storify.model.Profile;
 import internship.mbicycle.storify.model.Store;
 import internship.mbicycle.storify.model.StorifyUser;
+import internship.mbicycle.storify.repository.ProductRepository;
 import internship.mbicycle.storify.repository.ProfileRepository;
 import internship.mbicycle.storify.repository.StoreRepository;
 import internship.mbicycle.storify.service.StoreService;
@@ -29,6 +31,7 @@ public class StoreServiceImpl implements StoreService {
 
     private final StoreRepository storeRepository;
     private final ProfileRepository profileRepository;
+    private final ProductRepository productRepository;
     private final StoreConverter storeConverter;
     private final StorifyUserService userService;
 
@@ -58,6 +61,10 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public StoreDTO saveStore(StoreDTO storeDTO, String email) {
+        storeRepository.findStoreByStoreName(storeDTO.getStoreName()).ifPresent(store -> {
+            throw new StoreNameExistsException(
+                    String.format("Store with %s name exist, choose another name", store.getStoreName()));
+        });
         StorifyUser user = userService.getUserByEmail(email);
         Store store = storeConverter.fromStoreDTOToStore(storeDTO);
         Profile profile = profileRepository.getById(user.getProfile().getId());
@@ -83,6 +90,8 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public void deleteByIdAndUserEmail(Long id, String email) {
         StorifyUser user = userService.getUserByEmail(email);
+        productRepository.setDeleteStateByStoreId(id);
+        productRepository.removeAllByStoreId(id);
         storeRepository.deleteByIdAndProfileId(id, user.getProfile().getId());
     }
 

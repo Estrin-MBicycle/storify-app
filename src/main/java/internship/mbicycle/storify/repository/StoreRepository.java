@@ -13,6 +13,8 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     List<Store> findStoresByProfileId(Long profileId);
 
+    Optional<Store> findStoreByStoreName(String name);
+
     Optional<Store> findStoreByIdAndProfileId(Long id, Long profileId);
 
     Optional<Store> findStoreById(Long id);

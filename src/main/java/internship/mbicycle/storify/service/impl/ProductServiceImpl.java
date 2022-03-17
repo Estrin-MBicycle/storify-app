@@ -91,11 +91,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void removeAllProductsByStoreId(Long storeId) {
+        productRepository.setDeleteStateByStoreId(storeId);
         productRepository.removeAllByStoreId(storeId);
     }
 
     @Override
     public void removeProductByStoreIdAndId(Long storeId, Long productId) {
+        productRepository.setDeleteState(productId);
         productRepository.removeProductByStoreIdAndId(storeId, productId);
     }
 

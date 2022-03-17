@@ -34,4 +34,21 @@
             </column>
         </createTable>
     </changeSet>
+
+    <changeSet author="zaiceva" id="change_column_store">
+        <dropColumn  columnName="store_name"
+                     tableName="store">
+        </dropColumn>
+        <addColumn tableName="store">
+            <column afterColumn="id"
+                    name="store_name"
+                    type="varchar(50)" >
+                <constraints nullable="false" />
+            </column>
+            <column name="deleted"
+                    type="boolean">
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

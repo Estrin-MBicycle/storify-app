@@ -52,6 +52,25 @@ public class StoreRepositoryTest {
     }
 
     @Test
+    void shouldFindStoresByStoreName() {
+        final Profile profile = Profile.builder()
+                .id(1L)
+                .name("name")
+                .surname("surname")
+                .town("town")
+                .address("address")
+                .phone("phone").build();
+        final Store expected = Store.builder()
+                .id(1L)
+                .storeName("store_name")
+                .description("description")
+                .address("address")
+                .profile(profile).build();
+        final Optional<Store> actual = storeRepository.findStoreByStoreName("store_name");
+        assertEquals(expected, actual.get());
+    }
+
+    @Test
     void shouldFindStoreByIdAndProfileId() {
         final Profile profile = Profile.builder()
                 .id(1L)

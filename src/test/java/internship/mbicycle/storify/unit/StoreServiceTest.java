@@ -101,19 +101,22 @@ class StoreServiceTest {
     void shouldSaveStore() {
         final Profile profile = Profile.builder().id(PROFILE_ID).build();
         final StorifyUser storifyUser = StorifyUser.builder().id(1L).profile(profile).build();
-        final Store store = Store.builder().id(ID).build();
-        final StoreDTO expected = StoreDTO.builder().id(ID).build();
+        final Store store = Store.builder().id(ID).storeName("storeName").build();
+        final StoreDTO expected = StoreDTO.builder().id(ID).storeName("storeName").build();
 
         given(userService.getUserByEmail(PROFILE_EMAIL)).willReturn(storifyUser);
         given(storeConverter.fromStoreToStoreDTO(store)).willReturn(expected);
         given(storeConverter.fromStoreDTOToStore(expected)).willReturn(store);
         given(profileRepository.getById(PROFILE_ID)).willReturn(profile);
         given(storeRepository.save(store)).willReturn(store);
+        given(storeRepository.findStoreByStoreName("storeName")).willReturn(Optional.empty());
 
         final StoreDTO actual = storeService.saveStore(expected, PROFILE_EMAIL);
         assertEquals(expected, actual);
 
-        then(storeRepository).should(only()).save(store);
+        then(storeRepository).should(times(1)).save(store);
+        then(storeRepository).should(times(1)).findStoreByStoreName("storeName");
+        then(storeRepository).shouldHaveNoMoreInteractions();
         then(userService).should(only()).getUserByEmail(PROFILE_EMAIL);
         then(profileRepository).should(only()).getById(PROFILE_ID);
         then(storeConverter).should(times(1)).fromStoreDTOToStore(expected);

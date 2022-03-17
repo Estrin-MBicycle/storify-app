@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -25,7 +27,10 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = {"profile", "products"})
 @ToString(exclude = {"profile", "products"})
+@SQLDelete(sql = "UPDATE store SET deleted = true WHERE id=?")
+@Where(clause = "deleted = false")
 public class Store {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,6 +41,8 @@ public class Store {
     private String description;
 
     private String address;
+
+    private boolean deleted = Boolean.FALSE;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "profile_id")
