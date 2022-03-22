@@ -1,11 +1,12 @@
 package internship.mbicycle.storify.service;
 
+import java.util.List;
+
 import internship.mbicycle.storify.dto.IncomePeriodDTO;
 import internship.mbicycle.storify.dto.StoreDTO;
+import internship.mbicycle.storify.model.Store;
 import internship.mbicycle.storify.repository.StoreRepository;
 import internship.mbicycle.storify.util.IncomePeriod;
-
-import java.util.List;
 
 public interface StoreService {
 
@@ -28,5 +29,7 @@ public interface StoreService {
     IncomePeriodDTO getIncome(long profileId);
 
     Integer getIncomeForPeriod(IncomePeriod incomePeriod, long profileId);
+
+    Store getStoreFromDbById(Long storeId);
 
 }

@@ -8,6 +8,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.only;
 
+import java.security.Principal;
 import java.util.Optional;
 
 import internship.mbicycle.storify.converter.ProductConverter;
@@ -17,6 +18,7 @@ import internship.mbicycle.storify.model.Product;
 import internship.mbicycle.storify.model.Store;
 import internship.mbicycle.storify.repository.ProductRepository;
 import internship.mbicycle.storify.repository.StoreRepository;
+import internship.mbicycle.storify.service.PermissionsCheckService;
 import internship.mbicycle.storify.service.impl.ProductServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,20 +36,33 @@ class ProductServiceImplTest {
     private ProductConverter productConverter;
     @Mock
     private StoreRepository storeRepository;
+    @Mock
+    private PermissionsCheckService permissionsCheckService;
 
     @InjectMocks
     private ProductServiceImpl productService;
     private Product product;
     private ProductDTO productDTO;
     private Store store;
+    private Principal principal;
+
 
     @BeforeEach
     void setUp() {
+        store = Store.builder()
+            .id(9L)
+            .address("Test")
+            .description("Store Test")
+            .build();
+
+        principal = () -> "vasili@gmail.com";
+
         product = Product.builder()
             .productName("Car")
             .price(1000)
             .id(89L)
             .count(57)
+            .store(store)
             .build();
 
         productDTO = ProductDTO.builder()
@@ -55,13 +70,9 @@ class ProductServiceImplTest {
             .price(1000)
             .id(89L)
             .count(57)
+            .storeId(9L)
             .build();
 
-        store = Store.builder()
-            .id(9L)
-            .address("Test")
-            .description("Store Test")
-            .build();
     }
 
     @Test
@@ -87,9 +98,10 @@ class ProductServiceImplTest {
         final Long storeId = 9L;
         given(productConverter.convertProductDTOToProduct(productDTO)).willReturn(product);
         given(productConverter.convertProductToProductDTO(product)).willReturn(productDTO);
+        given(permissionsCheckService.checkPermissionByStoreId(principal, storeId)).willReturn(storeId);
         given(storeRepository.getById(storeId)).willReturn(store);
         given(productRepository.save(product)).willReturn(product);
-        assertEquals(productDTO, productService.saveProduct(productDTO, storeId));
+        assertEquals(productDTO, productService.saveProduct(productDTO, principal));
         then(productRepository).should(only()).save(product);
     }
 }
