@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -32,14 +33,13 @@ public class Profile {
     @JoinTable(name = "favorite",
             joinColumns = {@JoinColumn(name = "profile_id")},
             inverseJoinColumns = {@JoinColumn(name = "product_id")})
-    private List<Product> favorite;
+    private Set<Product> favorite;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "profileId")
     @JsonIgnore
-    private List<Purchase> purchase;
+    private Set<Purchase> purchase;
 
     @OneToOne
     @JoinColumn(name = "cart_id", referencedColumnName = "id")
     private Cart cart;
-
 }
