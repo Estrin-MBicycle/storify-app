@@ -3,7 +3,6 @@ package internship.mbicycle.storify.integration;
 import internship.mbicycle.storify.TestMariaDbContainer;
 import internship.mbicycle.storify.model.Cart;
 import internship.mbicycle.storify.model.StorifyUser;
-import internship.mbicycle.storify.model.Token;
 import internship.mbicycle.storify.repository.CartRepository;
 import internship.mbicycle.storify.repository.StorifyUserRepository;
 import internship.mbicycle.storify.service.TokenService;
@@ -12,7 +11,6 @@ import internship.mbicycle.storify.util.FileReaderUtil;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
@@ -22,15 +20,15 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import java.util.HashMap;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
 @TestMariaDbContainer
@@ -41,6 +39,7 @@ class StorifyUserControllerTest {
     private static final String CODE = "randomCode";
 
     private String header;
+    private String token;
     private StorifyUser principalUser;
 
     @Autowired
@@ -62,18 +61,17 @@ class StorifyUserControllerTest {
                 .email(EMAIL)
                 .password(PASSWORD)
                 .role(Constants.ROLE_USER)
-                .token(new Token())
                 .tempConfirmCode(CODE)
+                .tokenMap(new HashMap<>())
                 .build();
         given(userRepository.findByEmail(EMAIL)).willReturn(Optional.of(principalUser));
-        String token = tokenService.createAccessToken(principalUser);
-        principalUser.getToken().setAccessToken(token);
         Authentication auth = new UsernamePasswordAuthenticationToken(
                 principalUser.getEmail(),
                 principalUser.getPassword(),
                 principalUser.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
-        header = "Bearer " + principalUser.getToken().getAccessToken();
+        token = tokenService.createAccessToken(principalUser);
+        header = "Bearer " + token;
     }
 
     @Test
@@ -118,6 +116,8 @@ class StorifyUserControllerTest {
         given(userRepository.findByEmail("qwe@mail.ru"))
                 .willReturn(Optional.empty())
                 .willReturn(Optional.ofNullable(principalUser));
+        given(userRepository.findStorifyUserByJwtTokenAndUserAgent(anyString(), anyString()))
+                .willReturn(Optional.of(principalUser));
         String newEmailDTOAsString = FileReaderUtil.readFromJson("json/NewEmailDTO.json");
         webTestClient.patch()
                 .uri("/update/" + CODE)

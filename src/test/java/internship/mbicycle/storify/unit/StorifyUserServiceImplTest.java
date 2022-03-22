@@ -6,7 +6,6 @@ import internship.mbicycle.storify.exception.StorifyUserNotFoundException;
 import internship.mbicycle.storify.model.Cart;
 import internship.mbicycle.storify.model.Profile;
 import internship.mbicycle.storify.model.StorifyUser;
-import internship.mbicycle.storify.model.Token;
 import internship.mbicycle.storify.repository.CartRepository;
 import internship.mbicycle.storify.repository.StorifyUserRepository;
 import internship.mbicycle.storify.service.MailService;
@@ -77,7 +76,6 @@ class StorifyUserServiceImplTest {
                 .password(passwordEncoder.encode(PASSWORD))
                 .name(NAME)
                 .profile(new Profile())
-                .token(new Token())
                 .role(Constants.ROLE_USER)
                 .activationCode(ACTIVATION_CODE)
                 .build();

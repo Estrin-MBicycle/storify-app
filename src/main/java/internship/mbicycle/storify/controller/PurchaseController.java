@@ -4,6 +4,7 @@ import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 
+import internship.mbicycle.storify.dto.CartDTO;
 import internship.mbicycle.storify.dto.PurchaseDTO;
 import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.service.PurchaseService;
@@ -37,10 +38,10 @@ public class PurchaseController {
     }
 
     @PostMapping
-    public PurchaseDTO createPurchase(@Valid @RequestBody PurchaseDTO purchaseDTO,
+    public PurchaseDTO createPurchase(@Valid @RequestBody CartDTO cartDTO,
                                       @ApiIgnore Principal principal) {
         StorifyUser user = storifyUserService.getUserByEmail(principal.getName());
-        return purchaseService.savePurchase(user, purchaseDTO);
+        return purchaseService.savePurchase(user, cartDTO);
     }
 
     @PutMapping("/{id}")

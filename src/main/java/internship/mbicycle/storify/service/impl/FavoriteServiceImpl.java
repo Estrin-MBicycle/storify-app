@@ -1,8 +1,5 @@
 package internship.mbicycle.storify.service.impl;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import internship.mbicycle.storify.converter.ProductConverter;
 import internship.mbicycle.storify.dto.ProductDTO;
 import internship.mbicycle.storify.dto.ProfileDTO;
@@ -11,9 +8,15 @@ import internship.mbicycle.storify.model.Profile;
 import internship.mbicycle.storify.service.FavoriteService;
 import internship.mbicycle.storify.service.ProductService;
 import internship.mbicycle.storify.service.ProfileService;
+import internship.mbicycle.storify.service.StorifyUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.security.Principal;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,30 +26,32 @@ public class FavoriteServiceImpl implements FavoriteService {
     private final ProfileService profileService;
     private final ProductService productService;
     private final ProductConverter productConverter;
+    private final StorifyUserService userService;
 
     @Override
-    public ProfileDTO addProfileToFavoriteProduct(Long productId, Long profileId) {
+    public ProfileDTO addProductToFavorite(Long productId, Set<Product> products, Profile profile) {
         Product productDb = productService.getProductById(productId);
-        Profile profile = profileService.getProfileById(profileId);
-        List<Product> products = profile.getFavorite();
         products.add(productDb);
-        return profileService.setFavoriteProductAndSaveProfile(profile, products);
+        return profileService.setFavoriteProductAndSaveProfile(products, profile);
     }
 
     @Override
-    public ProfileDTO removeProfileFromFavoriteProduct(Long productId, Long profileId) {
+    public ProfileDTO removeProductFromFavorite(Long productId, Set<Product> products, Profile profile) {
         Product productDb = productService.getProductById(productId);
-        Profile profile = profileService.getProfileById(profileId);
-        List<Product> products = profile.getFavorite();
         products.remove(productDb);
-        return profileService.setFavoriteProductAndSaveProfile(profile, products);
+        return profileService.setFavoriteProductAndSaveProfile(products, profile);
     }
 
     @Override
-    public List<ProductDTO> getFavoritesProducts(Long id) {
-        Profile profile = profileService.getProfileById(id);
-        List<Product> products = profile.getFavorite();
+    public ProfileDTO removeAllProductFromFavorite(Set<Product> products, Profile profile) {
+        products.clear();
+        return profileService.setFavoriteProductAndSaveProfile(products, profile);
+    }
+
+    @Override
+    public List<ProductDTO> getFavoriteByPrincipal(Principal principal) {
+        Set<Product> products = userService.getUserByEmail(principal.getName()).getProfile().getFavorite();
         return products.stream().map(productConverter::convertProductToProductDTO)
-            .collect(Collectors.toList());
+                .collect(Collectors.toList());
     }
 }

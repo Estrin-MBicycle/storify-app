@@ -7,11 +7,16 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.only;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import internship.mbicycle.storify.converter.PurchaseConverter;
+import internship.mbicycle.storify.dto.CartDTO;
+import internship.mbicycle.storify.dto.ProductDetailInCartDTO;
 import internship.mbicycle.storify.dto.PurchaseDTO;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
+import internship.mbicycle.storify.model.Profile;
 import internship.mbicycle.storify.model.Purchase;
 import internship.mbicycle.storify.model.StorifyUser;
 import internship.mbicycle.storify.repository.PurchaseRepository;
@@ -45,25 +50,53 @@ class PurchaseServiceImplTest {
     private Purchase purchase;
     private PurchaseDTO purchaseDTO;
     private StorifyUser user;
+    private CartDTO cartDTO;
 
     @BeforeEach
     void setUp() {
+        Profile profile = Profile.builder()
+            .id(4L)
+            .address("Adress")
+            .name("Profile name")
+            .phone("100010001")
+            .build();
+
+        ProductDetailInCartDTO productDetailInCartDTO = ProductDetailInCartDTO.builder()
+            .amount(5)
+            .price(1000)
+            .productId(5L)
+            .name("Name")
+            .build();
+
+        cartDTO = CartDTO.builder()
+            .sum(5000)
+            .productDetailInCartDTOList(List.of(productDetailInCartDTO))
+            .build();
+
         purchase = Purchase.builder()
-            .id(87L)
+            .id(null)
             .delivered(false)
+            .profileId(4L)
+            .price(5000)
+            .uniqueCode("Code")
             .purchaseDate(LocalDate.now())
+            .products(Map.of(5L, 5))
             .build();
 
         purchaseDTO = PurchaseDTO.builder()
             .id(87L)
             .delivered(false)
             .purchaseDate(LocalDate.now())
+            .profileId(4L)
+            .price(5000)
+            .productDTOMap(Map.of(5L, 5))
             .build();
 
         user = new StorifyUser();
         user.setName("Vasili");
         user.setPassword("123456");
         user.setEmail("vasili@gmail.com");
+        user.setProfile(profile);
     }
 
     @Test
@@ -86,11 +119,10 @@ class PurchaseServiceImplTest {
 
     @Test
     void testSavePurchase() {
-        given(purchaseConverter.convertPurchaseDTOToPurchase(purchaseDTO)).willReturn(purchase);
         given(generatorUniqueCode.generationUniqueCode()).willReturn("Code");
         given(purchaseRepository.save(purchase)).willReturn(purchase);
         given(purchaseConverter.convertPurchaseToPurchaseDTO(purchase)).willReturn(purchaseDTO);
-        assertEquals(purchaseDTO, purchaseService.savePurchase(user, purchaseDTO));
+        assertEquals(purchaseDTO, purchaseService.savePurchase(user, cartDTO));
         then(purchaseRepository).should(only()).save(purchase);
         then(generatorUniqueCode).should(only()).generationUniqueCode();
     }
