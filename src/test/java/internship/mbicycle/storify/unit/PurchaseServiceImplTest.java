@@ -54,8 +54,11 @@ class PurchaseServiceImplTest {
 
     @BeforeEach
     void setUp() {
-       Profile profile = Profile.builder()
+        Profile profile = Profile.builder()
             .id(4L)
+            .address("Adress")
+            .name("Profile name")
+            .phone("100010001")
             .build();
 
         ProductDetailInCartDTO productDetailInCartDTO = ProductDetailInCartDTO.builder()
