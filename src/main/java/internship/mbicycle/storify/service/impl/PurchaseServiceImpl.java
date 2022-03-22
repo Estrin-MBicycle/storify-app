@@ -4,10 +4,14 @@ import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_PURCHA
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import internship.mbicycle.storify.converter.PurchaseConverter;
+import internship.mbicycle.storify.dto.CartDTO;
+import internship.mbicycle.storify.dto.ProductDetailInCartDTO;
 import internship.mbicycle.storify.dto.PurchaseDTO;
 import internship.mbicycle.storify.exception.ResourceNotFoundException;
 import internship.mbicycle.storify.model.Purchase;
@@ -65,16 +69,24 @@ public class PurchaseServiceImpl implements PurchaseService {
     public List<PurchaseDTO> getAllPurchasesByProfile(Principal principal) {
         StorifyUser storifyUser = userService.getUserByEmail(principal.getName());
         return purchaseRepository.findAllByProfileId(storifyUser.getId()).stream()
-                .map(purchaseConverter::convertPurchaseToPurchaseDTO)
-                .collect(Collectors.toList());
+            .map(purchaseConverter::convertPurchaseToPurchaseDTO)
+            .collect(Collectors.toList());
     }
 
     @Override
-    public PurchaseDTO savePurchase(StorifyUser user, PurchaseDTO purchaseDTO) {
-        purchaseDTO.setUniqueCode(generatorUniqueCode.generationUniqueCode());
-        purchaseDTO.setPurchaseDate(LocalDate.now());
-        Purchase save = purchaseRepository.save(purchaseConverter.convertPurchaseDTOToPurchase(purchaseDTO));
-        PurchaseDTO saveDTO = purchaseConverter.convertPurchaseToPurchaseDTO(save);
+    public PurchaseDTO savePurchase(StorifyUser user, CartDTO cart) {
+        List<ProductDetailInCartDTO> productsList = cart.getProductDetailInCartDTOList();
+        Map<Long, Integer> products = new HashMap<>();
+        productsList.forEach(l -> products.put(l.getProductId(), l.getAmount()));
+        Purchase purchase = Purchase.builder()
+            .purchaseDate(LocalDate.now())
+            .uniqueCode(generatorUniqueCode.generationUniqueCode())
+            .price(cart.getSum())
+            .profileId(user.getProfile().getId())
+            .products(products)
+            .build();
+        purchaseRepository.save(purchase);
+        PurchaseDTO saveDTO = purchaseConverter.convertPurchaseToPurchaseDTO(purchase);
         productService.changeProductCountAfterThePurchase(saveDTO);
         mailService.sendPurchaseMessage(user, saveDTO);
         return saveDTO;
