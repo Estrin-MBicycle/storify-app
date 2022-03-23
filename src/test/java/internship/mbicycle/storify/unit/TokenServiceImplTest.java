@@ -27,8 +27,6 @@ class TokenServiceImplTest {
 
     @Mock
     private SecurityProperties securityProperties;
-    @Mock
-    private StorifyUserService userService;
 
     @InjectMocks
     private TokenServiceImpl tokenService;
