@@ -1,16 +1,16 @@
 package internship.mbicycle.storify.service;
 
-import java.util.List;
-
 import internship.mbicycle.storify.dto.ProfileDTO;
 import internship.mbicycle.storify.model.Product;
 import internship.mbicycle.storify.model.Profile;
+
+import java.util.Set;
 
 public interface ProfileService {
 
     Profile getProfileById(Long id);
 
-    ProfileDTO setFavoriteProductAndSaveProfile(Profile profile, List<Product> products);
+    ProfileDTO setFavoriteProductAndSaveProfile(Set<Product> products, Profile profile);
 
     ProfileDTO getByEmail(String email);
 

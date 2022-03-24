@@ -8,6 +8,7 @@ import internship.mbicycle.storify.service.CartService;
 import internship.mbicycle.storify.service.PurchaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.security.Principal;
 import java.util.List;
@@ -22,30 +23,30 @@ public class CartController {
     private final PurchaseService purchaseService;
 
     @GetMapping
-    public CartDTO getCart(Principal principal) {
+    public CartDTO getCart(@ApiIgnore Principal principal) {
         Cart cart = cartService.getCartByPrincipal(principal);
         return cartConverter.convertCartToCartDTO(cart);
     }
 
     @DeleteMapping("/{id}")
-    public CartDTO deleteProduct(@PathVariable(name = "id") long productId,
-                                 Principal principal) {
+    public CartDTO deleteProductFromCart(@PathVariable(name = "id") long productId,
+                                         @ApiIgnore Principal principal) {
         Cart cart = cartService.getCartByPrincipal(principal);
         cartService.deleteProduct(cart, productId);
         return cartConverter.convertCartToCartDTO(cart);
     }
 
     @PutMapping("/{id}/{count}")
-    public CartDTO deleteProductByCount(@PathVariable(name = "id") long productId,
-                                        @PathVariable(name = "count") int count,
-                                        Principal principal) {
+    public CartDTO deleteProductByCountFromCart(@PathVariable(name = "id") long productId,
+                                                @PathVariable(name = "count") int count,
+                                                @ApiIgnore Principal principal) {
         Cart cart = cartService.getCartByPrincipal(principal);
         cartService.changeProductByCount(cart, productId, count);
         return cartConverter.convertCartToCartDTO(cart);
     }
 
     @DeleteMapping
-    public CartDTO deleteAllProduct(Principal principal) {
+    public CartDTO deleteAllProductFromCart(@ApiIgnore Principal principal) {
         Cart cart = cartService.getCartByPrincipal(principal);
         cartService.deleteAllProduct(cart);
         return cartConverter.convertCartToCartDTO(cart);
@@ -54,7 +55,7 @@ public class CartController {
     @PostMapping("/{id}/{count}")
     public void addProductToCart(@PathVariable(name = "id") long productId,
                                  @PathVariable(name = "count") int count,
-                                 Principal principal) {
+                                 @ApiIgnore Principal principal) {
         Cart cart = cartService.getCartByPrincipal(principal);
         cartService.addProduct(cart, productId, count);
     }

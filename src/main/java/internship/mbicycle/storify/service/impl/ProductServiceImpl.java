@@ -4,6 +4,7 @@ import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_PRODUC
 import static internship.mbicycle.storify.util.ExceptionMessage.NOT_FOUND_USER;
 import static java.lang.String.format;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,7 +22,9 @@ import internship.mbicycle.storify.repository.ProductRepository;
 import internship.mbicycle.storify.repository.StoreRepository;
 import internship.mbicycle.storify.repository.StorifyUserRepository;
 import internship.mbicycle.storify.service.MailService;
+import internship.mbicycle.storify.service.PermissionsCheckService;
 import internship.mbicycle.storify.service.ProductService;
+import internship.mbicycle.storify.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,9 +36,10 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductConverter productConverter;
-    private final StoreRepository storeRepository;
+    private final StoreService storeService;
     private final MailService mailService;
     private final StorifyUserRepository storifyUserRepository;
+    private final PermissionsCheckService permissionsCheckService;
 
     @Override
     public List<ProductDTO> getAllProductsFromStore(Long storeId) {
@@ -59,16 +63,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO updateProduct(ProductDTO product, Long id, Long storeId) {
-        Product productDb = productRepository.findById(id).orElseThrow(() ->
-            new ResourceNotFoundException(format(NOT_FOUND_PRODUCT, id)));
+    public ProductDTO updateProduct(ProductDTO product, Principal principal) {
+        Long storeId = permissionsCheckService.checkPermissionByStoreId(principal, product.getStoreId());
+        Product productDb = getProductById(product.getId());
         sendMessageIfProductOnSaleAgain(productDb, product);
         productDb.setProductName(product.getProductName());
         productDb.setDescription(product.getDescription());
         productDb.setCount(product.getCount());
         productDb.setPrice(product.getPrice());
         productDb.setImage(product.getImage());
-        Store store = storeRepository.getById(storeId);
+        Store store = storeService.getStoreFromDbById(storeId);
         productDb.setStore(store);
         Product save = productRepository.save(productDb);
         return productConverter.convertProductToProductDTO(save);
@@ -81,22 +85,25 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO saveProduct(ProductDTO productDto, Long storeId) {
-        Product product = productConverter.convertProductDTOToProduct(productDto);
-        Store store = storeRepository.getById(storeId);
+    public ProductDTO saveProduct(ProductDTO productDTO, Principal principal) {
+        Long storeId = permissionsCheckService.checkPermissionByStoreId(principal, productDTO.getStoreId());
+        Product product = productConverter.convertProductDTOToProduct(productDTO);
+        Store store = storeService.getStoreFromDbById(storeId);
         product.setStore(store);
         Product save = productRepository.save(product);
         return productConverter.convertProductToProductDTO(save);
     }
 
     @Override
-    public void removeAllProductsByStoreId(Long storeId) {
+    public void removeAllProductsByStoreId(Principal principal, Long storeId) {
+        Long id = permissionsCheckService.checkPermissionByStoreId(principal, storeId);
         productRepository.setDeleteStateByStoreId(storeId);
         productRepository.removeAllByStoreId(storeId);
     }
 
     @Override
-    public void removeProductByStoreIdAndId(Long storeId, Long productId) {
+    public void removeProductByStoreIdAndId(ProductDTO productDTO, Principal principal, Long productId) {
+        Long storeId = permissionsCheckService.checkPermissionByStoreId(principal, productDTO.getStoreId());
         productRepository.setDeleteState(productId);
         productRepository.removeProductByStoreIdAndId(storeId, productId);
     }
