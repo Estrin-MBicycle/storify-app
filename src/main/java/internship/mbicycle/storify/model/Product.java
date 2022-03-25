@@ -16,12 +16,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
+@SQLDelete(sql = "DELETE FROM product WHERE id = ? AND deleted = false;")
+@Where(clause = "deleted = false")
 public class Product {
 
     @Id
@@ -38,6 +42,8 @@ public class Product {
     private Integer price;
 
     private Integer count;
+
+    private boolean deleted = Boolean.FALSE;
 
     @ManyToOne(targetEntity = Store.class)
     @JoinColumn(name = "store_id")
