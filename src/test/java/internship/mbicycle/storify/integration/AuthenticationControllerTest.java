@@ -27,7 +27,6 @@ class AuthenticationControllerTest {
 
     private static final String EMAIL = "test@mail.ru";
     private static final String PASSWORD = "123456";
-    private static final String CODE = "randomCode";
 
     @Value("${jwt.token.refresh}")
     private String refreshToken;
@@ -47,7 +46,6 @@ class AuthenticationControllerTest {
                 .password(PASSWORD)
                 .role(Constants.ROLE_USER)
                 .tokenMap(new HashMap<>())
-                .tempConfirmCode(CODE)
                 .build();
     }
 
