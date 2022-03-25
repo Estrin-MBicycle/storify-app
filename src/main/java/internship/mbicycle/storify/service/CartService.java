@@ -1,5 +1,6 @@
 package internship.mbicycle.storify.service;
 
+import internship.mbicycle.storify.dto.CartDTO;
 import internship.mbicycle.storify.model.Cart;
 
 import java.security.Principal;
@@ -15,4 +16,6 @@ public interface CartService {
     void changeProductByCount(Cart cart, long productId, int count);
 
     void addProduct(Cart cart, long productId, int count);
+
+    CartDTO getListProductsInCart(Cart cart);
 }
