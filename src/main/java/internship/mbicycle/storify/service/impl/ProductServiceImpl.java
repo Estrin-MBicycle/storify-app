@@ -96,14 +96,15 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void removeAllProductsByStoreId(Principal principal, Long storeId) {
         Long id = permissionsCheckService.checkPermissionByStoreId(principal, storeId);
-        productRepository.removeAllByStoreId(id);
+        productRepository.setDeleteStateByStoreId(storeId);
+        productRepository.removeAllByStoreId(storeId);
     }
 
     @Override
     public void removeProductByStoreIdAndId(ProductDTO productDTO, Principal principal, Long productId) {
         Long storeId = permissionsCheckService.checkPermissionByStoreId(principal, productDTO.getStoreId());
+        productRepository.setDeleteState(productId);
         productRepository.removeProductByStoreIdAndId(storeId, productId);
-
     }
 
     private void sendMessageIfProductOnSaleAgain(Product product, ProductDTO productDTO) {

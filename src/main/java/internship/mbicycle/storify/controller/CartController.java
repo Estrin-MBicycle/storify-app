@@ -1,6 +1,5 @@
 package internship.mbicycle.storify.controller;
 
-import internship.mbicycle.storify.converter.CartConverter;
 import internship.mbicycle.storify.dto.CartDTO;
 import internship.mbicycle.storify.dto.PurchaseDTO;
 import internship.mbicycle.storify.model.Cart;
@@ -17,15 +16,13 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class CartController {
-
     private final CartService cartService;
-    private final CartConverter cartConverter;
     private final PurchaseService purchaseService;
 
     @GetMapping
-    public CartDTO getCart(@ApiIgnore Principal principal) {
+    public CartDTO getProductsInCart(@ApiIgnore Principal principal) {
         Cart cart = cartService.getCartByPrincipal(principal);
-        return cartConverter.convertCartToCartDTO(cart);
+        return cartService.getListProductsInCart(cart);
     }
 
     @DeleteMapping("/{id}")
@@ -33,7 +30,7 @@ public class CartController {
                                          @ApiIgnore Principal principal) {
         Cart cart = cartService.getCartByPrincipal(principal);
         cartService.deleteProduct(cart, productId);
-        return cartConverter.convertCartToCartDTO(cart);
+        return cartService.getListProductsInCart(cart);
     }
 
     @PutMapping("/{id}/{count}")
@@ -42,14 +39,14 @@ public class CartController {
                                                 @ApiIgnore Principal principal) {
         Cart cart = cartService.getCartByPrincipal(principal);
         cartService.changeProductByCount(cart, productId, count);
-        return cartConverter.convertCartToCartDTO(cart);
+        return cartService.getListProductsInCart(cart);
     }
 
     @DeleteMapping
-    public CartDTO deleteAllProductFromCart(@ApiIgnore Principal principal) {
+    public CartDTO deleteAllProductsFromCart(@ApiIgnore Principal principal) {
         Cart cart = cartService.getCartByPrincipal(principal);
         cartService.deleteAllProduct(cart);
-        return cartConverter.convertCartToCartDTO(cart);
+        return cartService.getListProductsInCart(cart);
     }
 
     @PostMapping("/{id}/{count}")

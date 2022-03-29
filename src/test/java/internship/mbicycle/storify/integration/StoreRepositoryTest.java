@@ -8,10 +8,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +22,7 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TE
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@DirtiesContext
 @Sql(scripts = "/sql/insert_data.sql", executionPhase = BEFORE_TEST_METHOD)
 @Sql(scripts = "/sql/delete_data.sql", executionPhase = AFTER_TEST_METHOD)
 @TestMariaDbContainer
@@ -49,6 +50,25 @@ public class StoreRepositoryTest {
         expected.add(store);
         final List<Store> actual = storeRepository.findStoresByProfileId(1L);
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void shouldFindStoresByStoreName() {
+        final Profile profile = Profile.builder()
+                .id(1L)
+                .name("name")
+                .surname("surname")
+                .town("town")
+                .address("address")
+                .phone("phone").build();
+        final Store expected = Store.builder()
+                .id(1L)
+                .storeName("store_name")
+                .description("description")
+                .address("address")
+                .profile(profile).build();
+        final Optional<Store> actual = storeRepository.findStoreByStoreName("store_name");
+        assertEquals(expected, actual.get());
     }
 
     @Test

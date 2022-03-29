@@ -31,4 +31,12 @@
             </column>
         </createTable>
     </changeSet>
+
+    <changeSet author="zaiceva" id="add_column_product">
+        <addColumn tableName="product">
+            <column name="deleted"
+                    type="boolean">
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
