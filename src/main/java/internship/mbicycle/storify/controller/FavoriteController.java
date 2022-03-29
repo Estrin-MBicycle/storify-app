@@ -1,9 +1,12 @@
 package internship.mbicycle.storify.controller;
 
+import internship.mbicycle.storify.dto.FavoriteDTO;
 import internship.mbicycle.storify.dto.ProductDTO;
 import internship.mbicycle.storify.dto.ProfileDTO;
+import internship.mbicycle.storify.model.Cart;
 import internship.mbicycle.storify.model.Product;
 import internship.mbicycle.storify.model.Profile;
+import internship.mbicycle.storify.service.CartService;
 import internship.mbicycle.storify.service.FavoriteService;
 import internship.mbicycle.storify.service.StorifyUserService;
 import lombok.RequiredArgsConstructor;
@@ -21,11 +24,19 @@ public class FavoriteController {
 
     private final FavoriteService favoriteService;
     private final StorifyUserService userService;
+    private final CartService cartService;
 
     @PatchMapping("/{id}")
     public ProfileDTO addProductByFavorite(@PathVariable Long id,
                                            @ApiIgnore Principal principal) {
         return favoriteService.addProductToFavorite(id, getProductsFromFavorite(principal), getProfile(principal));
+    }
+    @PostMapping("/{id}")
+    public void addProductFromFavoriteToCart(@PathVariable(name = "id") long productId,
+                                 @ApiIgnore Principal principal) {
+        Cart cart = cartService.getCartByPrincipal(principal);
+        cartService.addProduct(cart, productId, 1);
+        favoriteService.removeProductFromFavorite(productId,getProductsFromFavorite(principal),getProfile(principal));
     }
 
     @DeleteMapping("/{id}")
@@ -40,7 +51,7 @@ public class FavoriteController {
     }
 
     @GetMapping()
-    public List<ProductDTO> getFavorite(@ApiIgnore Principal principal) {
+    public List<FavoriteDTO> getFavorite(@ApiIgnore Principal principal) {
         return favoriteService.getFavoriteByPrincipal(principal);
     }
 

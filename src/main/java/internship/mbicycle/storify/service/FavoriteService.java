@@ -1,5 +1,6 @@
 package internship.mbicycle.storify.service;
 
+import internship.mbicycle.storify.dto.FavoriteDTO;
 import internship.mbicycle.storify.dto.ProductDTO;
 import internship.mbicycle.storify.dto.ProfileDTO;
 import internship.mbicycle.storify.model.Product;
@@ -17,5 +18,5 @@ public interface FavoriteService {
 
     ProfileDTO addProductToFavorite(Long productId, Set<Product> products, Profile profile);
 
-    List<ProductDTO> getFavoriteByPrincipal(Principal principal);
+    List<FavoriteDTO> getFavoriteByPrincipal(Principal principal);
 }
