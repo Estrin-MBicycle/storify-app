@@ -6,12 +6,17 @@ import internship.mbicycle.storify.dto.ProductDetailInCartDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class CartConverter {
     public CartDTO getCartDTO(List<ProductDetailInCartDTO> productDetailInCartDTOList, Integer finalCartPrice) {
+        if (productDetailInCartDTOList.isEmpty()) {
+            productDetailInCartDTOList = new ArrayList<>();
+            finalCartPrice = 0;
+        }
         return CartDTO.builder()
                 .productDetailInCartDTOList(productDetailInCartDTOList)
                 .sum(finalCartPrice)

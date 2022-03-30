@@ -1,6 +1,8 @@
 package internship.mbicycle.storify.service.impl;
 
+import internship.mbicycle.storify.converter.FavoriteConverter;
 import internship.mbicycle.storify.converter.ProductConverter;
+import internship.mbicycle.storify.dto.FavoriteDTO;
 import internship.mbicycle.storify.dto.ProductDTO;
 import internship.mbicycle.storify.dto.ProfileDTO;
 import internship.mbicycle.storify.model.Product;
@@ -25,7 +27,7 @@ public class FavoriteServiceImpl implements FavoriteService {
 
     private final ProfileService profileService;
     private final ProductService productService;
-    private final ProductConverter productConverter;
+    private final FavoriteConverter favoriteConverter;
     private final StorifyUserService userService;
 
     @Override
@@ -49,9 +51,9 @@ public class FavoriteServiceImpl implements FavoriteService {
     }
 
     @Override
-    public List<ProductDTO> getFavoriteByPrincipal(Principal principal) {
+    public List<FavoriteDTO> getFavoriteByPrincipal(Principal principal) {
         Set<Product> products = userService.getUserByEmail(principal.getName()).getProfile().getFavorite();
-        return products.stream().map(productConverter::convertProductToProductDTO)
+        return products.stream().map(favoriteConverter::convertProductToFavoriteDTO)
                 .collect(Collectors.toList());
     }
 }
